@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
   selector: 'better-drawer',
   imports: [],
-  template: ` <p>better-drawer works!</p> `,
-  styles: ``,
+  template: `
+    <div [attr.data-open]="open()" aria-hidden="true" class="overlay"></div>
+    <div [attr.data-open]="open()" role="dialog" class="drawer"></div>
+  `,
+  styleUrl: './styles.css',
 })
-export class BetterDrawer {}
+export class BetterDrawer {
+  protected readonly open = signal(false);
+}

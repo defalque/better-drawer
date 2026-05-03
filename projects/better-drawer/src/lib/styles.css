@@ -1,0 +1,23 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  inset: 0;
+  width: 300px;
+  height: 100%;
+  pointer-events: auto;
+  background-color: white;
+  z-index: 100;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+}
