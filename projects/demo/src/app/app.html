@@ -1,22 +1,43 @@
 <main class="shell grid place-items-center bg-amber-100 h-screen">
-  <button (click)="leftOpen.set(!leftOpen())" class="bg-blue-500 text-white p-2 rounded-md">
-    From left
-  </button>
-  <better-drawer [(open)]="leftOpen" position="left" />
+  <div class="grid gap-12">
+    <div>
+      <h2 class="text-3xl font-bold">Better Drawer</h2>
+      <p>A playground for the better-drawer library.</p>
+    </div>
 
-  <button (click)="rightOpen.set(!rightOpen())" class="bg-blue-500 text-white p-2 rounded-md">
-    From right
-  </button>
-  <better-drawer [(open)]="rightOpen" position="right" />
+    <div class="grid grid-cols-4 gap-2">
+      <button (click)="leftOpen.set(!leftOpen())" class="bg-blue-500 text-white p-2 rounded-md">
+        From left
+      </button>
+      @if (leftOpen()) {
+        <div bdOverlay [(open)]="leftOpen"></div>
+        <aside bdDrawer [(open)]="leftOpen" position="left" [roundedCorners]="true"></aside>
+      }
 
-  <button (click)="topOpen.set(!topOpen())" class="bg-blue-500 text-white p-2 rounded-md">
-    From top
-  </button>
-  <better-drawer [(open)]="topOpen" position="top" />
+      <button (click)="rightOpen.set(!rightOpen())" class="bg-blue-500 text-white p-2 rounded-md">
+        From right
+      </button>
+      @if (rightOpen()) {
+        <div bdOverlay [(open)]="rightOpen"></div>
+        <aside bdDrawer [(open)]="rightOpen" position="right" [roundedCorners]="true"></aside>
+      }
 
-  <button (click)="bottomOpen.set(!bottomOpen())" class="bg-blue-500 text-white p-2 rounded-md">
-    From bottom
-  </button>
-  <better-drawer [(open)]="bottomOpen" position="bottom" />
+      <button (click)="topOpen.set(!topOpen())" class="bg-blue-500 text-white p-2 rounded-md">
+        From top
+      </button>
+      @if (topOpen()) {
+        <div bdOverlay [(open)]="topOpen"></div>
+        <div bdDrawer [(open)]="topOpen" position="top" [roundedCorners]="true"></div>
+      }
+
+      <button (click)="bottomOpen.set(!bottomOpen())" class="bg-blue-500 text-white p-2 rounded-md">
+        From bottom
+      </button>
+      @if (bottomOpen()) {
+        <div bdOverlay [(open)]="bottomOpen"></div>
+        <div bdDrawer [(open)]="bottomOpen" position="bottom" [roundedCorners]="true"></div>
+      }
+    </div>
+  </div>
   <router-outlet />
 </main>

@@ -1,0 +1,70 @@
+:host {
+  --better-drawer-size: 300px;
+  --better-drawer-closed-transform: translateX(100%);
+  --better-drawer-rounded-corners: 10px;
+
+  display: block;
+  position: fixed;
+  pointer-events: auto;
+  background-color: white;
+  z-index: 9999;
+  opacity: 1;
+}
+:host([data-position='top']) {
+  --better-drawer-closed-transform: translateY(-100%);
+
+  inset: 0 0 auto;
+  height: var(--better-drawer-size);
+  width: 100%;
+}
+:host([data-position='top'])[data-rounded-corners='true'] {
+  border-bottom-left-radius: var(--better-drawer-rounded-corners);
+  border-bottom-right-radius: var(--better-drawer-rounded-corners);
+}
+
+:host([data-position='bottom']) {
+  --better-drawer-closed-transform: translateY(100%);
+
+  inset: auto 0 0;
+  height: var(--better-drawer-size);
+  width: 100%;
+}
+:host([data-position='bottom'])[data-rounded-corners='true'] {
+  border-top-left-radius: var(--better-drawer-rounded-corners);
+  border-top-right-radius: var(--better-drawer-rounded-corners);
+}
+
+:host([data-position='right']) {
+  --better-drawer-closed-transform: translateX(100%);
+
+  inset: 0 0 0 auto;
+  width: var(--better-drawer-size);
+}
+:host([data-position='right'])[data-rounded-corners='true'] {
+  border-top-left-radius: var(--better-drawer-rounded-corners);
+  border-bottom-left-radius: var(--better-drawer-rounded-corners);
+}
+
+:host([data-position='left']) {
+  --better-drawer-closed-transform: translateX(-100%);
+
+  inset: 0 auto 0 0;
+  width: var(--better-drawer-size);
+}
+:host([data-position='left'])[data-rounded-corners='true'] {
+  border-top-right-radius: var(--better-drawer-rounded-corners);
+  border-bottom-right-radius: var(--better-drawer-rounded-corners);
+}
+
+:host(.drawer-enter) {
+  transform: translate(0);
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+
+  @starting-style {
+    transform: var(--better-drawer-closed-transform);
+  }
+}
+:host(.drawer-leave) {
+  transform: var(--better-drawer-closed-transform);
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}

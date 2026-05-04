@@ -1,79 +1,175 @@
-import { provideZonelessChangeDetection } from '@angular/core';
+import { Component, model, provideZonelessChangeDetection, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BetterDrawer } from './better-drawer';
+import { BetterDrawer, BetterDrawerOverlay } from './better-drawer';
 import { BetterDrawerPosition } from './better-drawer.types';
 
-describe('BetterDrawer', () => {
-  let component: BetterDrawer;
-  let fixture: ComponentFixture<BetterDrawer>;
+@Component({
+  standalone: true,
+  imports: [BetterDrawerOverlay],
+  template: `<div bdOverlay [(open)]="open"></div>`,
+})
+class OverlayHostComponent {
+  readonly open = model(false);
+}
 
-  function nativeEl(): HTMLElement {
-    return fixture.nativeElement as HTMLElement;
+@Component({
+  standalone: true,
+  imports: [BetterDrawer],
+  template: `
+    <aside
+      bdDrawer
+      [(open)]="drawerOpen"
+      [position]="position()"
+      [roundedCorners]="roundedCorners()"
+    ></aside>
+  `,
+})
+class DrawerHostComponent {
+  readonly drawerOpen = model(false);
+  readonly position = signal<BetterDrawerPosition>('left');
+  readonly roundedCorners = signal(false);
+}
+
+describe('BetterDrawerOverlay', () => {
+  let fixture: ComponentFixture<OverlayHostComponent>;
+
+  function overlayHost(): HTMLElement {
+    const el = fixture.nativeElement as HTMLElement;
+    return el.querySelector('[bdOverlay]') as HTMLElement;
   }
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BetterDrawer],
+      imports: [OverlayHostComponent],
       providers: [provideZonelessChangeDetection()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(BetterDrawer);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(OverlayHostComponent);
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(overlayHost()).toBeTruthy();
   });
 
-  it('renders nothing when closed', () => {
-    expect(nativeEl().querySelector('.overlay')).toBeNull();
-    expect(nativeEl().querySelector('[role="dialog"]')).toBeNull();
+  it('sets open to false when the overlay host is clicked', () => {
+    fixture.componentInstance.open.set(true);
+    fixture.detectChanges();
+
+    overlayHost().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.open()).toBe(false);
   });
 
-  it('renders overlay and dialog when open', () => {
-    component.open.set(true);
+  it('sets open to false when Escape is pressed while open', () => {
+    fixture.componentInstance.open.set(true);
     fixture.detectChanges();
 
-    expect(nativeEl().querySelector('.overlay')).not.toBeNull();
-    expect(nativeEl().querySelector('.drawer[role="dialog"]')).not.toBeNull();
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.open()).toBe(false);
   });
 
-  it('closes when overlay is clicked', () => {
-    component.open.set(true);
+  it('does not change open when Escape is pressed while closed', () => {
+    fixture.componentInstance.open.set(false);
     fixture.detectChanges();
 
-    nativeEl().querySelector('.overlay')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
     fixture.detectChanges();
 
-    expect(component.open()).toBe(false);
-    expect(nativeEl().querySelector('.overlay')).toBeNull();
-    expect(nativeEl().querySelector('[role="dialog"]')).toBeNull();
+    expect(fixture.componentInstance.open()).toBe(false);
+  });
+});
+
+describe('BetterDrawer', () => {
+  let fixture: ComponentFixture<DrawerHostComponent>;
+
+  function drawerEl(): HTMLElement {
+    const el = fixture.nativeElement as HTMLElement;
+    return el.querySelector('[bdDrawer]') as HTMLElement;
+  }
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(DrawerHostComponent);
+    fixture.detectChanges();
   });
 
-  it('does not close when drawer is clicked', () => {
-    component.open.set(true);
-    fixture.detectChanges();
+  it('should create', () => {
+    expect(drawerEl()).toBeTruthy();
+  });
 
-    nativeEl().querySelector('.drawer')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  it('exposes role dialog on the host element', () => {
+    expect(drawerEl().getAttribute('role')).toBe('dialog');
+  });
 
-    fixture.detectChanges();
-
-    expect(component.open()).toBe(true);
-    expect(nativeEl().querySelector('.overlay')).not.toBeNull();
+  it('defaults position to left on data-position', () => {
+    expect(drawerEl().getAttribute('data-position')).toBe('left');
   });
 
   it('reflects position input on data-position', () => {
     const positions: BetterDrawerPosition[] = ['left', 'right', 'top', 'bottom'];
 
     for (const position of positions) {
-      fixture.componentRef.setInput('position', position);
-      component.open.set(true);
+      fixture.componentInstance.position.set(position);
       fixture.detectChanges();
 
-      expect(nativeEl().querySelector('.drawer')?.getAttribute('data-position')).toBe(position);
+      expect(drawerEl().getAttribute('data-position')).toBe(position);
     }
+  });
+
+  it('reflects roundedCorners on data-rounded-corners', () => {
+    fixture.componentInstance.roundedCorners.set(false);
+    fixture.detectChanges();
+    expect(drawerEl().getAttribute('data-rounded-corners')).toBe('false');
+
+    fixture.componentInstance.roundedCorners.set(true);
+    fixture.detectChanges();
+    expect(drawerEl().getAttribute('data-rounded-corners')).toBe('true');
+  });
+
+  it('does not close when the drawer host is clicked', () => {
+    fixture.componentInstance.drawerOpen.set(true);
+    fixture.detectChanges();
+
+    drawerEl().dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.drawerOpen()).toBe(true);
+  });
+
+  it('sets open to false when Escape is pressed while open', () => {
+    fixture.componentInstance.drawerOpen.set(true);
+    fixture.detectChanges();
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('does not change open when Escape is pressed while closed', () => {
+    fixture.componentInstance.drawerOpen.set(false);
+    fixture.detectChanges();
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.drawerOpen()).toBe(false);
   });
 });
