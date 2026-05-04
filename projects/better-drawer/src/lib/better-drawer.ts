@@ -43,12 +43,11 @@ export class BetterDrawerOverlay {
 @Component({
   selector: '[bdDrawer]',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: '',
+  template: '<ng-content />',
   styleUrl: './drawer.css',
   host: {
     '[attr.role]': '"dialog"',
     '[attr.data-position]': 'position()',
-    '[attr.data-rounded-corners]': 'roundedCorners()',
     '(click)': '$event.stopPropagation()',
     '(document:keydown.escape)': 'onEscape($event)',
     'animate.enter': 'drawer-enter',
@@ -66,11 +65,6 @@ export class BetterDrawer {
    * @default `left`.
    */
   readonly position = input<BetterDrawerPosition>('left');
-  /**
-   * Whether to round the corners of the drawer.
-   * @default `false`.
-   */
-  readonly roundedCorners = input<boolean>(false);
 
   /**
    * Collapses the drawer and hides the backdrop (invoked when the overlay is clicked).

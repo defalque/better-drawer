@@ -17,18 +17,14 @@ class OverlayHostComponent {
   standalone: true,
   imports: [BetterDrawer],
   template: `
-    <aside
-      bdDrawer
-      [(open)]="drawerOpen"
-      [position]="position()"
-      [roundedCorners]="roundedCorners()"
-    ></aside>
+    <aside bdDrawer [(open)]="drawerOpen" [position]="position()">
+      <span data-testid="projected">drawer body</span>
+    </aside>
   `,
 })
 class DrawerHostComponent {
   readonly drawerOpen = model(false);
   readonly position = signal<BetterDrawerPosition>('left');
-  readonly roundedCorners = signal(false);
 }
 
 describe('BetterDrawerOverlay', () => {
@@ -110,6 +106,12 @@ describe('BetterDrawer', () => {
     expect(drawerEl()).toBeTruthy();
   });
 
+  it('projects host element content into the drawer', () => {
+    expect(drawerEl().querySelector('[data-testid="projected"]')?.textContent?.trim()).toBe(
+      'drawer body',
+    );
+  });
+
   it('exposes role dialog on the host element', () => {
     expect(drawerEl().getAttribute('role')).toBe('dialog');
   });
@@ -127,16 +129,6 @@ describe('BetterDrawer', () => {
 
       expect(drawerEl().getAttribute('data-position')).toBe(position);
     }
-  });
-
-  it('reflects roundedCorners on data-rounded-corners', () => {
-    fixture.componentInstance.roundedCorners.set(false);
-    fixture.detectChanges();
-    expect(drawerEl().getAttribute('data-rounded-corners')).toBe('false');
-
-    fixture.componentInstance.roundedCorners.set(true);
-    fixture.detectChanges();
-    expect(drawerEl().getAttribute('data-rounded-corners')).toBe('true');
   });
 
   it('does not close when the drawer host is clicked', () => {
