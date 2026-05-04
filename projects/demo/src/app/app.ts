@@ -6,8 +6,13 @@ import { BetterDrawer } from 'better-drawer';
   selector: 'app-root',
   imports: [RouterOutlet, BetterDrawer],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('demo');
+
+  protected readonly leftOpen = signal(false);
+  protected readonly rightOpen = signal(false);
+  protected readonly topOpen = signal(false);
+  protected readonly bottomOpen = signal(false);
 }
