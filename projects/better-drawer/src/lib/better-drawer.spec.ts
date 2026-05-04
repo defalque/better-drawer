@@ -1,7 +1,7 @@
 import { Component, model, provideZonelessChangeDetection, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BetterDrawer, BetterDrawerOverlay } from './better-drawer';
+import { BetterDrawer, BetterDrawerOverlay, BetterDrawerTitle } from './better-drawer';
 import { BetterDrawerPosition } from './better-drawer.types';
 
 @Component({
@@ -15,9 +15,10 @@ class OverlayHostComponent {
 
 @Component({
   standalone: true,
-  imports: [BetterDrawer],
+  imports: [BetterDrawer, BetterDrawerTitle],
   template: `
     <aside bdDrawer [(open)]="drawerOpen" [position]="position()">
+      <h2 bdDrawerTitle data-testid="drawer-heading">Title</h2>
       <span data-testid="projected">drawer body</span>
     </aside>
   `,
@@ -114,6 +115,14 @@ describe('BetterDrawer', () => {
 
   it('exposes role dialog on the host element', () => {
     expect(drawerEl().getAttribute('role')).toBe('dialog');
+  });
+
+  it('sets aria-labelledby to the bdDrawerTitle element id', () => {
+    const panel = drawerEl();
+    const heading = panel.querySelector('[data-testid="drawer-heading"]') as HTMLElement;
+
+    expect(heading.id).toMatch(/^bd-drawer-title-\d+$/);
+    expect(panel.getAttribute('aria-labelledby')).toBe(heading.id);
   });
 
   it('defaults position to left on data-position', () => {
