@@ -67,6 +67,11 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
   private readonly autoPanelId = `bd-drawer-panel-${++betterDrawerPanelSeq}`;
   readonly resolvedPanelId = computed(() => this.panelId() ?? this.autoPanelId);
   readonly resolvedControlsId = computed(() => this.controlsId() ?? this.resolvedPanelId());
+
+  /** Shared swipe progress (0..1); written by `bdDrawerContent`, read by `bdDrawerOverlay`. */
+  readonly swipeDismissProgress = signal(0);
+  /** Shared dragging flag; lets the overlay disable its opacity transition during the drag. */
+  readonly isDragging = signal(false);
 }
 
 @Component({
@@ -77,6 +82,8 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
   host: {
     '[attr.data-modal]': 'dataModalAttr()',
     '[attr.aria-hidden]': 'true',
+    '[style.opacity]': 'overlayOpacity()',
+    '[style.transition]': 'overlayTransition()',
     '(click)': 'close()',
     '(document:keydown.escape)': 'onEscape($event)',
     'animate.enter': 'overlay-enter',
@@ -101,6 +108,29 @@ export class BetterDrawerOverlay {
   protected readonly effectiveModal = computed(() => this.drawerRoot?.modal() ?? this.modal());
 
   protected readonly dataModalAttr = computed(() => (this.effectiveModal() ? 'true' : 'false'));
+
+  /**
+   * Inline opacity that mirrors `swipeDismissProgress` from the root while the
+   * user drags the drawer. Returns `null` outside drag activity so the CSS
+   * enter/leave classes own the rest of the lifecycle. Skipped for non-modal
+   * overlays, which always stay invisible.
+   */
+  protected readonly overlayOpacity = computed<number | null>(() => {
+    if (!this.drawerRoot || !this.effectiveModal()) {
+      return null;
+    }
+    const dragging = this.drawerRoot.isDragging();
+    const progress = this.drawerRoot.swipeDismissProgress();
+    if (!dragging && progress === 0) {
+      return null;
+    }
+    return Math.max(0, 1 - progress);
+  });
+
+  /** Disables the opacity transition while dragging so the backdrop tracks the finger 1:1. */
+  protected readonly overlayTransition = computed<string | null>(() =>
+    this.drawerRoot?.isDragging() ? 'none' : null,
+  );
 
   /** Collapses the drawer and hides the backdrop (overlay click). */
   protected close(): void {
@@ -284,10 +314,27 @@ export class BetterDrawerContent {
   private startX = 0;
   private startY = 0;
   private pointerId = -1;
+  /** Drawer size along the swipe axis, captured on `pointerdown` to normalize swipe progress. */
+  private swipeSize = 0;
   private readonly dragStartThreshold = 0;
-  private readonly swipeCloseThreshold = 30;
+  /**
+   * Fraction of the drawer's swipe-axis size the user must drag past to dismiss.
+   * Combined with `swipeCloseMinPx` so very small drawers still need a meaningful drag.
+   */
+  private readonly swipeCloseFraction = 0.25;
+  /** Lower bound for the dismiss threshold, used when the fraction-based value would be too small. */
+  private readonly swipeCloseMinPx = 60;
 
   protected readonly swipeAxisAndSign = computed(() => swipeAxisAndSign(this.effectiveDirection()));
+
+  private setDragging(value: boolean) {
+    this.isDragging.set(value);
+    this.drawerRoot?.isDragging.set(value);
+  }
+
+  private setDismissProgress(value: number) {
+    this.drawerRoot?.swipeDismissProgress.set(value);
+  }
 
   /**
    * Starts tracking the pointer down event.
@@ -298,6 +345,9 @@ export class BetterDrawerContent {
     this.startX = event.clientX;
     this.startY = event.clientY;
     this.pointerId = event.pointerId;
+
+    const rect = this.host.nativeElement.getBoundingClientRect();
+    this.swipeSize = this.swipeAxisAndSign().axis === 'vertical' ? rect.height : rect.width;
   }
   /**
    * Updates the drawer position when the pointer moves.
@@ -308,8 +358,7 @@ export class BetterDrawerContent {
 
     const el = this.host.nativeElement;
     const { axis, positiveDismiss } = this.swipeAxisAndSign();
-    const raw =
-      axis === 'vertical' ? event.clientY - this.startY : event.clientX - this.startX;
+    const raw = axis === 'vertical' ? event.clientY - this.startY : event.clientX - this.startX;
     const dragDelta = positiveDismiss ? Math.max(0, raw) : Math.min(0, raw);
 
     if (!this.isDragging()) {
@@ -322,14 +371,17 @@ export class BetterDrawerContent {
             ? raw > 0
             : raw < 0;
       if (passed) {
-        this.isDragging.set(true);
+        this.setDragging(true);
         el.setPointerCapture(this.pointerId);
       }
       return;
     }
 
-    el.style.translate =
-      axis === 'vertical' ? `0 ${dragDelta}px` : `${dragDelta}px 0`;
+    el.style.translate = axis === 'vertical' ? `0 ${dragDelta}px` : `${dragDelta}px 0`;
+
+    if (this.swipeSize > 0) {
+      this.setDismissProgress(Math.min(1, Math.abs(dragDelta) / this.swipeSize));
+    }
   }
   /**
    * Ends tracking the pointer up event and dismisses the drawer if the pointer has moved beyond the swipe threshold.
@@ -338,7 +390,7 @@ export class BetterDrawerContent {
     this.tracking = false;
 
     if (!this.isDragging()) return;
-    this.isDragging.set(false);
+    this.setDragging(false);
 
     const el = this.host.nativeElement;
 
@@ -355,15 +407,19 @@ export class BetterDrawerContent {
 
     const { axis, positiveDismiss } = this.swipeAxisAndSign();
     const delta = axis === 'vertical' ? dy : dx;
-    const shouldDismiss = positiveDismiss
-      ? delta >= this.swipeCloseThreshold
-      : delta <= -this.swipeCloseThreshold;
+    const dismissThreshold = Math.max(
+      this.swipeCloseMinPx,
+      this.swipeSize * this.swipeCloseFraction,
+    );
+    const shouldDismiss = positiveDismiss ? delta >= dismissThreshold : delta <= -dismissThreshold;
 
     if (shouldDismiss) {
+      this.setDismissProgress(0);
       this.close();
     } else {
-      el.style.transition = 'translate 400ms ease';
+      el.style.transition = 'translate 500ms cubic-bezier(0.32, 0.72, 0, 1)';
       el.style.translate = '0 0';
+      this.setDismissProgress(0);
       const cleanup = () => {
         el.style.transition = '';
         el.style.translate = '';
@@ -379,10 +435,11 @@ export class BetterDrawerContent {
     this.tracking = false;
 
     if (!this.isDragging()) return;
-    this.isDragging.set(false);
+    this.setDragging(false);
 
     const el = this.host.nativeElement;
     el.style.translate = '';
+    this.setDismissProgress(0);
 
     try {
       el.releasePointerCapture(this.pointerId);
