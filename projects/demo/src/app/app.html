@@ -118,6 +118,73 @@
         </div>
       </div>
     </div>
+
+    <div class="grid gap-6">
+      <div class="space-y-2">
+        <h2 class="text-lg font-semibold tracking-tight">Other</h2>
+        <p class="text-sm text-zinc-700 dark:text-zinc-300">Other features of the drawer.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:flex flex-wrap gap-2">
+        <div
+          bdDrawerRoot
+          class="contents"
+          [(open)]="nonDismissibleOpen"
+          direction="bottom"
+          [dismissible]="false"
+        >
+          <button type="button" bdDrawerTrigger class="btn">Non-dismissible</button>
+          @if (nonDismissibleOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <div
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 h-[80%] lg:h-[280px]"
+            >
+              <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                <h2 bdDrawerTitle class="text-xl font-semibold text-zinc-950 dark:text-white">
+                  A non-dismissible drawer
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  For cases where your drawer has to be always visible.<br /><br />
+                  Nothing will close it unless you make it controlled and close it programmatically.
+                </p>
+                <button type="button" class="btn" (click)="nonDismissibleOpen.set(false)">
+                  Close drawer
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div
+          bdDrawerRoot
+          class="contents"
+          [(open)]="nonModalOpen"
+          direction="bottom"
+          [modal]="false"
+        >
+          <button type="button" bdDrawerTrigger class="btn">Non-modal</button>
+          @if (nonModalOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <div
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 h-[80%] lg:h-[280px]"
+            >
+              <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                <h2 bdDrawerTitle class="text-xl font-semibold text-zinc-950 dark:text-white">
+                  A non-modal drawer
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  The default behavior for the drawer is to restrict interactions to the dialog
+                  itself. This means that you can't interact with other content on the page.<br /><br />But
+                  sometimes you want to allow those interactions. Setting `modal` to `false` will
+                  let you scroll the page, click on other elements, etc.
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
   </div>
   <router-outlet />
 </main>

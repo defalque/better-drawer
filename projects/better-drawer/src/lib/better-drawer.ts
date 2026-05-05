@@ -59,6 +59,12 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
   readonly direction = input<BetterDrawerDirection>('left');
   /** When true (default), the overlay blocks the page and the dialog is aria-modal. */
   readonly modal = input<boolean>(true);
+  /**
+   * When false, overlay clicks, swipe-to-dismiss, and Escape do not close the drawer;
+   * update `[(open)]` from inside the panel (or otherwise) to close.
+   * @default true
+   */
+  readonly dismissible = input<boolean>(true);
   /** Optional DOM id for the dialog panel. When omitted, a stable auto id is assigned. */
   readonly panelId = input<string | undefined>(undefined);
   /** Optional id for trigger `aria-controls`. Defaults to the resolved dialog panel id. */
@@ -134,13 +140,21 @@ export class BetterDrawerOverlay {
 
   /** Collapses the drawer and hides the backdrop (overlay click). */
   protected close(): void {
-    (this.drawerRoot?.open ?? this.open).set(false);
+    const root = this.drawerRoot;
+    if (root && !root.dismissible()) {
+      return;
+    }
+    (root?.open ?? this.open).set(false);
   }
 
   /** Collapses the drawer (Escape while open). */
   protected onEscape(event: Event): void {
-    const isOpen = this.drawerRoot ? this.drawerRoot.open() : this.open();
+    const root = this.drawerRoot;
+    const isOpen = root ? root.open() : this.open();
     if (!isOpen) {
+      return;
+    }
+    if (root && !root.dismissible()) {
       return;
     }
     event.preventDefault();
@@ -275,6 +289,7 @@ export class BetterDrawerContent {
     () => this.drawerRoot?.direction() ?? this.direction(),
   );
   protected readonly effectiveModal = computed(() => this.drawerRoot?.modal() ?? this.modal());
+  protected readonly effectiveDismissible = computed(() => this.drawerRoot?.dismissible() ?? true);
   protected readonly ariaModalAttr = computed(() => (this.effectiveModal() ? 'true' : null));
 
   /** Optional DOM id when standalone; prefer `panelId` on `bdDrawerRoot` when rooted. */
@@ -300,8 +315,12 @@ export class BetterDrawerContent {
   }
 
   protected onEscape(event: Event): void {
-    const isOpen = this.drawerRoot ? this.drawerRoot.open() : this.open();
+    const root = this.drawerRoot;
+    const isOpen = root ? root.open() : this.open();
     if (!isOpen) {
+      return;
+    }
+    if (root && !root.dismissible()) {
       return;
     }
     event.preventDefault();
@@ -321,7 +340,7 @@ export class BetterDrawerContent {
    * Fraction of the drawer's swipe-axis size the user must drag past to dismiss.
    * Combined with `swipeCloseMinPx` so very small drawers still need a meaningful drag.
    */
-  private readonly swipeCloseFraction = 0.25;
+  private readonly swipeCloseFraction = 0.2;
   /** Lower bound for the dismiss threshold, used when the fraction-based value would be too small. */
   private readonly swipeCloseMinPx = 60;
 
@@ -341,6 +360,9 @@ export class BetterDrawerContent {
    * @param event - The pointer down event object.
    */
   onPointerDown(event: PointerEvent) {
+    if (!this.effectiveDismissible()) {
+      return;
+    }
     this.tracking = true;
     this.startX = event.clientX;
     this.startY = event.clientY;
@@ -417,7 +439,7 @@ export class BetterDrawerContent {
       this.setDismissProgress(0);
       this.close();
     } else {
-      el.style.transition = 'translate 500ms cubic-bezier(0.32, 0.72, 0, 1)';
+      el.style.transition = 'transform 500ms cubic-bezier(0.32, 0.72, 0, 1)';
       el.style.translate = '0 0';
       this.setDismissProgress(0);
       const cleanup = () => {

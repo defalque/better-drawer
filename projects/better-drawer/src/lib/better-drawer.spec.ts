@@ -166,6 +166,23 @@ class DrawerRootNonModalOverlayComponent {
   readonly drawerOpen = model(false);
 }
 
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" [dismissible]="false">
+      <div bdDrawerOverlay data-testid="overlay"></div>
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+        <button type="button" data-testid="close-inside" (click)="drawerOpen.set(false)">Close</button>
+      </aside>
+    </div>
+  `,
+})
+class DrawerRootNonDismissibleComponent {
+  readonly drawerOpen = model(false);
+}
+
 describe('BetterDrawerOverlay', () => {
   let fixture: ComponentFixture<OverlayHostComponent>;
 
@@ -507,5 +524,81 @@ describe('BetterDrawerRoot', () => {
 
     const overlay = fx.nativeElement.querySelector('[data-testid="overlay"]') as HTMLElement;
     expect(overlay.getAttribute('data-modal')).toBe('false');
+  });
+
+  it('does not close from overlay click or Escape when dismissible is false', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootNonDismissibleComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootNonDismissibleComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const overlay = fx.nativeElement.querySelector('[data-testid="overlay"]') as HTMLElement;
+    overlay.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+    fx.detectChanges();
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+  });
+
+  it('still closes when open is set from inside the panel while dismissible is false', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootNonDismissibleComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootNonDismissibleComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const closeBtn = fx.nativeElement.querySelector('[data-testid="close-inside"]') as HTMLElement;
+    closeBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('does not swipe-dismiss when dismissible is false', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootNonDismissibleComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootNonDismissibleComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+    const pid = 42;
+    panel.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        clientX: 200,
+        clientY: 120,
+        pointerId: pid,
+      }),
+    );
+    panel.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        clientX: -20,
+        clientY: 120,
+        pointerId: pid,
+      }),
+    );
+    panel.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: pid }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+    expect(panel.style.translate).toBe('');
   });
 });

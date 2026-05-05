@@ -29,4 +29,6 @@ export class App {
   protected readonly rightOpen = model(false);
   protected readonly topOpen = model(false);
   protected readonly bottomOpen = model(false);
+  protected readonly nonDismissibleOpen = model(false);
+  protected readonly nonModalOpen = model(false);
 }

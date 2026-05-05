@@ -1,9 +1,4 @@
-import {
-  InjectionToken,
-  type ModelSignal,
-  type Signal,
-  type WritableSignal,
-} from '@angular/core';
+import { InjectionToken, type ModelSignal, type Signal, type WritableSignal } from '@angular/core';
 import type { BetterDrawerDirection } from './better-drawer.types';
 
 /** Stateful API from `[bdDrawerRoot]` for `bdDrawerContent`, `bdDrawerOverlay`, and `bdDrawerTrigger`. */
@@ -11,6 +6,11 @@ export interface BetterDrawerRootContext {
   readonly open: ModelSignal<boolean>;
   readonly direction: Signal<BetterDrawerDirection>;
   readonly modal: Signal<boolean>;
+  /**
+   * When false, the drawer cannot be closed via overlay click, swipe-to-dismiss,
+   * or Escape; callers still close by updating `open` (for example a button inside the panel).
+   */
+  readonly dismissible: Signal<boolean>;
   readonly resolvedPanelId: Signal<string>;
   readonly resolvedControlsId: Signal<string>;
   /**
