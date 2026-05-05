@@ -1,13 +1,19 @@
 import { Component, model, provideZonelessChangeDetection, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BetterDrawer, BetterDrawerOverlay, BetterDrawerTitle } from './better-drawer';
-import { BetterDrawerPosition } from './better-drawer.types';
+import {
+  BetterDrawerContent,
+  BetterDrawerRoot,
+  BetterDrawerOverlay,
+  BetterDrawerTitle,
+  BetterDrawerTrigger,
+} from './better-drawer';
+import { BetterDrawerDirection } from './better-drawer.types';
 
 @Component({
   standalone: true,
   imports: [BetterDrawerOverlay],
-  template: `<div bdOverlay [(open)]="open"></div>`,
+  template: `<div bdDrawerOverlay [(open)]="open"></div>`,
 })
 class OverlayHostComponent {
   readonly open = model(false);
@@ -15,9 +21,9 @@ class OverlayHostComponent {
 
 @Component({
   standalone: true,
-  imports: [BetterDrawer, BetterDrawerTitle],
+  imports: [BetterDrawerContent, BetterDrawerTitle],
   template: `
-    <aside bdDrawer [(open)]="drawerOpen" [position]="position()">
+    <aside bdDrawerContent [(open)]="drawerOpen" [direction]="direction()">
       <h2 bdDrawerTitle data-testid="drawer-heading">Title</h2>
       <span data-testid="projected">drawer body</span>
     </aside>
@@ -25,7 +31,98 @@ class OverlayHostComponent {
 })
 class DrawerHostComponent {
   readonly drawerOpen = model(false);
-  readonly position = signal<BetterDrawerPosition>('left');
+  readonly direction = signal<BetterDrawerDirection>('left');
+}
+
+@Component({
+  imports: [BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <aside bdDrawerContent [(open)]="drawerOpen" panelId="fixed-panel-id">
+      <h2 bdDrawerTitle data-testid="drawer-heading">Title</h2>
+      <span data-testid="projected">drawer body</span>
+    </aside>
+  `,
+})
+class DrawerWithPanelIdHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  imports: [BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <aside bdDrawerContent [(open)]="drawerOpen" [modal]="true" [direction]="direction()">
+      <h2 bdDrawerTitle data-testid="drawer-heading">Title</h2>
+    </aside>
+  `,
+})
+class DrawerModalHostComponent {
+  readonly drawerOpen = model(false);
+  readonly direction = signal<BetterDrawerDirection>('left');
+}
+
+@Component({
+  imports: [BetterDrawerTrigger],
+  template: `
+    <button
+      bdDrawerTrigger
+      type="button"
+      [(open)]="drawerOpen"
+      data-testid="trigger"
+      [controlsId]="panelId()"
+    ></button>
+  `,
+})
+class TriggerOnlyHostComponent {
+  readonly drawerOpen = model(false);
+  readonly panelId = signal<string | undefined>('test-panel-id');
+}
+
+@Component({
+  imports: [BetterDrawerTrigger],
+  template: `
+    <button bdDrawerTrigger type="button" [(open)]="drawerOpen" [disabled]="true" data-testid="trigger"></button>
+  `,
+})
+class TriggerDisabledHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  imports: [BetterDrawerTrigger],
+  template: `<button bdDrawerTrigger type="button" [(open)]="drawerOpen" data-testid="trigger"></button>`,
+})
+class TriggerBareComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  imports: [BetterDrawerRoot, BetterDrawerTrigger, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen">
+      <button type="button" bdDrawerTrigger data-testid="trigger"></button>
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle data-testid="drawer-heading">Title</h2>
+      </aside>
+    </div>
+  `,
+})
+class DrawerGroupHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" direction="bottom">
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+      </aside>
+    </div>
+  `,
+})
+class DrawerGroupDirectionHostComponent {
+  readonly drawerOpen = model(false);
 }
 
 describe('BetterDrawerOverlay', () => {
@@ -33,7 +130,7 @@ describe('BetterDrawerOverlay', () => {
 
   function overlayHost(): HTMLElement {
     const el = fixture.nativeElement as HTMLElement;
-    return el.querySelector('[bdOverlay]') as HTMLElement;
+    return el.querySelector('[bdDrawerOverlay]') as HTMLElement;
   }
 
   beforeEach(async () => {
@@ -85,12 +182,12 @@ describe('BetterDrawerOverlay', () => {
   });
 });
 
-describe('BetterDrawer', () => {
+describe('BetterDrawerContent', () => {
   let fixture: ComponentFixture<DrawerHostComponent>;
 
   function drawerEl(): HTMLElement {
     const el = fixture.nativeElement as HTMLElement;
-    return el.querySelector('[bdDrawer]') as HTMLElement;
+    return el.querySelector('[bdDrawerContent]') as HTMLElement;
   }
 
   beforeEach(async () => {
@@ -125,18 +222,35 @@ describe('BetterDrawer', () => {
     expect(panel.getAttribute('aria-labelledby')).toBe(heading.id);
   });
 
-  it('defaults position to left on data-position', () => {
-    expect(drawerEl().getAttribute('data-position')).toBe('left');
+  it('sets a stable panel id for aria-controls linkage', () => {
+    expect(drawerEl().id).toMatch(/^bd-drawer-panel-\d+$/);
   });
 
-  it('reflects position input on data-position', () => {
-    const positions: BetterDrawerPosition[] = ['left', 'right', 'top', 'bottom'];
+  it('uses panelId input as the dialog host id when provided', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [DrawerWithPanelIdHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
 
-    for (const position of positions) {
-      fixture.componentInstance.position.set(position);
+    const idFixture = TestBed.createComponent(DrawerWithPanelIdHostComponent);
+    idFixture.detectChanges();
+    const panel = idFixture.nativeElement.querySelector('[bdDrawerContent]') as HTMLElement;
+    expect(panel.id).toBe('fixed-panel-id');
+  });
+
+  it('defaults direction to left on data-direction', () => {
+    expect(drawerEl().getAttribute('data-direction')).toBe('left');
+  });
+
+  it('reflects direction input on data-direction', () => {
+    const directions: BetterDrawerDirection[] = ['left', 'right', 'top', 'bottom'];
+
+    for (const direction of directions) {
+      fixture.componentInstance.direction.set(direction);
       fixture.detectChanges();
 
-      expect(drawerEl().getAttribute('data-position')).toBe(position);
+      expect(drawerEl().getAttribute('data-direction')).toBe(direction);
     }
   });
 
@@ -172,5 +286,136 @@ describe('BetterDrawer', () => {
     fixture.detectChanges();
 
     expect(fixture.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('sets aria-modal when modal is enabled', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [DrawerModalHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const modalFixture = TestBed.createComponent(DrawerModalHostComponent);
+    modalFixture.detectChanges();
+    expect(
+      modalFixture.nativeElement.querySelector('[bdDrawerContent]')?.getAttribute('aria-modal'),
+    ).toBe('true');
+  });
+});
+
+describe('BetterDrawerTrigger', () => {
+  it('reflects accessibility state from open and controlsId', async () => {
+    await TestBed.configureTestingModule({
+      imports: [TriggerOnlyHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const trigFixture = TestBed.createComponent(TriggerOnlyHostComponent);
+    trigFixture.detectChanges();
+
+    const button = trigFixture.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    expect(button.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(button.getAttribute('aria-controls')).toBe('test-panel-id');
+
+    trigFixture.componentInstance.drawerOpen.set(true);
+    trigFixture.detectChanges();
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('toggles bound open on click when enabled', async () => {
+    await TestBed.configureTestingModule({
+      imports: [TriggerOnlyHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const trigFixture = TestBed.createComponent(TriggerOnlyHostComponent);
+    trigFixture.detectChanges();
+
+    const button = trigFixture.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    trigFixture.detectChanges();
+    expect(trigFixture.componentInstance.drawerOpen()).toBe(true);
+
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    trigFixture.detectChanges();
+    expect(trigFixture.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('does not set aria-controls when controlsId is undefined', async () => {
+    await TestBed.configureTestingModule({
+      imports: [TriggerBareComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const trigFixture = TestBed.createComponent(TriggerBareComponent);
+    trigFixture.detectChanges();
+
+    const button = trigFixture.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    expect(button.hasAttribute('aria-controls')).toBe(false);
+  });
+
+  it('does not toggle open when disabled', async () => {
+    await TestBed.configureTestingModule({
+      imports: [TriggerDisabledHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const trigFixture = TestBed.createComponent(TriggerDisabledHostComponent);
+    trigFixture.detectChanges();
+
+    const button = trigFixture.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    trigFixture.detectChanges();
+    expect(trigFixture.componentInstance.drawerOpen()).toBe(false);
+  });
+});
+
+describe('BetterDrawerRoot', () => {
+  it('links trigger aria-controls to the drawer host id without manual panelId or controlsId', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerGroupHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerGroupHostComponent);
+    fx.detectChanges();
+
+    const trigger = fx.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+
+    expect(panel.id).toMatch(/^bd-drawer-panel-\d+$/);
+    expect(trigger.getAttribute('aria-controls')).toBe(panel.id);
+  });
+
+  it('routes open state through the group model on trigger clicks', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerGroupHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerGroupHostComponent);
+    fx.detectChanges();
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
+
+    const trigger = fx.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    trigger.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+  });
+
+  it('inherits direction input from bdDrawerRoot on the drawer host', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerGroupDirectionHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerGroupDirectionHostComponent);
+    fx.detectChanges();
+    expect(
+      (fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement).getAttribute(
+        'data-direction',
+      ),
+    ).toBe('bottom');
   });
 });

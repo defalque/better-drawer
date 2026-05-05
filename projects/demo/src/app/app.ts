@@ -1,18 +1,32 @@
-import { Component, signal } from '@angular/core';
+import { Component, model, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { BetterDrawer, BetterDrawerOverlay, BetterDrawerTitle } from 'better-drawer';
+import {
+  BetterDrawerContent,
+  BetterDrawerRoot,
+  BetterDrawerOverlay,
+  BetterDrawerTitle,
+  BetterDrawerTrigger,
+} from 'better-drawer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, BetterDrawer, BetterDrawerOverlay, BetterDrawerTitle],
+  imports: [
+    RouterOutlet,
+    BetterDrawerContent,
+    BetterDrawerRoot,
+    BetterDrawerOverlay,
+    BetterDrawerTitle,
+    BetterDrawerTrigger,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('demo');
 
-  protected readonly leftOpen = signal(false);
-  protected readonly rightOpen = signal(false);
-  protected readonly topOpen = signal(false);
-  protected readonly bottomOpen = signal(false);
+  /** Bound to `[bdDrawerRoot]` `[(open)]` for each demo drawer */
+  protected readonly leftOpen = model(false);
+  protected readonly rightOpen = model(false);
+  protected readonly topOpen = model(false);
+  protected readonly bottomOpen = model(false);
 }

@@ -1,98 +1,124 @@
-<main class="shell grid place-items-center bg-red-300 min-h-screen">
-  <div class="grid gap-12">
-    <div>
-      <h2 class="text-3xl font-bold">Better Drawer</h2>
-      <p>A playground for the better-drawer library.</p>
-    </div>
+<main class="main">
+  <div class="w-full sm:max-w-2xl space-y-22">
+    <header class="space-y-1 text-left">
+      <h1 class="text-4xl font-bold tracking-tight">Better Drawer</h1>
+    </header>
 
-    <div class="grid grid-cols-1 gap-50">
-      <button (click)="leftOpen.set(!leftOpen())" class="bg-blue-500 text-white p-2 rounded-md">
-        From left
-      </button>
-      @if (leftOpen()) {
-        <div bdOverlay [(open)]="leftOpen" class="bg-black/50"></div>
-        <aside
-          bdDrawer
-          [(open)]="leftOpen"
-          position="left"
-          class="bg-gray-100 fixed top-0 bottom-0 left-0 rounded-tr-xl rounded-br-xl"
-        >
-          <div class="p-4 grid gap-4 w-lg">
-            <h2 bdDrawerTitle class="text-2xl font-bold">Left Drawer</h2>
-            <p class="text-gray-600 text-pretty">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
-              sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
-              quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
-            </p>
-          </div>
-        </aside>
-      }
-
-      <button (click)="rightOpen.set(!rightOpen())" class="bg-blue-500 text-white p-2 rounded-md">
-        From right
-      </button>
-      @if (rightOpen()) {
-        <div bdOverlay [(open)]="rightOpen" class="bg-black/50"></div>
-        <aside
-          bdDrawer
-          [(open)]="rightOpen"
-          position="right"
-          class="bg-gray-100 fixed top-0 bottom-0 right-0 rounded-tl-xl rounded-bl-xl"
-        >
-          <div class="p-4 grid gap-4 max-w-sm">
-            <h2 bdDrawerTitle class="text-2xl font-bold">Right Drawer</h2>
-            <p class="text-gray-600 text-pretty">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
-              sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
-              quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
-            </p>
-          </div>
-        </aside>
-      }
-
-      <button (click)="topOpen.set(!topOpen())" class="bg-blue-500 text-white p-2 rounded-md">
-        From top
-      </button>
-      @if (topOpen()) {
-        <div bdOverlay [(open)]="topOpen" class="bg-black/50"></div>
-        <div
-          bdDrawer
-          [(open)]="topOpen"
-          position="top"
-          class="bg-gray-100 fixed top-0 left-0 right-0 rounded-b-xl"
-        >
-          <div class="p-4 grid gap-4 max-w-lg mx-auto">
-            <h2 bdDrawerTitle class="text-2xl font-bold">Top Drawer</h2>
-            <p class="text-gray-600 text-pretty">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
-              sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
-              quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
-            </p>
-          </div>
+    <div class="grid gap-6">
+      <div class="space-y-2">
+        <h2 class="text-lg font-semibold tracking-tight">Direction</h2>
+        <p class="text-sm text-zinc-700 dark:text-zinc-300">
+          You can customize the direction of the drawer you want to render.
+        </p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:flex flex-wrap gap-2">
+        <div bdDrawerRoot class="contents" [(open)]="leftOpen" direction="left">
+          <button type="button" bdDrawerTrigger class="btn">From left</button>
+          @if (leftOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <aside
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 left-0 rounded-tr-xl rounded-br-xl border-r border-zinc-200/50 dark:border-zinc-800/50"
+            >
+              <div class="p-4 grid gap-4 max-w-lg">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Left Drawer
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                  sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
+                  quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                </p>
+              </div>
+            </aside>
+          }
         </div>
-      }
 
-      <button (click)="bottomOpen.set(!bottomOpen())" class="bg-blue-500 text-white p-2 rounded-md">
-        From bottom
-      </button>
-      @if (bottomOpen()) {
-        <div bdOverlay [(open)]="bottomOpen" class="bg-black/50"></div>
-        <div
-          bdDrawer
-          [(open)]="bottomOpen"
-          position="bottom"
-          class="bg-gray-100 fixed bottom-0 left-0 right-0 rounded-t-xl"
-        >
-          <div class="p-4 grid gap-4 max-w-xl mx-auto">
-            <h2 bdDrawerTitle class="text-2xl font-bold">Bottom Drawer</h2>
-            <p class="text-gray-600 text-pretty">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
-              sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
-              quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
-            </p>
-          </div>
+        <div bdDrawerRoot class="contents" [(open)]="rightOpen" direction="right">
+          <button type="button" bdDrawerTrigger class="btn">From right</button>
+          @if (rightOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <aside
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 right-0 rounded-tl-xl rounded-bl-xl border-l border-zinc-200/50 dark:border-zinc-800/50"
+            >
+              <div class="p-4 grid gap-4 max-w-sm">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Right Drawer
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                  sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
+                  quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                </p>
+              </div>
+            </aside>
+          }
         </div>
-      }
+
+        <div bdDrawerRoot class="contents" [(open)]="topOpen" direction="top">
+          <button type="button" bdDrawerTrigger class="btn">From top</button>
+          @if (topOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <div
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 left-0 right-0 rounded-b-xl border-b border-zinc-200/50 dark:border-zinc-800/50"
+            >
+              <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Top Drawer
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                  sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
+                  quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div bdDrawerRoot class="contents" [(open)]="bottomOpen" direction="bottom">
+          <button type="button" bdDrawerTrigger class="btn">
+            From bottom
+          </button>
+          @if (bottomOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <div
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 h-[80%] lg:h-[320px]"
+            >
+              <div class="p-4 flex-1 overflow-y-auto">
+                <div class="space-y-4 max-w-lg mx-auto">
+                  <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                    Bottom Drawer
+                  </h2>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                    sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
+                    voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                  </p>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                    sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
+                    voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                  </p>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                    sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
+                    voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                  </p>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                    sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
+                    voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
     </div>
   </div>
   <router-outlet />

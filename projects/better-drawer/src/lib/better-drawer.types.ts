@@ -1,1 +1,1 @@
-export type BetterDrawerPosition = 'left' | 'right' | 'top' | 'bottom';
+export type BetterDrawerDirection = 'left' | 'right' | 'top' | 'bottom';
