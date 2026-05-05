@@ -14,3 +14,11 @@ html {
 .btn {
   @apply border grow bg-zinc-50 dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-800/80 text-[0.85rem] font-medium py-2.5 px-4 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all active:scale-95 cursor-pointer;
 }
+
+[bdDrawerContent] .btn {
+  @apply border-neutral-900 bg-neutral-900 text-white shadow-sm shadow-black/10  hover:bg-black hover:border-black dark:border-neutral-700 dark:bg-white/90 dark:text-black dark:shadow-black/35 dark:hover:bg-white/80 dark:hover:border-neutral-600 text-[17px] py-2;
+}
+
+[bdDrawerContent] .btn.btn-drawer-secondary {
+  @apply border-neutral-200 dark:border-neutral-800 bg-neutral-200 text-neutral-950 shadow-none hover:bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 text-base  text-[17px] py-2;
+}

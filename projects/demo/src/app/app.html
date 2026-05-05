@@ -62,12 +62,27 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 left-0 right-0 rounded-b-xl border-b border-zinc-200/50 dark:border-zinc-800/50"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 left-0 right-0 rounded-b-xl border-b border-zinc-200/50 dark:border-zinc-800/50 h-[50%] lg:h-[320px]"
             >
-              <div class="p-4 grid gap-4 max-w-lg mx-auto">
+              <div class="p-4 grid gap-4 max-w-lg mx-auto overflow-y-auto">
                 <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
                   Top Drawer
                 </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                  sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
+                  quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                </p>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                  sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
+                  quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                </p>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                  sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
+                  quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                </p>
                 <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
                   sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate
@@ -138,7 +153,7 @@
             <div bdDrawerOverlay class="bg-black/40"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[280px]"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-fit"
             >
               <div class="p-4 grid gap-4 max-w-lg mx-auto">
                 <h2 bdDrawerTitle class="text-xl font-semibold text-zinc-950 dark:text-white">
@@ -251,7 +266,11 @@
                   </div>
                   <div class="flex flex-wrap gap-2 pt-2">
                     <button type="submit" class="btn">Save</button>
-                    <button type="button" class="btn" (click)="formDrawerOpen.set(false)">
+                    <button
+                      type="button"
+                      class="btn btn-drawer-secondary"
+                      (click)="formDrawerOpen.set(false)"
+                    >
                       Cancel
                     </button>
                   </div>
@@ -278,6 +297,33 @@
                 </p>
               </div>
             </aside>
+          }
+        </div>
+
+        <div
+          bdDrawerRoot
+          class="contents"
+          [(open)]="hideBarOpen"
+          direction="bottom"
+          [hideBar]="true"
+        >
+          <button type="button" bdDrawerTrigger class="btn">Hide bar</button>
+          @if (hideBarOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <div
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10"
+            >
+              <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Hide handle bar
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  A drawer with the default handle bar hidden. <br />
+                  Set `[hideBar]="true"` on the drawer root to hide it.
+                </p>
+              </div>
+            </div>
           }
         </div>
       </div>

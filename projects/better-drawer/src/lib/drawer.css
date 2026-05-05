@@ -36,7 +36,7 @@
   transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-.span {
+.bar {
   border-radius: 9999px;
   width: 3rem;
   height: 0.375rem;

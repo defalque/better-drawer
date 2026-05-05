@@ -147,6 +147,21 @@ class DrawerGroupDirectionHostComponent {
 
 @Component({
   standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" direction="bottom" [hideBar]="true">
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+      </aside>
+    </div>
+  `,
+})
+class DrawerBottomHideBarHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
   imports: [BetterDrawerRoot, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle],
   template: `
     <div bdDrawerRoot [(open)]="drawerOpen">
@@ -563,6 +578,30 @@ describe('BetterDrawerRoot', () => {
         'data-direction',
       ),
     ).toBe('bottom');
+  });
+
+  it('renders the handle bar on bottom drawer by default', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerGroupDirectionHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerGroupDirectionHostComponent);
+    fx.detectChanges();
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+    expect(panel.querySelector('.bar')).not.toBeNull();
+  });
+
+  it('omits the handle bar when root hideBar is true', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerBottomHideBarHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerBottomHideBarHostComponent);
+    fx.detectChanges();
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+    expect(panel.querySelector('.bar')).toBeNull();
   });
 
   it('sets data-modal true on overlay by default when modal is true', async () => {

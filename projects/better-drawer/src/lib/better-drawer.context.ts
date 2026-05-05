@@ -22,6 +22,11 @@ export interface BetterDrawerRootContext {
   readonly swipeDismissProgress: WritableSignal<number>;
   /** True while the user is actively dragging the drawer past the start threshold. */
   readonly isDragging: WritableSignal<boolean>;
+  /**
+   * When true, omit the decorative pill handle (`.bar`) on `bdDrawerContent`
+   * for `top` / `bottom` drawers.
+   */
+  readonly hideBar: Signal<boolean>;
 }
 
 /** Provided by `[bdDrawerRoot]` as `useExisting`; omit when wiring pieces standalone. */

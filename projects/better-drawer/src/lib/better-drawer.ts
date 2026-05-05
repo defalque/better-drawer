@@ -69,6 +69,11 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
   readonly panelId = input<string | undefined>(undefined);
   /** Optional id for trigger `aria-controls`. Defaults to the resolved dialog panel id. */
   readonly controlsId = input<string | undefined>(undefined);
+  /**
+   * When true, the pill handle (`.bar`) is not rendered for `top` / `bottom` drawers.
+   * @default false
+   */
+  readonly hideBar = input<boolean>(false);
 
   private readonly autoPanelId = `bd-drawer-panel-${++betterDrawerPanelSeq}`;
   readonly resolvedPanelId = computed(() => this.panelId() ?? this.autoPanelId);
@@ -240,12 +245,12 @@ export class BetterDrawerTrigger {
   selector: '[bdDrawerContent]',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (effectiveDirection() === 'bottom') {
-      <div aria-hidden="true" class="span"></div>
+    @if (effectiveDirection() === 'bottom' && !effectiveHideBar()) {
+      <div aria-hidden="true" class="bar"></div>
     }
     <ng-content />
-    @if (effectiveDirection() === 'top') {
-      <div aria-hidden="true" class="span"></div>
+    @if (effectiveDirection() === 'top' && !effectiveHideBar()) {
+      <div aria-hidden="true" class="bar"></div>
     }
   `,
   styleUrl: './drawer.css',
@@ -289,8 +294,17 @@ export class BetterDrawerContent {
   readonly direction = input<BetterDrawerDirection>('left');
   /** When not inside `[bdDrawerRoot]`. @default `true` */
   readonly modal = input<boolean>(true);
+  /**
+   * When not inside `[bdDrawerRoot]`; otherwise use `hideBar` on `bdDrawerRoot`.
+   * Hides the pill handle for vertical drawers.
+   * @default `false`
+   */
+  readonly hideBar = input<boolean>(false);
   protected readonly effectiveDirection = computed(
     () => this.drawerRoot?.direction() ?? this.direction(),
+  );
+  protected readonly effectiveHideBar = computed(
+    () => this.drawerRoot?.hideBar() ?? this.hideBar(),
   );
   protected readonly effectiveModal = computed(() => this.drawerRoot?.modal() ?? this.modal());
   protected readonly effectiveDismissible = computed(() => this.drawerRoot?.dismissible() ?? true);
@@ -535,7 +549,9 @@ export class BetterDrawerContent {
   }
 
   private activeTouch(event: TouchEvent): Touch | undefined {
-    return Array.from(event.changedTouches).find((touch) => touch.identifier === this.touchIdentifier);
+    return Array.from(event.changedTouches).find(
+      (touch) => touch.identifier === this.touchIdentifier,
+    );
   }
 
   private hasScrolledSwipeContainer(target: EventTarget | null): boolean {
@@ -572,7 +588,9 @@ export class BetterDrawerContent {
       return false;
     }
 
-    return axis === 'vertical' ? el.scrollHeight > el.clientHeight : el.scrollWidth > el.clientWidth;
+    return axis === 'vertical'
+      ? el.scrollHeight > el.clientHeight
+      : el.scrollWidth > el.clientWidth;
   }
 
   private scrollOffsetOnSwipeAxis(el: HTMLElement): number {
