@@ -4,6 +4,7 @@
   z-index: 9999;
   overflow-y: auto;
   pointer-events: auto;
+  touch-action: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

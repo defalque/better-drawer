@@ -13,13 +13,33 @@ import {
   untracked,
 } from '@angular/core';
 import { BetterDrawerDirection } from './better-drawer.types';
-import {
-  BETTER_DRAWER_ROOT,
-  type BetterDrawerRootContext,
-} from './better-drawer.context';
+import { BETTER_DRAWER_ROOT, type BetterDrawerRootContext } from './better-drawer.context';
 
 let betterDrawerTitleSeq = 0;
 let betterDrawerPanelSeq = 0;
+
+type SwipeDismissAxis = 'vertical' | 'horizontal';
+
+function swipeAxisAndSign(position: BetterDrawerDirection): {
+  axis: SwipeDismissAxis;
+  /** When true, dismiss drag increases clientX/clientY from the pointer-down origin. */
+  positiveDismiss: boolean;
+} {
+  switch (position) {
+    case 'bottom':
+      return { axis: 'vertical', positiveDismiss: true };
+    case 'top':
+      return { axis: 'vertical', positiveDismiss: false };
+    case 'right':
+      return { axis: 'horizontal', positiveDismiss: true };
+    case 'left':
+      return { axis: 'horizontal', positiveDismiss: false };
+    default: {
+      const _exhaustive: never = position;
+      return _exhaustive;
+    }
+  }
+}
 
 /**
  * Single source of truth for open state and shared drawer options.
@@ -78,9 +98,7 @@ export class BetterDrawerOverlay {
    */
   readonly modal = input<boolean>(true);
 
-  protected readonly effectiveModal = computed(
-    () => this.drawerRoot?.modal() ?? this.modal(),
-  );
+  protected readonly effectiveModal = computed(() => this.drawerRoot?.modal() ?? this.modal());
 
   protected readonly dataModalAttr = computed(() => (this.effectiveModal() ? 'true' : 'false'));
 
@@ -198,6 +216,10 @@ export class BetterDrawerTrigger {
     '(document:keydown.escape)': 'onEscape($event)',
     'animate.enter': 'drawer-enter',
     'animate.leave': 'drawer-leave',
+    '(pointerdown)': 'onPointerDown($event)',
+    '(pointermove)': 'onPointerMove($event)',
+    '(pointerup)': 'onPointerUp()',
+    '(pointercancel)': 'onPointerCancel()',
   },
 })
 export class BetterDrawerContent {
@@ -254,5 +276,118 @@ export class BetterDrawerContent {
     }
     event.preventDefault();
     this.close();
+  }
+
+  /** True once the user has passed the drag threshold and is actively swiping. */
+  isDragging = signal(false);
+  private tracking = false;
+  private startX = 0;
+  private startY = 0;
+  private pointerId = -1;
+  private readonly dragStartThreshold = 0;
+  private readonly swipeCloseThreshold = 30;
+
+  protected readonly swipeAxisAndSign = computed(() => swipeAxisAndSign(this.effectiveDirection()));
+
+  /**
+   * Starts tracking the pointer down event.
+   * @param event - The pointer down event object.
+   */
+  onPointerDown(event: PointerEvent) {
+    this.tracking = true;
+    this.startX = event.clientX;
+    this.startY = event.clientY;
+    this.pointerId = event.pointerId;
+  }
+  /**
+   * Updates the drawer position when the pointer moves.
+   * @param event - The pointer move event object.
+   */
+  onPointerMove(event: PointerEvent) {
+    if (!this.tracking && !this.isDragging()) return;
+
+    const el = this.host.nativeElement;
+    const { axis, positiveDismiss } = this.swipeAxisAndSign();
+    const raw =
+      axis === 'vertical' ? event.clientY - this.startY : event.clientX - this.startX;
+    const dragDelta = positiveDismiss ? Math.max(0, raw) : Math.min(0, raw);
+
+    if (!this.isDragging()) {
+      const passed =
+        this.dragStartThreshold > 0
+          ? positiveDismiss
+            ? raw >= this.dragStartThreshold
+            : raw <= -this.dragStartThreshold
+          : positiveDismiss
+            ? raw > 0
+            : raw < 0;
+      if (passed) {
+        this.isDragging.set(true);
+        el.setPointerCapture(this.pointerId);
+      }
+      return;
+    }
+
+    el.style.translate =
+      axis === 'vertical' ? `0 ${dragDelta}px` : `${dragDelta}px 0`;
+  }
+  /**
+   * Ends tracking the pointer up event and dismisses the drawer if the pointer has moved beyond the swipe threshold.
+   */
+  onPointerUp() {
+    this.tracking = false;
+
+    if (!this.isDragging()) return;
+    this.isDragging.set(false);
+
+    const el = this.host.nativeElement;
+
+    const t = el.style.translate?.trim() ?? '';
+    const parts = t ? t.split(/\s+/) : [];
+    const dx = parseFloat(parts[0] ?? '0') || 0;
+    const dy = parseFloat(parts[1] ?? '0') || 0;
+
+    try {
+      el.releasePointerCapture(this.pointerId);
+    } catch {
+      /* pointer already released */
+    }
+
+    const { axis, positiveDismiss } = this.swipeAxisAndSign();
+    const delta = axis === 'vertical' ? dy : dx;
+    const shouldDismiss = positiveDismiss
+      ? delta >= this.swipeCloseThreshold
+      : delta <= -this.swipeCloseThreshold;
+
+    if (shouldDismiss) {
+      this.close();
+    } else {
+      el.style.transition = 'translate 400ms ease';
+      el.style.translate = '0 0';
+      const cleanup = () => {
+        el.style.transition = '';
+        el.style.translate = '';
+      };
+      el.addEventListener('transitionend', cleanup, { once: true });
+      setTimeout(cleanup, 450);
+    }
+  }
+  /**
+   * Ends tracking the pointer cancel event and resets the drawer position.
+   */
+  onPointerCancel() {
+    this.tracking = false;
+
+    if (!this.isDragging()) return;
+    this.isDragging.set(false);
+
+    const el = this.host.nativeElement;
+    el.style.translate = '';
+
+    try {
+      el.releasePointerCapture(this.pointerId);
+    } catch {
+      /* pointer already released */
+    }
   }
 }
