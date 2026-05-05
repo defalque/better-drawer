@@ -89,7 +89,13 @@ class TriggerOnlyHostComponent {
 @Component({
   imports: [BetterDrawerTrigger],
   template: `
-    <button bdDrawerTrigger type="button" [(open)]="drawerOpen" [disabled]="true" data-testid="trigger"></button>
+    <button
+      bdDrawerTrigger
+      type="button"
+      [(open)]="drawerOpen"
+      [disabled]="true"
+      data-testid="trigger"
+    ></button>
   `,
 })
 class TriggerDisabledHostComponent {
@@ -98,7 +104,12 @@ class TriggerDisabledHostComponent {
 
 @Component({
   imports: [BetterDrawerTrigger],
-  template: `<button bdDrawerTrigger type="button" [(open)]="drawerOpen" data-testid="trigger"></button>`,
+  template: `<button
+    bdDrawerTrigger
+    type="button"
+    [(open)]="drawerOpen"
+    data-testid="trigger"
+  ></button>`,
 })
 class TriggerBareComponent {
   readonly drawerOpen = model(false);
@@ -174,13 +185,63 @@ class DrawerRootNonModalOverlayComponent {
       <div bdDrawerOverlay data-testid="overlay"></div>
       <aside bdDrawerContent data-testid="panel">
         <h2 bdDrawerTitle>Title</h2>
-        <button type="button" data-testid="close-inside" (click)="drawerOpen.set(false)">Close</button>
+        <button type="button" data-testid="close-inside" (click)="drawerOpen.set(false)">
+          Close
+        </button>
       </aside>
     </div>
   `,
 })
 class DrawerRootNonDismissibleComponent {
   readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" direction="bottom">
+      <aside bdDrawerContent data-testid="panel">
+        <section data-testid="scrollable" style="height: 100px; overflow-y: auto">
+          <h2 bdDrawerTitle>Title</h2>
+          <p>Scrollable content</p>
+        </section>
+      </aside>
+    </div>
+  `,
+})
+class DrawerRootWithScrollableContentComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" direction="right">
+      <aside bdDrawerContent data-testid="panel">
+        <section data-testid="scrollable" style="width: 100px; overflow-x: auto">
+          <h2 bdDrawerTitle>Title</h2>
+          <p style="width: 300px">Scrollable content</p>
+        </section>
+      </aside>
+    </div>
+  `,
+})
+class DrawerRootRightWithScrollableContentComponent {
+  readonly drawerOpen = model(false);
+}
+
+function touchEvent(
+  type: 'touchstart' | 'touchmove' | 'touchend' | 'touchcancel',
+  touch: Pick<Touch, 'identifier' | 'clientX' | 'clientY'>,
+): TouchEvent {
+  const event = new Event(type, { bubbles: true, cancelable: true }) as TouchEvent;
+  Object.defineProperty(event, 'touches', {
+    value: type === 'touchend' || type === 'touchcancel' ? [] : [touch],
+  });
+  Object.defineProperty(event, 'changedTouches', { value: [touch] });
+  return event;
 }
 
 describe('BetterDrawerOverlay', () => {
@@ -390,7 +451,9 @@ describe('BetterDrawerTrigger', () => {
     const trigFixture = TestBed.createComponent(TriggerOnlyHostComponent);
     trigFixture.detectChanges();
 
-    const button = trigFixture.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    const button = trigFixture.nativeElement.querySelector(
+      '[data-testid="trigger"]',
+    ) as HTMLElement;
     expect(button.getAttribute('aria-haspopup')).toBe('dialog');
     expect(button.getAttribute('aria-expanded')).toBe('false');
     expect(button.getAttribute('aria-controls')).toBe('test-panel-id');
@@ -409,7 +472,9 @@ describe('BetterDrawerTrigger', () => {
     const trigFixture = TestBed.createComponent(TriggerOnlyHostComponent);
     trigFixture.detectChanges();
 
-    const button = trigFixture.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    const button = trigFixture.nativeElement.querySelector(
+      '[data-testid="trigger"]',
+    ) as HTMLElement;
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     trigFixture.detectChanges();
     expect(trigFixture.componentInstance.drawerOpen()).toBe(true);
@@ -428,7 +493,9 @@ describe('BetterDrawerTrigger', () => {
     const trigFixture = TestBed.createComponent(TriggerBareComponent);
     trigFixture.detectChanges();
 
-    const button = trigFixture.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    const button = trigFixture.nativeElement.querySelector(
+      '[data-testid="trigger"]',
+    ) as HTMLElement;
     expect(button.hasAttribute('aria-controls')).toBe(false);
   });
 
@@ -441,7 +508,9 @@ describe('BetterDrawerTrigger', () => {
     const trigFixture = TestBed.createComponent(TriggerDisabledHostComponent);
     trigFixture.detectChanges();
 
-    const button = trigFixture.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    const button = trigFixture.nativeElement.querySelector(
+      '[data-testid="trigger"]',
+    ) as HTMLElement;
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     trigFixture.detectChanges();
     expect(trigFixture.componentInstance.drawerOpen()).toBe(false);
@@ -600,5 +669,98 @@ describe('BetterDrawerRoot', () => {
 
     expect(fx.componentInstance.drawerOpen()).toBe(true);
     expect(panel.style.translate).toBe('');
+  });
+
+  it('does not swipe-dismiss from content revealed by a scrolled container', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootWithScrollableContentComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootWithScrollableContentComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+    const scrollable = fx.nativeElement.querySelector('[data-testid="scrollable"]') as HTMLElement;
+    Object.defineProperty(scrollable, 'clientHeight', { configurable: true, value: 100 });
+    Object.defineProperty(scrollable, 'scrollHeight', { configurable: true, value: 300 });
+    scrollable.scrollTop = 80;
+
+    const pid = 42;
+    scrollable.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        clientX: 200,
+        clientY: 120,
+        pointerId: pid,
+      }),
+    );
+    scrollable.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        clientX: 200,
+        clientY: 220,
+        pointerId: pid,
+      }),
+    );
+    scrollable.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: pid }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+    expect(panel.style.translate).toBe('');
+  });
+
+  it('swipe-dismisses with touch from scrollable content when it is still at the top', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootWithScrollableContentComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootWithScrollableContentComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const scrollable = fx.nativeElement.querySelector('[data-testid="scrollable"]') as HTMLElement;
+    Object.defineProperty(scrollable, 'clientHeight', { configurable: true, value: 100 });
+    Object.defineProperty(scrollable, 'scrollHeight', { configurable: true, value: 300 });
+    scrollable.scrollTop = 0;
+
+    scrollable.dispatchEvent(touchEvent('touchstart', { identifier: 1, clientX: 200, clientY: 120 }));
+    const firstMove = touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 180 });
+    scrollable.dispatchEvent(firstMove);
+    scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 250 }));
+    scrollable.dispatchEvent(touchEvent('touchend', { identifier: 1, clientX: 200, clientY: 250 }));
+    fx.detectChanges();
+
+    expect(firstMove.defaultPrevented).toBe(true);
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('allows horizontal swipe-dismiss even when horizontal drawer content is scrolled', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootRightWithScrollableContentComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootRightWithScrollableContentComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const scrollable = fx.nativeElement.querySelector('[data-testid="scrollable"]') as HTMLElement;
+    Object.defineProperty(scrollable, 'clientWidth', { configurable: true, value: 100 });
+    Object.defineProperty(scrollable, 'scrollWidth', { configurable: true, value: 300 });
+    scrollable.scrollLeft = 80;
+
+    scrollable.dispatchEvent(touchEvent('touchstart', { identifier: 1, clientX: 120, clientY: 200 }));
+    scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 250, clientY: 200 }));
+    scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 290, clientY: 200 }));
+    scrollable.dispatchEvent(touchEvent('touchend', { identifier: 1, clientX: 250, clientY: 200 }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
   });
 });

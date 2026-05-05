@@ -264,6 +264,10 @@ export class BetterDrawerTrigger {
     '(pointermove)': 'onPointerMove($event)',
     '(pointerup)': 'onPointerUp()',
     '(pointercancel)': 'onPointerCancel()',
+    '(touchstart)': 'onTouchStart($event)',
+    '(touchmove)': 'onTouchMove($event)',
+    '(touchend)': 'onTouchEnd()',
+    '(touchcancel)': 'onTouchCancel()',
   },
 })
 export class BetterDrawerContent {
@@ -333,6 +337,7 @@ export class BetterDrawerContent {
   private startX = 0;
   private startY = 0;
   private pointerId = -1;
+  private touchIdentifier = -1;
   /** Drawer size along the swipe axis, captured on `pointerdown` to normalize swipe progress. */
   private swipeSize = 0;
   private readonly dragStartThreshold = 0;
@@ -360,13 +365,34 @@ export class BetterDrawerContent {
    * @param event - The pointer down event object.
    */
   onPointerDown(event: PointerEvent) {
+    if (event.pointerType === 'touch') {
+      return;
+    }
+    this.startSwipeTracking(event.target, event.clientX, event.clientY);
+    this.pointerId = event.pointerId;
+    this.touchIdentifier = -1;
+  }
+
+  protected onTouchStart(event: TouchEvent) {
+    if (event.touches.length !== 1) {
+      return;
+    }
+    const touch = event.touches[0];
+    this.startSwipeTracking(event.target, touch.clientX, touch.clientY);
+    this.pointerId = -1;
+    this.touchIdentifier = touch.identifier;
+  }
+
+  private startSwipeTracking(target: EventTarget | null, clientX: number, clientY: number) {
     if (!this.effectiveDismissible()) {
       return;
     }
+    if (this.hasScrolledSwipeContainer(target)) {
+      return;
+    }
     this.tracking = true;
-    this.startX = event.clientX;
-    this.startY = event.clientY;
-    this.pointerId = event.pointerId;
+    this.startX = clientX;
+    this.startY = clientY;
 
     const rect = this.host.nativeElement.getBoundingClientRect();
     this.swipeSize = this.swipeAxisAndSign().axis === 'vertical' ? rect.height : rect.width;
@@ -376,11 +402,28 @@ export class BetterDrawerContent {
    * @param event - The pointer move event object.
    */
   onPointerMove(event: PointerEvent) {
-    if (!this.tracking && !this.isDragging()) return;
+    if (event.pointerType === 'touch') {
+      return;
+    }
+    this.updateSwipeTracking(event.clientX, event.clientY);
+  }
+
+  protected onTouchMove(event: TouchEvent) {
+    const touch = this.activeTouch(event);
+    if (!touch) {
+      return;
+    }
+    if (this.updateSwipeTracking(touch.clientX, touch.clientY)) {
+      event.preventDefault();
+    }
+  }
+
+  private updateSwipeTracking(clientX: number, clientY: number): boolean {
+    if (!this.tracking && !this.isDragging()) return false;
 
     const el = this.host.nativeElement;
     const { axis, positiveDismiss } = this.swipeAxisAndSign();
-    const raw = axis === 'vertical' ? event.clientY - this.startY : event.clientX - this.startX;
+    const raw = axis === 'vertical' ? clientY - this.startY : clientX - this.startX;
     const dragDelta = positiveDismiss ? Math.max(0, raw) : Math.min(0, raw);
 
     if (!this.isDragging()) {
@@ -394,9 +437,11 @@ export class BetterDrawerContent {
             : raw < 0;
       if (passed) {
         this.setDragging(true);
-        el.setPointerCapture(this.pointerId);
+        if (this.pointerId >= 0) {
+          el.setPointerCapture(this.pointerId);
+        }
       }
-      return;
+      return passed;
     }
 
     el.style.translate = axis === 'vertical' ? `0 ${dragDelta}px` : `${dragDelta}px 0`;
@@ -404,12 +449,22 @@ export class BetterDrawerContent {
     if (this.swipeSize > 0) {
       this.setDismissProgress(Math.min(1, Math.abs(dragDelta) / this.swipeSize));
     }
+    return true;
   }
   /**
    * Ends tracking the pointer up event and dismisses the drawer if the pointer has moved beyond the swipe threshold.
    */
   onPointerUp() {
+    this.endSwipeTracking();
+  }
+
+  protected onTouchEnd() {
+    this.endSwipeTracking();
+  }
+
+  private endSwipeTracking() {
     this.tracking = false;
+    this.touchIdentifier = -1;
 
     if (!this.isDragging()) return;
     this.setDragging(false);
@@ -439,7 +494,7 @@ export class BetterDrawerContent {
       this.setDismissProgress(0);
       this.close();
     } else {
-      el.style.transition = 'transform 500ms cubic-bezier(0.32, 0.72, 0, 1)';
+      el.style.transition = 'translate 500ms cubic-bezier(0.32, 0.72, 0, 1)';
       el.style.translate = '0 0';
       this.setDismissProgress(0);
       const cleanup = () => {
@@ -454,7 +509,16 @@ export class BetterDrawerContent {
    * Ends tracking the pointer cancel event and resets the drawer position.
    */
   onPointerCancel() {
+    this.cancelSwipeTracking();
+  }
+
+  protected onTouchCancel() {
+    this.cancelSwipeTracking();
+  }
+
+  private cancelSwipeTracking() {
     this.tracking = false;
+    this.touchIdentifier = -1;
 
     if (!this.isDragging()) return;
     this.setDragging(false);
@@ -468,5 +532,50 @@ export class BetterDrawerContent {
     } catch {
       /* pointer already released */
     }
+  }
+
+  private activeTouch(event: TouchEvent): Touch | undefined {
+    return Array.from(event.changedTouches).find((touch) => touch.identifier === this.touchIdentifier);
+  }
+
+  private hasScrolledSwipeContainer(target: EventTarget | null): boolean {
+    if (this.swipeAxisAndSign().axis !== 'vertical') {
+      return false;
+    }
+    if (!(target instanceof HTMLElement)) {
+      return false;
+    }
+
+    const host = this.host.nativeElement;
+    for (let el: HTMLElement | null = target; el && host.contains(el); el = el.parentElement) {
+      if (!this.isScrollableOnSwipeAxis(el)) {
+        continue;
+      }
+      if (this.scrollOffsetOnSwipeAxis(el) > 0) {
+        return true;
+      }
+      if (el === host) {
+        break;
+      }
+    }
+
+    return false;
+  }
+
+  private isScrollableOnSwipeAxis(el: HTMLElement): boolean {
+    const { axis } = this.swipeAxisAndSign();
+    const style = getComputedStyle(el);
+    const overflow = axis === 'vertical' ? style.overflowY : style.overflowX;
+    const allowsScroll = overflow === 'auto' || overflow === 'scroll' || overflow === 'overlay';
+
+    if (!allowsScroll) {
+      return false;
+    }
+
+    return axis === 'vertical' ? el.scrollHeight > el.clientHeight : el.scrollWidth > el.clientWidth;
+  }
+
+  private scrollOffsetOnSwipeAxis(el: HTMLElement): number {
+    return this.swipeAxisAndSign().axis === 'vertical' ? el.scrollTop : el.scrollLeft;
   }
 }

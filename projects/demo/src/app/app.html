@@ -124,6 +124,7 @@
         <h2 class="text-lg font-semibold tracking-tight">Other</h2>
         <p class="text-sm text-zinc-700 dark:text-zinc-300">Other features of the drawer.</p>
       </div>
+
       <div class="grid sm:grid-cols-2 lg:flex flex-wrap gap-2">
         <div
           bdDrawerRoot
@@ -134,10 +135,10 @@
         >
           <button type="button" bdDrawerTrigger class="btn">Non-dismissible</button>
           @if (nonDismissibleOpen()) {
-            <div bdDrawerOverlay class="bg-black/50"></div>
+            <div bdDrawerOverlay class="bg-black/40"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 h-[80%] lg:h-[280px]"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[280px]"
             >
               <div class="p-4 grid gap-4 max-w-lg mx-auto">
                 <h2 bdDrawerTitle class="text-xl font-semibold text-zinc-950 dark:text-white">
@@ -167,7 +168,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 h-[80%] lg:h-[280px]"
+              class="bg-zinc-100 dark:bg-zinc-950 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/10 dark:ring-white/5 h-[280px]"
             >
               <div class="p-4 grid gap-4 max-w-lg mx-auto">
                 <h2 bdDrawerTitle class="text-xl font-semibold text-zinc-950 dark:text-white">
@@ -181,6 +182,102 @@
                 </p>
               </div>
             </div>
+          }
+        </div>
+
+        <div bdDrawerRoot class="contents" [(open)]="formDrawerOpen" direction="bottom">
+          <button type="button" bdDrawerTrigger class="btn">Form inputs</button>
+          @if (formDrawerOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <aside
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 w-full overflow-y-auto"
+            >
+              <div class="p-4 grid gap-6 max-w-lg mx-auto overflow-auto">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Edit profile
+                </h2>
+                <p class="text-sm text-zinc-600 dark:text-zinc-400 text-pretty">
+                  Typical fields inside a drawer: focus order, scrolling, and closing behavior
+                  should still feel natural.
+                </p>
+                <form class="grid gap-4" (submit)="$event.preventDefault()">
+                  <div class="grid gap-1.5">
+                    <label
+                      for="demo-name"
+                      class="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+                    >
+                      Name
+                    </label>
+                    <input
+                      id="demo-name"
+                      name="name"
+                      type="text"
+                      autocomplete="name"
+                      placeholder="Ada Lovelace"
+                      class="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-950 shadow-sm outline-none ring-zinc-400 placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 md:text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-500 dark:focus:ring-zinc-600"
+                    />
+                  </div>
+                  <div class="grid gap-1.5">
+                    <label
+                      for="demo-email"
+                      class="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+                    >
+                      Email
+                    </label>
+                    <input
+                      id="demo-email"
+                      name="email"
+                      type="email"
+                      autocomplete="email"
+                      placeholder="you@example.com"
+                      class="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-950 shadow-sm outline-none ring-zinc-400 placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 md:text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-500 dark:focus:ring-zinc-600"
+                    />
+                  </div>
+                  <div class="grid gap-1.5">
+                    <label
+                      for="demo-notes"
+                      class="text-sm font-medium text-zinc-900 dark:text-zinc-100"
+                    >
+                      Notes
+                    </label>
+                    <textarea
+                      id="demo-notes"
+                      name="notes"
+                      rows="4"
+                      placeholder="Anything we should know?"
+                      class="resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2 text-base text-zinc-950 shadow-sm outline-none ring-zinc-400 placeholder:text-zinc-400 focus:border-zinc-400 focus:ring-2 md:text-sm dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-zinc-500 dark:focus:ring-zinc-600"
+                    ></textarea>
+                  </div>
+                  <div class="flex flex-wrap gap-2 pt-2">
+                    <button type="submit" class="btn">Save</button>
+                    <button type="button" class="btn" (click)="formDrawerOpen.set(false)">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </aside>
+          }
+        </div>
+
+        <div bdDrawerRoot class="contents" [(open)]="floatingOpen" direction="left">
+          <button type="button" bdDrawerTrigger class="btn">Floating</button>
+          @if (floatingOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <aside
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-2 bottom-2 left-2 rounded-2xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10"
+            >
+              <div class="p-4 grid gap-4 max-w-xs md:max-w-sm">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Floating Drawer
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  A floating drawer is a drawer that is not attached to the edge of the screen.
+                </p>
+              </div>
+            </aside>
           }
         </div>
       </div>

@@ -31,4 +31,6 @@ export class App {
   protected readonly bottomOpen = model(false);
   protected readonly nonDismissibleOpen = model(false);
   protected readonly nonModalOpen = model(false);
+  protected readonly formDrawerOpen = model(false);
+  protected readonly floatingOpen = model(false);
 }
