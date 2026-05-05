@@ -567,7 +567,7 @@ export class BetterDrawerContent {
       if (!this.isScrollableOnSwipeAxis(el)) {
         continue;
       }
-      if (this.scrollOffsetOnSwipeAxis(el) > 0) {
+      if (this.canScrollInDismissDirection(el)) {
         return true;
       }
       if (el === host) {
@@ -593,7 +593,11 @@ export class BetterDrawerContent {
       : el.scrollWidth > el.clientWidth;
   }
 
-  private scrollOffsetOnSwipeAxis(el: HTMLElement): number {
-    return this.swipeAxisAndSign().axis === 'vertical' ? el.scrollTop : el.scrollLeft;
+  private canScrollInDismissDirection(el: HTMLElement): boolean {
+    const { positiveDismiss } = this.swipeAxisAndSign();
+    const maxScroll = Math.max(0, el.scrollHeight - el.clientHeight);
+    const boundaryTolerance = 1;
+
+    return positiveDismiss ? el.scrollTop > 0 : el.scrollTop < maxScroll - boundaryTolerance;
   }
 }

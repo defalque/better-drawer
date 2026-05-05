@@ -233,6 +233,24 @@ class DrawerRootWithScrollableContentComponent {
   standalone: true,
   imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle],
   template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" direction="top">
+      <aside bdDrawerContent data-testid="panel">
+        <section data-testid="scrollable" style="height: 100px; overflow-y: auto">
+          <h2 bdDrawerTitle>Title</h2>
+          <p>Scrollable content</p>
+        </section>
+      </aside>
+    </div>
+  `,
+})
+class DrawerRootTopWithScrollableContentComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle],
+  template: `
     <div bdDrawerRoot [(open)]="drawerOpen" direction="right">
       <aside bdDrawerContent data-testid="panel">
         <section data-testid="scrollable" style="width: 100px; overflow-x: auto">
@@ -725,7 +743,7 @@ describe('BetterDrawerRoot', () => {
     const scrollable = fx.nativeElement.querySelector('[data-testid="scrollable"]') as HTMLElement;
     Object.defineProperty(scrollable, 'clientHeight', { configurable: true, value: 100 });
     Object.defineProperty(scrollable, 'scrollHeight', { configurable: true, value: 300 });
-    scrollable.scrollTop = 80;
+    Object.defineProperty(scrollable, 'scrollTop', { configurable: true, value: 80 });
 
     const pid = 42;
     scrollable.dispatchEvent(
@@ -772,6 +790,59 @@ describe('BetterDrawerRoot', () => {
     scrollable.dispatchEvent(firstMove);
     scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 250 }));
     scrollable.dispatchEvent(touchEvent('touchend', { identifier: 1, clientX: 200, clientY: 250 }));
+    fx.detectChanges();
+
+    expect(firstMove.defaultPrevented).toBe(true);
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('does not swipe-dismiss a top drawer while scrollable content can still scroll down', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootTopWithScrollableContentComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootTopWithScrollableContentComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+    const scrollable = fx.nativeElement.querySelector('[data-testid="scrollable"]') as HTMLElement;
+    Object.defineProperty(scrollable, 'clientHeight', { configurable: true, value: 100 });
+    Object.defineProperty(scrollable, 'scrollHeight', { configurable: true, value: 300 });
+    scrollable.scrollTop = 80;
+
+    scrollable.dispatchEvent(touchEvent('touchstart', { identifier: 1, clientX: 200, clientY: 250 }));
+    scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 120 }));
+    scrollable.dispatchEvent(touchEvent('touchend', { identifier: 1, clientX: 200, clientY: 120 }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+    expect(panel.style.translate).toBe('');
+  });
+
+  it('swipe-dismisses a top drawer from scrollable content when it is at the bottom', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootTopWithScrollableContentComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootTopWithScrollableContentComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const scrollable = fx.nativeElement.querySelector('[data-testid="scrollable"]') as HTMLElement;
+    Object.defineProperty(scrollable, 'clientHeight', { configurable: true, value: 100 });
+    Object.defineProperty(scrollable, 'scrollHeight', { configurable: true, value: 300 });
+    Object.defineProperty(scrollable, 'scrollTop', { configurable: true, value: 200 });
+
+    scrollable.dispatchEvent(touchEvent('touchstart', { identifier: 1, clientX: 200, clientY: 250 }));
+    const firstMove = touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 180 });
+    scrollable.dispatchEvent(firstMove);
+    scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 90 }));
+    scrollable.dispatchEvent(touchEvent('touchend', { identifier: 1, clientX: 200, clientY: 90 }));
     fx.detectChanges();
 
     expect(firstMove.defaultPrevented).toBe(true);
