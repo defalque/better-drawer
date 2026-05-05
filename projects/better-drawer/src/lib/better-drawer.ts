@@ -37,8 +37,8 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
   readonly open = model(false);
   /** Slide direction for the drawer. @default `left` */
   readonly direction = input<BetterDrawerDirection>('left');
-  /** Whether the drawer is modal */
-  readonly modal = input<boolean>(false);
+  /** When true (default), the overlay blocks the page and the dialog is aria-modal. */
+  readonly modal = input<boolean>(true);
   /** Optional DOM id for the dialog panel. When omitted, a stable auto id is assigned. */
   readonly panelId = input<string | undefined>(undefined);
   /** Optional id for trigger `aria-controls`. Defaults to the resolved dialog panel id. */
@@ -55,6 +55,7 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
   template: '',
   styleUrl: './overlay.css',
   host: {
+    '[attr.data-modal]': 'dataModalAttr()',
     '[attr.aria-hidden]': 'true',
     '(click)': 'close()',
     '(document:keydown.escape)': 'onEscape($event)',
@@ -70,6 +71,18 @@ export class BetterDrawerOverlay {
    * Inside a root, use `[(open)]` on `bdDrawerRoot` instead.
    */
   readonly open = model(false);
+
+  /**
+   * When not inside `[bdDrawerRoot]`. Matches root `modal` when rooted.
+   * @default `true`
+   */
+  readonly modal = input<boolean>(true);
+
+  protected readonly effectiveModal = computed(
+    () => this.drawerRoot?.modal() ?? this.modal(),
+  );
+
+  protected readonly dataModalAttr = computed(() => (this.effectiveModal() ? 'true' : 'false'));
 
   /** Collapses the drawer and hides the backdrop (overlay click). */
   protected close(): void {
@@ -204,8 +217,8 @@ export class BetterDrawerContent {
    * @default `left`.
    */
   readonly direction = input<BetterDrawerDirection>('left');
-  /** Whether the drawer is modal when not inside `[bdDrawerRoot]`. */
-  readonly modal = input<boolean>(false);
+  /** When not inside `[bdDrawerRoot]`. @default `true` */
+  readonly modal = input<boolean>(true);
   protected readonly effectiveDirection = computed(
     () => this.drawerRoot?.direction() ?? this.direction(),
   );

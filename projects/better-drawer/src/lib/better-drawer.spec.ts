@@ -50,14 +50,23 @@ class DrawerWithPanelIdHostComponent {
 @Component({
   imports: [BetterDrawerContent, BetterDrawerTitle],
   template: `
-    <aside bdDrawerContent [(open)]="drawerOpen" [modal]="true" [direction]="direction()">
+    <aside bdDrawerContent [(open)]="drawerOpen" [modal]="false" [direction]="direction()">
       <h2 bdDrawerTitle data-testid="drawer-heading">Title</h2>
     </aside>
   `,
 })
-class DrawerModalHostComponent {
+class DrawerNonModalHostComponent {
   readonly drawerOpen = model(false);
   readonly direction = signal<BetterDrawerDirection>('left');
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerOverlay],
+  template: `<div bdDrawerOverlay [(open)]="open" [modal]="false" data-testid="overlay"></div>`,
+})
+class OverlayNonModalHostComponent {
+  readonly open = model(false);
 }
 
 @Component({
@@ -125,6 +134,38 @@ class DrawerGroupDirectionHostComponent {
   readonly drawerOpen = model(false);
 }
 
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen">
+      <div bdDrawerOverlay data-testid="overlay"></div>
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+      </aside>
+    </div>
+  `,
+})
+class DrawerRootWithOverlayComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" [modal]="false">
+      <div bdDrawerOverlay data-testid="overlay"></div>
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+      </aside>
+    </div>
+  `,
+})
+class DrawerRootNonModalOverlayComponent {
+  readonly drawerOpen = model(false);
+}
+
 describe('BetterDrawerOverlay', () => {
   let fixture: ComponentFixture<OverlayHostComponent>;
 
@@ -180,6 +221,22 @@ describe('BetterDrawerOverlay', () => {
 
     expect(fixture.componentInstance.open()).toBe(false);
   });
+
+  it('sets data-modal false on overlay host when modal is false', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [OverlayNonModalHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const nonModalFx = TestBed.createComponent(OverlayNonModalHostComponent);
+    nonModalFx.detectChanges();
+    nonModalFx.componentInstance.open.set(true);
+    nonModalFx.detectChanges();
+
+    const el = nonModalFx.nativeElement.querySelector('[data-testid="overlay"]') as HTMLElement;
+    expect(el.getAttribute('data-modal')).toBe('false');
+  });
 });
 
 describe('BetterDrawerContent', () => {
@@ -212,6 +269,10 @@ describe('BetterDrawerContent', () => {
 
   it('exposes role dialog on the host element', () => {
     expect(drawerEl().getAttribute('role')).toBe('dialog');
+  });
+
+  it('defaults aria-modal to true on the panel', () => {
+    expect(drawerEl().getAttribute('aria-modal')).toBe('true');
   });
 
   it('sets aria-labelledby to the bdDrawerTitle element id', () => {
@@ -288,18 +349,17 @@ describe('BetterDrawerContent', () => {
     expect(fixture.componentInstance.drawerOpen()).toBe(false);
   });
 
-  it('sets aria-modal when modal is enabled', async () => {
+  it('omits aria-modal when modal is false', async () => {
     TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
-      imports: [DrawerModalHostComponent],
+      imports: [DrawerNonModalHostComponent],
       providers: [provideZonelessChangeDetection()],
     }).compileComponents();
 
-    const modalFixture = TestBed.createComponent(DrawerModalHostComponent);
-    modalFixture.detectChanges();
-    expect(
-      modalFixture.nativeElement.querySelector('[bdDrawerContent]')?.getAttribute('aria-modal'),
-    ).toBe('true');
+    const nonModalFx = TestBed.createComponent(DrawerNonModalHostComponent);
+    nonModalFx.detectChanges();
+    const panel = nonModalFx.nativeElement.querySelector('[bdDrawerContent]') as HTMLElement;
+    expect(panel.hasAttribute('aria-modal')).toBe(false);
   });
 });
 
@@ -417,5 +477,35 @@ describe('BetterDrawerRoot', () => {
         'data-direction',
       ),
     ).toBe('bottom');
+  });
+
+  it('sets data-modal true on overlay by default when modal is true', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootWithOverlayComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootWithOverlayComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const overlay = fx.nativeElement.querySelector('[data-testid="overlay"]') as HTMLElement;
+    expect(overlay.getAttribute('data-modal')).toBe('true');
+  });
+
+  it('sets data-modal false on overlay when root modal is false', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootNonModalOverlayComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootNonModalOverlayComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const overlay = fx.nativeElement.querySelector('[data-testid="overlay"]') as HTMLElement;
+    expect(overlay.getAttribute('data-modal')).toBe('false');
   });
 });

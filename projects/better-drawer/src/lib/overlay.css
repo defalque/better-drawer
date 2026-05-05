@@ -5,6 +5,14 @@
   z-index: 9998;
   transition: opacity 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
+
+/* Non-modal: no backdrop; pointer events pass through to the page. */
+:host([data-modal='false']),
+:host([data-modal='false'].overlay-enter),
+:host([data-modal='false'].overlay-leave) {
+  pointer-events: none;
+  opacity: 0;
+}
 :host(.overlay-enter) {
   opacity: 1;
 
