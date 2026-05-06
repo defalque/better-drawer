@@ -48,9 +48,7 @@
                 "input": "projects/demo/public"
               }
             ],
-            "styles": [
-              "projects/demo/src/styles.css"
-            ]
+            "styles": ["projects/demo/src/styles.css"]
           },
           "configurations": {
             "production": {
@@ -102,9 +100,7 @@
                 "input": "projects/demo/public"
               }
             ],
-            "styles": [
-              "projects/demo/src/styles.css"
-            ]
+            "styles": ["projects/demo/src/styles.css"]
           }
         }
       }
@@ -128,9 +124,15 @@
                 "input": "projects/website/public"
               }
             ],
-            "styles": [
-              "projects/website/src/styles.css"
-            ]
+            "styles": ["projects/website/src/styles.css"],
+            "server": "projects/website/src/main.server.ts",
+            "outputMode": "static",
+            "security": {
+              "allowedHosts": []
+            },
+            "ssr": {
+              "entry": "projects/website/src/server.ts"
+            }
           },
           "configurations": {
             "production": {
@@ -182,9 +184,7 @@
                 "input": "projects/website/public"
               }
             ],
-            "styles": [
-              "projects/website/src/styles.css"
-            ]
+            "styles": ["projects/website/src/styles.css"]
           }
         }
       }

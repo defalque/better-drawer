@@ -1,1 +1,142 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
+
+.landing-page-h2 {
+  @apply text-zinc-900 dark:text-zinc-100 text-lg font-medium;
+}
+
+.landing-page-paragraph {
+  @apply text-pretty;
+  @apply text-zinc-900/80 dark:text-zinc-50;
+}
+
+.landing-page-button {
+  @apply text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800/50 text-[0.85rem] py-2.5 rounded-md hover:bg-zinc-200/70 dark:hover:bg-zinc-800/50 bg-zinc-50 dark:bg-zinc-950/90 transition-all active:scale-95 cursor-pointer;
+}
+
+.landing-page-pre {
+  @apply bg-linear-to-tl from-white to-gray-100/50 dark:from-zinc-950/50 dark:to-zinc-950/50 border border-zinc-300/50 dark:border-zinc-800/80 rounded-md p-4 overflow-x-hidden;
+}
+
+.landing-page-code {
+  @apply block text-[13px] leading-6 whitespace-pre-wrap wrap-break-word font-mono;
+}
+
+.p-code-snippet {
+  @apply font-light text-[15px] text-black/70 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800/80 rounded-md px-2 py-0.5;
+}
+
+.toast-button {
+  @apply font-sans font-medium bg-white shadow-lg shadow-black/5 dark:shadow-black dark:bg-zinc-800/50 text-zinc-900 dark:text-zinc-100 cursor-pointer ring-1 ring-black/10 dark:ring-white/12  py-2 px-6 rounded-full text-sm active:scale-95 transition-transform;
+}
+
+.doc-container {
+  @apply flex max-w-2xl mx-auto flex-1 flex-col text-[17px];
+}
+
+.toc {
+  @apply sticky w-56 top-22 right-0 hidden h-full shrink-0 flex-col gap-2 text-sm font-medium xl:flex;
+}
+
+.active {
+  @apply text-zinc-800 dark:text-white bg-zinc-200/50 dark:bg-zinc-800/60;
+}
+
+.toast-type-demo-preview pre {
+  margin: 0;
+}
+
+.toast-type-demo-preview code.hljs {
+  display: block;
+  padding: 0;
+  background: transparent;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.code-snippet code.hljs {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  background: transparent;
+  color: var(--color-black);
+}
+html.dark .code-snippet code.hljs {
+  color: var(--color-white);
+}
+
+.hljs {
+  background: #000;
+  color: #e5e5e5;
+}
+
+.hljs-string,
+.hljs-doctag {
+  color: var(--color-zinc-600);
+}
+html.dark .hljs-string,
+html.dark .hljs-doctag {
+  color: var(--color-zinc-400);
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+  color: var(--color-zinc-800);
+  font-weight: 500;
+}
+html.dark .hljs-keyword,
+html.dark .hljs-selector-tag,
+html.dark .hljs-subst {
+  color: var(--color-zinc-300);
+}
+
+.hljs-meta,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: var(--color-black);
+}
+html.dark .hljs-meta,
+html.dark .hljs-selector-id,
+html.dark .hljs-selector-class {
+  color: var(--color-white);
+}
+
+.hljs-type,
+.hljs-built_in {
+  color: var(--color-zinc-500);
+  font-weight: 500;
+}
+html.dark .hljs-type,
+html.dark .hljs-built_in {
+  color: var(--color-zinc-300);
+}
+
+.hljs-title,
+.hljs-section {
+  color: var(--color-zinc-800);
+  font-weight: 600;
+}
+html.dark .hljs-title,
+html.dark .hljs-section {
+  color: var(--color-white);
+}
+
+.hljs-attr,
+.hljs-attribute {
+  color: var(--color-zinc-500);
+}
+html.dark .hljs-attr,
+html.dark .hljs-attribute {
+  color: var(--color-zinc-300);
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--color-zinc-500);
+  font-style: italic;
+}
+html.dark .hljs-comment,
+html.dark .hljs-quote {
+  color: var(--color-zinc-400);
+}
