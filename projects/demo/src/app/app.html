@@ -18,7 +18,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <aside
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 left-0 rounded-tr-xl rounded-br-xl border-r border-zinc-200/50 dark:border-zinc-800/50"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 left-0 rounded-tr-xl rounded-br-xl border-r border-zinc-200/50 dark:border-zinc-800/50 outline-none"
             >
               <div class="p-4 grid gap-4 max-w-lg">
                 <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
@@ -40,7 +40,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <aside
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 right-0 rounded-tl-xl rounded-bl-xl border-l border-zinc-200/50 dark:border-zinc-800/50"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 right-0 rounded-tl-xl rounded-bl-xl border-l border-zinc-200/50 dark:border-zinc-800/50 outline-none"
             >
               <div class="p-4 grid gap-4 max-w-sm">
                 <h2 class="text-2xl font-bold text-zinc-950 dark:text-white">Right Drawer</h2>
@@ -60,7 +60,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 left-0 right-0 rounded-b-xl border-b border-zinc-200/50 dark:border-zinc-800/50"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 left-0 right-0 rounded-b-xl border-b border-zinc-200/50 dark:border-zinc-800/50 outline-none"
             >
               <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">
                 <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
@@ -82,7 +82,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none"
             >
               <div class="p-4 flex-1 overflow-y-auto">
                 <div class="space-y-4 max-w-lg mx-auto">
@@ -94,6 +94,183 @@
                     sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
                     voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
                   </p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="grid gap-6">
+      <div class="space-y-2">
+        <h2 class="text-lg font-semibold tracking-tight">Nested drawers</h2>
+        <p class="text-sm text-zinc-700 dark:text-zinc-300">
+          Each outer drawer uses the same edge direction as its nested child. Inner stack sits above
+          with a higher z-index; swipe and Escape target the innermost panel first.
+        </p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:flex flex-wrap gap-2">
+        <div bdDrawerRoot class="contents" [(open)]="nestedLeftOuterOpen" direction="left">
+          <button type="button" bdDrawerTrigger class="btn">Nested left</button>
+          @if (nestedLeftOuterOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <aside
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 left-0 rounded-tr-xl rounded-br-xl border-r border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+            >
+              <div class="p-4 grid gap-4 max-w-lg">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Outer from left
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Open the inner drawer to stack another panel from the left.
+                </p>
+                <div bdDrawerRoot class="contents" [(open)]="nestedLeftInnerOpen" direction="left">
+                  <button type="button" bdDrawerTrigger class="btn">Open inner from left</button>
+                  @if (nestedLeftInnerOpen()) {
+                    <div bdDrawerOverlay class="bg-black/50"></div>
+                    <aside
+                      bdDrawerContent
+                      class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 left-0 max-w-[min(100%,22rem)] rounded-tr-xl rounded-br-xl border-r border-zinc-200/50 dark:border-zinc-800/50 shadow-xl outline-none"
+                    >
+                      <div class="p-4 grid gap-4">
+                        <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                          Inner from left
+                        </h2>
+                        <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                          Swipe or Escape closes this sheet before the outer left drawer.
+                        </p>
+                      </div>
+                    </aside>
+                  }
+                </div>
+              </div>
+            </aside>
+          }
+        </div>
+
+        <div bdDrawerRoot class="contents" [(open)]="nestedRightOuterOpen" direction="right">
+          <button type="button" bdDrawerTrigger class="btn">Nested right</button>
+          @if (nestedRightOuterOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <aside
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 right-0 rounded-tl-xl rounded-bl-xl border-l border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+            >
+              <div class="p-4 grid gap-4 max-w-lg">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Outer from right
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Open the inner drawer to stack another panel from the right.
+                </p>
+                <div
+                  bdDrawerRoot
+                  class="contents"
+                  [(open)]="nestedRightInnerOpen"
+                  direction="right"
+                >
+                  <button type="button" bdDrawerTrigger class="btn">Open inner from right</button>
+                  @if (nestedRightInnerOpen()) {
+                    <div bdDrawerOverlay class="bg-black/50"></div>
+                    <aside
+                      bdDrawerContent
+                      class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 bottom-0 right-0 max-w-[min(100%,22rem)] rounded-tl-xl rounded-bl-xl border-l border-zinc-200/50 dark:border-zinc-800/50 shadow-xl outline-none"
+                    >
+                      <div class="p-4 grid gap-4">
+                        <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                          Inner from right
+                        </h2>
+                        <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                          Swipe or Escape closes this sheet before the outer right drawer.
+                        </p>
+                      </div>
+                    </aside>
+                  }
+                </div>
+              </div>
+            </aside>
+          }
+        </div>
+
+        <div bdDrawerRoot class="contents" [(open)]="nestedTopOuterOpen" direction="top">
+          <button type="button" bdDrawerTrigger class="btn">Nested top</button>
+          @if (nestedTopOuterOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <div
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 left-0 right-0 rounded-b-xl border-b border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+            >
+              <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Outer from top
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Open the inner drawer to stack another panel from the top.
+                </p>
+                <div bdDrawerRoot class="contents" [(open)]="nestedTopInnerOpen" direction="top">
+                  <button type="button" bdDrawerTrigger class="btn">Open inner from top</button>
+                  @if (nestedTopInnerOpen()) {
+                    <div bdDrawerOverlay class="bg-black/50"></div>
+                    <div
+                      bdDrawerContent
+                      class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 left-0 right-0 max-h-[min(70dvh,20rem)] rounded-b-xl border-b border-zinc-200/50 dark:border-zinc-800/50 shadow-xl overflow-y-auto outline-none"
+                    >
+                      <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                        <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                          Inner from top
+                        </h2>
+                        <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                          Swipe or Escape closes this sheet before the outer top drawer.
+                        </p>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div bdDrawerRoot class="contents" [(open)]="nestedBottomOuterOpen" direction="bottom">
+          <button type="button" bdDrawerTrigger class="btn">Nested bottom</button>
+          @if (nestedBottomOuterOpen()) {
+            <div bdDrawerOverlay class="bg-black/50"></div>
+            <div
+              bdDrawerContent
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+            >
+              <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">
+                <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                  Outer from bottom
+                </h2>
+                <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                  Open the inner drawer to stack another panel from the bottom.
+                </p>
+                <div
+                  bdDrawerRoot
+                  class="contents"
+                  [(open)]="nestedBottomInnerOpen"
+                  direction="bottom"
+                >
+                  <button type="button" bdDrawerTrigger class="btn">Open inner from bottom</button>
+                  @if (nestedBottomInnerOpen()) {
+                    <div bdDrawerOverlay class="bg-black/50"></div>
+                    <div
+                      bdDrawerContent
+                      class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 max-h-[min(70dvh,20rem)] rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 shadow-xl overflow-y-auto outline-none"
+                    >
+                      <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                        <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                          Inner from bottom
+                        </h2>
+                        <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                          Swipe or Escape closes this sheet before the outer bottom drawer.
+                        </p>
+                      </div>
+                    </div>
+                  }
                 </div>
               </div>
             </div>
@@ -121,7 +298,7 @@
             <div bdDrawerOverlay class="bg-black/40"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-fit"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-fit outline-none"
             >
               <div class="p-4 grid gap-4 max-w-lg mx-auto">
                 <h2 bdDrawerTitle class="text-xl font-semibold text-zinc-950 dark:text-white">
@@ -151,7 +328,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-100 dark:bg-zinc-950 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/10 dark:ring-white/5 h-[280px]"
+              class="bg-zinc-100 dark:bg-zinc-950 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/10 dark:ring-white/5 h-[280px] outline-none"
             >
               <div class="p-4 grid gap-4 max-w-lg mx-auto">
                 <h2 bdDrawerTitle class="text-xl font-semibold text-zinc-950 dark:text-white">
@@ -174,7 +351,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <aside
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 w-full overflow-y-auto"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 w-full overflow-y-auto outline-none"
             >
               <div class="p-4 grid gap-6 max-w-lg mx-auto overflow-auto">
                 <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
@@ -254,7 +431,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <aside
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed top-2 bottom-2 left-2 rounded-2xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-2 bottom-2 left-2 rounded-2xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
             >
               <div class="p-4 grid gap-4 max-w-xs md:max-w-sm">
                 <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
@@ -280,7 +457,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px]"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px] outline-none"
             >
               <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">
                 <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
@@ -322,7 +499,7 @@
             <div bdDrawerOverlay class="bg-black/50"></div>
             <div
               bdDrawerContent
-              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 left-0 right-0 rounded-b-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px]"
+              class="bg-zinc-50 dark:bg-zinc-900 fixed top-0 left-0 right-0 rounded-b-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px] outline-none"
             >
               <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">
                 <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">

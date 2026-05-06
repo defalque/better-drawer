@@ -35,4 +35,14 @@ export class App {
   protected readonly floatingOpen = model(false);
   protected readonly hideBarOpen = model(false);
   protected readonly scrollableContentOpen = model(false);
+
+  /** Nested drawer demos: outer / inner `[(open)]` per direction */
+  protected readonly nestedLeftOuterOpen = model(false);
+  protected readonly nestedLeftInnerOpen = model(false);
+  protected readonly nestedRightOuterOpen = model(false);
+  protected readonly nestedRightInnerOpen = model(false);
+  protected readonly nestedTopOuterOpen = model(false);
+  protected readonly nestedTopInnerOpen = model(false);
+  protected readonly nestedBottomOuterOpen = model(false);
+  protected readonly nestedBottomInnerOpen = model(false);
 }

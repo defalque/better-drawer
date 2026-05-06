@@ -1,7 +1,7 @@
 :host {
   --better-drawer-closed-transform: translateX(100%);
 
-  z-index: 9999;
+  /* z-index is set inline from nesting depth so nested panels stack above parents */
   overflow-y: auto;
   pointer-events: auto;
   touch-action: none;

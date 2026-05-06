@@ -208,6 +208,33 @@ class DrawerRootNonModalOverlayComponent {
   standalone: true,
   imports: [BetterDrawerRoot, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle],
   template: `
+    <div bdDrawerRoot [(open)]="outerOpen">
+      @if (outerOpen()) {
+        <div data-testid="outer-overlay" bdDrawerOverlay></div>
+        <aside data-testid="outer-panel" bdDrawerContent direction="bottom">
+          <h2 bdDrawerTitle>Outer</h2>
+          <div bdDrawerRoot [(open)]="innerOpen">
+            @if (innerOpen()) {
+              <div data-testid="inner-overlay" bdDrawerOverlay></div>
+              <aside data-testid="inner-panel" bdDrawerContent direction="bottom">
+                <h2 bdDrawerTitle>Inner</h2>
+              </aside>
+            }
+          </div>
+        </aside>
+      }
+    </div>
+  `,
+})
+class NestedDrawersHostComponent {
+  readonly outerOpen = model(true);
+  readonly innerOpen = model(true);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle],
+  template: `
     <div bdDrawerRoot [(open)]="drawerOpen" [dismissible]="false">
       <div bdDrawerOverlay data-testid="overlay"></div>
       <aside bdDrawerContent data-testid="panel">
@@ -845,10 +872,14 @@ describe('BetterDrawerRoot', () => {
     Object.defineProperty(scrollable, 'scrollHeight', { configurable: true, value: 300 });
     scrollable.scrollTop = 0;
 
-    scrollable.dispatchEvent(touchEvent('touchstart', { identifier: 1, clientX: 200, clientY: 120 }));
+    scrollable.dispatchEvent(
+      touchEvent('touchstart', { identifier: 1, clientX: 200, clientY: 120 }),
+    );
     const firstMove = touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 180 });
     scrollable.dispatchEvent(firstMove);
-    scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 250 }));
+    scrollable.dispatchEvent(
+      touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 250 }),
+    );
     scrollable.dispatchEvent(touchEvent('touchend', { identifier: 1, clientX: 200, clientY: 250 }));
     fx.detectChanges();
 
@@ -873,8 +904,12 @@ describe('BetterDrawerRoot', () => {
     Object.defineProperty(scrollable, 'scrollHeight', { configurable: true, value: 300 });
     scrollable.scrollTop = 80;
 
-    scrollable.dispatchEvent(touchEvent('touchstart', { identifier: 1, clientX: 200, clientY: 250 }));
-    scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 120 }));
+    scrollable.dispatchEvent(
+      touchEvent('touchstart', { identifier: 1, clientX: 200, clientY: 250 }),
+    );
+    scrollable.dispatchEvent(
+      touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 120 }),
+    );
     scrollable.dispatchEvent(touchEvent('touchend', { identifier: 1, clientX: 200, clientY: 120 }));
     fx.detectChanges();
 
@@ -898,7 +933,9 @@ describe('BetterDrawerRoot', () => {
     Object.defineProperty(scrollable, 'scrollHeight', { configurable: true, value: 300 });
     Object.defineProperty(scrollable, 'scrollTop', { configurable: true, value: 200 });
 
-    scrollable.dispatchEvent(touchEvent('touchstart', { identifier: 1, clientX: 200, clientY: 250 }));
+    scrollable.dispatchEvent(
+      touchEvent('touchstart', { identifier: 1, clientX: 200, clientY: 250 }),
+    );
     const firstMove = touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 180 });
     scrollable.dispatchEvent(firstMove);
     scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 200, clientY: 90 }));
@@ -925,12 +962,165 @@ describe('BetterDrawerRoot', () => {
     Object.defineProperty(scrollable, 'scrollWidth', { configurable: true, value: 300 });
     scrollable.scrollLeft = 80;
 
-    scrollable.dispatchEvent(touchEvent('touchstart', { identifier: 1, clientX: 120, clientY: 200 }));
-    scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 250, clientY: 200 }));
-    scrollable.dispatchEvent(touchEvent('touchmove', { identifier: 1, clientX: 290, clientY: 200 }));
+    scrollable.dispatchEvent(
+      touchEvent('touchstart', { identifier: 1, clientX: 120, clientY: 200 }),
+    );
+    scrollable.dispatchEvent(
+      touchEvent('touchmove', { identifier: 1, clientX: 250, clientY: 200 }),
+    );
+    scrollable.dispatchEvent(
+      touchEvent('touchmove', { identifier: 1, clientX: 290, clientY: 200 }),
+    );
     scrollable.dispatchEvent(touchEvent('touchend', { identifier: 1, clientX: 250, clientY: 200 }));
     fx.detectChanges();
 
     expect(fx.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('stacks z-index so nested drawer overlay and panel sit above the parent', async () => {
+    await TestBed.configureTestingModule({
+      imports: [NestedDrawersHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(NestedDrawersHostComponent);
+    fx.detectChanges();
+
+    const outerPanel = fx.nativeElement.querySelector('[data-testid="outer-panel"]') as HTMLElement;
+    const innerPanel = fx.nativeElement.querySelector('[data-testid="inner-panel"]') as HTMLElement;
+    const outerOverlay = fx.nativeElement.querySelector(
+      '[data-testid="outer-overlay"]',
+    ) as HTMLElement;
+    const innerOverlay = fx.nativeElement.querySelector(
+      '[data-testid="inner-overlay"]',
+    ) as HTMLElement;
+
+    expect(parseInt(outerOverlay.style.zIndex, 10)).toBeLessThan(
+      parseInt(innerOverlay.style.zIndex, 10),
+    );
+    expect(parseInt(outerPanel.style.zIndex, 10)).toBeLessThan(
+      parseInt(innerPanel.style.zIndex, 10),
+    );
+    expect(parseInt(outerOverlay.style.zIndex, 10)).toBeLessThan(
+      parseInt(outerPanel.style.zIndex, 10),
+    );
+  });
+
+  it('does not swipe-track the outer panel when the nested panel is dragged', async () => {
+    await TestBed.configureTestingModule({
+      imports: [NestedDrawersHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(NestedDrawersHostComponent);
+    fx.detectChanges();
+
+    const outerPanel = fx.nativeElement.querySelector('[data-testid="outer-panel"]') as HTMLElement;
+    const innerPanel = fx.nativeElement.querySelector('[data-testid="inner-panel"]') as HTMLElement;
+    const innerHeading = innerPanel.querySelector('h2') as HTMLElement;
+    const mockRect = (): DOMRect =>
+      ({
+        width: 320,
+        height: 240,
+        top: 400,
+        left: 0,
+        right: 320,
+        bottom: 640,
+        x: 0,
+        y: 400,
+        toJSON() {
+          return {};
+        },
+      }) as DOMRect;
+    innerPanel.getBoundingClientRect = mockRect;
+
+    innerHeading.dispatchEvent(
+      touchEvent('touchstart', { identifier: 1, clientX: 160, clientY: 440 }),
+    );
+    innerHeading.dispatchEvent(
+      touchEvent('touchmove', { identifier: 1, clientX: 160, clientY: 460 }),
+    );
+    innerHeading.dispatchEvent(
+      touchEvent('touchmove', { identifier: 1, clientX: 160, clientY: 480 }),
+    );
+    innerHeading.dispatchEvent(
+      touchEvent('touchend', { identifier: 1, clientX: 160, clientY: 480 }),
+    );
+    fx.detectChanges();
+
+    expect(fx.componentInstance.outerOpen()).toBe(true);
+    expect(fx.componentInstance.innerOpen()).toBe(true);
+    expect(outerPanel.style.translate).toBe('');
+  });
+
+  it('does not swipe-track the outer panel when swiping outside the nested panel', async () => {
+    await TestBed.configureTestingModule({
+      imports: [NestedDrawersHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(NestedDrawersHostComponent);
+    fx.detectChanges();
+
+    const outerPanel = fx.nativeElement.querySelector('[data-testid="outer-panel"]') as HTMLElement;
+    const outerHeading = outerPanel.querySelector('h2') as HTMLElement;
+    const mockRect = (): DOMRect =>
+      ({
+        width: 320,
+        height: 400,
+        top: 100,
+        left: 0,
+        right: 320,
+        bottom: 500,
+        x: 0,
+        y: 100,
+        toJSON() {
+          return {};
+        },
+      }) as DOMRect;
+    outerPanel.getBoundingClientRect = mockRect;
+
+    outerHeading.dispatchEvent(
+      touchEvent('touchstart', { identifier: 1, clientX: 160, clientY: 140 }),
+    );
+    outerHeading.dispatchEvent(
+      touchEvent('touchmove', { identifier: 1, clientX: 160, clientY: 220 }),
+    );
+    outerHeading.dispatchEvent(
+      touchEvent('touchmove', { identifier: 1, clientX: 160, clientY: 320 }),
+    );
+    outerHeading.dispatchEvent(
+      touchEvent('touchend', { identifier: 1, clientX: 160, clientY: 320 }),
+    );
+    fx.detectChanges();
+
+    expect(fx.componentInstance.outerOpen()).toBe(true);
+    expect(fx.componentInstance.innerOpen()).toBe(true);
+    expect(outerPanel.style.translate).toBe('');
+  });
+
+  it('closes the inner drawer first on Escape when nested', async () => {
+    await TestBed.configureTestingModule({
+      imports: [NestedDrawersHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(NestedDrawersHostComponent);
+    fx.detectChanges();
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+    fx.detectChanges();
+
+    expect(fx.componentInstance.innerOpen()).toBe(false);
+    expect(fx.componentInstance.outerOpen()).toBe(true);
+
+    document.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    );
+    fx.detectChanges();
+
+    expect(fx.componentInstance.outerOpen()).toBe(false);
   });
 });

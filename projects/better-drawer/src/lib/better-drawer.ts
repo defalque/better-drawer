@@ -16,6 +16,11 @@ import {
 import { BetterDrawerDirection } from './better-drawer.types';
 import { BETTER_DRAWER_ROOT, type BetterDrawerRootContext } from './better-drawer.context';
 
+/** Base z-index for the outermost overlay; panel is one above. Each nesting step adds this delta. */
+const DRAWER_Z_INDEX_STEP = 10;
+const DRAWER_Z_INDEX_BASE_OVERLAY = 9998;
+const DRAWER_Z_INDEX_BASE_PANEL = 9999;
+
 let betterDrawerTitleSeq = 0;
 let betterDrawerPanelSeq = 0;
 
@@ -54,6 +59,15 @@ function swipeAxisAndSign(position: BetterDrawerDirection): {
   providers: [{ provide: BETTER_DRAWER_ROOT, useExisting: BetterDrawerRoot }],
 })
 export class BetterDrawerRoot implements BetterDrawerRootContext {
+  private readonly hostRef = inject(ElementRef<HTMLElement>);
+  private readonly parentDrawerRoot = inject(BETTER_DRAWER_ROOT, {
+    optional: true,
+    skipSelf: true,
+  });
+
+  /** `0` for the outermost root; increments for each nested `[bdDrawerRoot]`. */
+  readonly nestingLevel = computed(() => (this.parentDrawerRoot?.nestingLevel() ?? -1) + 1);
+
   /** Whether the drawer and overlay are visible (bind with `[(open)]` on the root). */
   readonly open = model(false);
   /** Slide direction for the drawer. @default `left` */
@@ -84,6 +98,20 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
   readonly swipeDismissProgress = signal(0);
   /** Shared dragging flag; lets the overlay disable its opacity transition during the drag. */
   readonly isDragging = signal(false);
+
+  descendantOpenDrawerWithHigherNesting(): boolean {
+    const myLevel = this.nestingLevel();
+    const host = this.hostRef.nativeElement;
+    for (const panel of host.querySelectorAll(
+      '[data-bd-drawer-content][data-bd-drawer-open="true"]',
+    )) {
+      const level = parseInt(panel.getAttribute('data-bd-drawer-nest-level') ?? '0', 10);
+      if (level > myLevel) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 @Component({
@@ -94,6 +122,7 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
   host: {
     '[attr.data-modal]': 'dataModalAttr()',
     '[attr.aria-hidden]': 'true',
+    '[style.z-index]': 'overlayZIndex()',
     '[style.opacity]': 'overlayOpacity()',
     '[style.transition]': 'overlayTransition()',
     '(click)': 'close()',
@@ -120,6 +149,11 @@ export class BetterDrawerOverlay {
   protected readonly effectiveModal = computed(() => this.drawerRoot?.modal() ?? this.modal());
 
   protected readonly dataModalAttr = computed(() => (this.effectiveModal() ? 'true' : 'false'));
+
+  protected readonly overlayZIndex = computed(() => {
+    const level = this.drawerRoot?.nestingLevel() ?? 0;
+    return DRAWER_Z_INDEX_BASE_OVERLAY + level * DRAWER_Z_INDEX_STEP;
+  });
 
   /**
    * Inline opacity that mirrors `swipeDismissProgress` from the root while the
@@ -150,6 +184,9 @@ export class BetterDrawerOverlay {
     if (root && !root.dismissible()) {
       return;
     }
+    if (root?.descendantOpenDrawerWithHigherNesting()) {
+      return;
+    }
     (root?.open ?? this.open).set(false);
   }
 
@@ -161,6 +198,9 @@ export class BetterDrawerOverlay {
       return;
     }
     if (root && !root.dismissible()) {
+      return;
+    }
+    if (root?.descendantOpenDrawerWithHigherNesting()) {
       return;
     }
     event.preventDefault();
@@ -262,6 +302,10 @@ export class BetterDrawerTrigger {
     '[attr.aria-modal]': 'ariaModalAttr()',
     '[attr.tabindex]': '-1',
     '[attr.data-direction]': 'effectiveDirection()',
+    '[attr.data-bd-drawer-content]': '""',
+    '[attr.data-bd-drawer-open]': 'drawerOpenAttr()',
+    '[attr.data-bd-drawer-nest-level]': 'drawerNestLevelAttr()',
+    '[style.z-index]': 'panelZIndex()',
     '(click)': '$event.stopPropagation()',
     '(document:keydown.escape)': 'onEscape($event)',
     'animate.enter': 'drawer-enter',
@@ -313,6 +357,19 @@ export class BetterDrawerContent {
   protected readonly effectiveModal = computed(() => this.drawerRoot?.modal() ?? this.modal());
   protected readonly effectiveDismissible = computed(() => this.drawerRoot?.dismissible() ?? true);
   protected readonly ariaModalAttr = computed(() => (this.effectiveModal() ? 'true' : null));
+
+  protected readonly drawerOpenAttr = computed(() =>
+    (this.drawerRoot ? this.drawerRoot.open() : this.open()) ? 'true' : null,
+  );
+
+  protected readonly drawerNestLevelAttr = computed(() =>
+    String(this.drawerRoot?.nestingLevel() ?? 0),
+  );
+
+  protected readonly panelZIndex = computed(() => {
+    const level = this.drawerRoot?.nestingLevel() ?? 0;
+    return DRAWER_Z_INDEX_BASE_PANEL + level * DRAWER_Z_INDEX_STEP;
+  });
 
   /** Optional DOM id when standalone; prefer `panelId` on `bdDrawerRoot` when rooted. */
   readonly panelId = input<string | undefined>(undefined);
@@ -376,6 +433,9 @@ export class BetterDrawerContent {
     if (root && !root.dismissible()) {
       return;
     }
+    if (root?.descendantOpenDrawerWithHigherNesting()) {
+      return;
+    }
     event.preventDefault();
     this.close();
   }
@@ -434,6 +494,14 @@ export class BetterDrawerContent {
 
   private startSwipeTracking(target: EventTarget | null, clientX: number, clientY: number) {
     if (!this.effectiveDismissible()) {
+      return;
+    }
+    // Same rule as overlay / Escape: never swipe-dismiss (or track) the outer shell
+    // while a nested drawer is open; touches on the parent's chrome must not pull it.
+    if (this.drawerRoot?.descendantOpenDrawerWithHigherNesting()) {
+      return;
+    }
+    if (this.isPointerTargetInNestedDrawerContent(target)) {
       return;
     }
     if (this.hasScrolledSwipeContainer(target)) {
@@ -594,6 +662,22 @@ export class BetterDrawerContent {
 
   private prefersReducedMotion(): boolean {
     return this.doc.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches ?? false;
+  }
+
+  /**
+   * Ignore bubbled pointer/touch events that began on a nested `[bdDrawerContent]`,
+   * so only the innermost panel participates in swipe-to-dismiss.
+   */
+  private isPointerTargetInNestedDrawerContent(target: EventTarget | null): boolean {
+    if (!(target instanceof Element)) {
+      return false;
+    }
+    const innerPanel = target.closest('[data-bd-drawer-content]');
+    const host = this.host.nativeElement;
+    if (!innerPanel || innerPanel === host) {
+      return false;
+    }
+    return host.contains(innerPanel);
   }
 
   private hasScrolledSwipeContainer(target: EventTarget | null): boolean {

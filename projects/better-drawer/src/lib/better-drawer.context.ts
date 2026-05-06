@@ -3,6 +3,8 @@ import type { BetterDrawerDirection } from './better-drawer.types';
 
 /** Stateful API from `[bdDrawerRoot]` for `bdDrawerContent`, `bdDrawerOverlay`, and `bdDrawerTrigger`. */
 export interface BetterDrawerRootContext {
+  /** Depth in nested `[bdDrawerRoot]` trees; `0` for the outermost root. */
+  readonly nestingLevel: Signal<number>;
   readonly open: ModelSignal<boolean>;
   readonly direction: Signal<BetterDrawerDirection>;
   readonly modal: Signal<boolean>;
@@ -27,6 +29,12 @@ export interface BetterDrawerRootContext {
    * for `top` / `bottom` drawers.
    */
   readonly hideBar: Signal<boolean>;
+  /**
+   * Whether an open drawer panel with a higher nesting level exists inside this
+   * root (used to ignore Escape and swipe from an outer instance while a nested
+   * drawer is active).
+   */
+  descendantOpenDrawerWithHigherNesting(): boolean;
 }
 
 /** Provided by `[bdDrawerRoot]` as `useExisting`; omit when wiring pieces standalone. */
