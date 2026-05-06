@@ -1,6 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(gray 50%, transparent) transparent;
+}
+
 .landing-page-h2 {
   @apply text-zinc-900 dark:text-zinc-100 text-lg font-medium;
 }

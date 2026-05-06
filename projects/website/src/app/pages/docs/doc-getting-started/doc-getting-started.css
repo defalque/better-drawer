@@ -1,0 +1,54 @@
+.leave {
+  opacity: 0;
+  scale: 0.5;
+  transition:
+    opacity 0.15s ease-in-out,
+    scale 0.15s ease-in-out;
+}
+
+.enter {
+  opacity: 1;
+  scale: 1;
+  transition:
+    opacity 0.15s ease-in-out 0.15s,
+    scale 0.15s ease-in-out 0.15s;
+
+  @starting-style {
+    opacity: 0;
+    scale: 0.5;
+  }
+}
+
+.toc-content {
+  a[data-active='true'] {
+    anchor-name: --active-toc-link;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 2px;
+    border-radius: 9999px;
+    left: -17px;
+    top: anchor(top);
+    z-index: -1;
+    background-color: var(--color-black);
+
+    position-anchor: --active-toc-link;
+    transition:
+      top 0.3s ease-out,
+      height 0.2s ease-out,
+      background-color 0.2s ease-out;
+  }
+
+  &:has(a[data-active='true'])::after {
+    background-color: var(--color-black);
+    height: 20px;
+    width: 3px;
+    border-radius: 9999px;
+  }
+  &:has(a[data-active='true']):where(.dark, .dark *)::after {
+    background-color: var(--color-white);
+  }
+}

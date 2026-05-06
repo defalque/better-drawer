@@ -1,0 +1,96 @@
+.leave {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.18s ease-out,
+    transform 0.18s ease-out;
+}
+
+.enter {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.18s ease-out 0.18s,
+    transform 0.18s ease-out 0.18s;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.tab {
+  transition: translate 0.4s ease-out;
+
+  button[data-active='true'] {
+    anchor-name: --active-link;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    height: 2px;
+    border-radius: 9999px;
+    bottom: anchor(bottom);
+    z-index: -1;
+    background-color: var(--color-black);
+
+    position-anchor: --active-link;
+    transition:
+      left 0.3s ease-out,
+      right 0.3s ease-out;
+  }
+
+  &:has(button[data-active='true'])::after {
+    background-color: var(--color-black);
+    right: anchor(right);
+    left: anchor(left);
+    bottom: -8px;
+    border-radius: 9999px;
+  }
+  &:has(button[data-active='true']):where(.dark, .dark *)::after {
+    background-color: var(--color-white);
+  }
+}
+
+.doc-container {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.toc-content {
+  a[data-active='true'] {
+    anchor-name: --active-toc-link;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 2px;
+    border-radius: 9999px;
+    left: -17px;
+    top: anchor(top);
+    z-index: -1;
+    background-color: var(--color-black);
+
+    position-anchor: --active-toc-link;
+    transition:
+      top 0.3s ease-out,
+      height 0.2s ease-out,
+      background-color 0.2s ease-out;
+  }
+
+  &:has(a[data-active='true'])::after {
+    background-color: var(--color-black);
+    height: 20px;
+    width: 3px;
+    border-radius: 9999px;
+  }
+  &:has(a[data-active='true']):where(.dark, .dark *)::after {
+    background-color: var(--color-white);
+  }
+}

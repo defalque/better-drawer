@@ -7,6 +7,7 @@ import {
   BetterDrawerTitle,
   BetterDrawerTrigger,
 } from 'better-drawer';
+import { MyDrawer } from './components/my-drawer';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ import {
     BetterDrawerOverlay,
     BetterDrawerTitle,
     BetterDrawerTrigger,
+    MyDrawer,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',

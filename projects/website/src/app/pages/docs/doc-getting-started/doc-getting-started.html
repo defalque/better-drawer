@@ -1,0 +1,227 @@
+<div class="flex w-full gap-2">
+  <div class="doc-container divide-y divide-dashed divide-zinc-200 dark:divide-zinc-600/50">
+    <div class="pb-16">
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+        Getting Started
+      </h1>
+      <p class="text-zinc-700 dark:text-zinc-300 mt-4">
+        Get started with Better Drawer by following the steps below.
+      </p>
+
+      <div class="space-y-4 pt-20" id="installation">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Installation
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300">
+          Install Better Drawer using your favorite package manager.
+        </p>
+        <div>
+          <div
+            class="w-full rounded-md rounded-b-none bg-zinc-100 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800/50 flex items-center justify-between gap-2 px-4 py-1"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4 shrink-0 stroke-zinc-500 dark:stroke-zinc-400"
+              >
+                <path d="M12 19h8" />
+                <path d="m4 17 6-6-6-6" />
+              </svg>
+              <span class="text-zinc-500 dark:text-zinc-400 text-xs font-mono">Terminal</span>
+            </div>
+
+            <button
+              type="button"
+              (click)="copyInstallationCode()"
+              [attr.aria-label]="installationCodeCopied() ? 'Copied' : 'Copy code'"
+              class="shrink-0 size-6.5 rounded-md text-zinc-500 dark:text-zinc-400 cursor-pointer relative"
+            >
+              @if (installationCodeCopied()) {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-4 text-emerald-600 dark:text-emerald-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                  animate.enter="enter"
+                  animate.leave="leave"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              } @else {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                  [animate.enter]="enterEnabled() ? 'enter' : null"
+                  animate.leave="leave"
+                >
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                </svg>
+              }
+            </button>
+          </div>
+          <pre
+            class="landing-page-pre border-t-0! rounded-t-none!"
+          ><code class="landing-page-code language-bash dark:text-white!" [innerHTML]="drawerInstallationSource()"></code></pre>
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-20" id="create-a-drawer-component">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Create a drawer component
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300">It can be placed anywhere in your app.</p>
+        <div>
+          <div
+            class="w-full rounded-md rounded-b-none bg-zinc-100 dark:bg-zinc-950/50 border border-zinc-200 dark:border-zinc-800/50 flex items-center justify-between gap-2 px-4 py-1"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="size-4 shrink-0 stroke-zinc-500 dark:stroke-zinc-400"
+              >
+                <path
+                  d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"
+                />
+                <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+              </svg>
+              <span class="text-zinc-500 dark:text-zinc-400 text-xs font-mono">my-drawer.ts</span>
+            </div>
+
+            <button
+              type="button"
+              (click)="copyUsageCode()"
+              [attr.aria-label]="usageCodeCopied() ? 'Copied' : 'Copy code'"
+              class="shrink-0 size-6.5 rounded-md text-zinc-500 dark:text-zinc-400 cursor-pointer relative"
+            >
+              @if (usageCodeCopied()) {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-4 text-emerald-600 dark:text-emerald-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                  animate.enter="enter"
+                  animate.leave="leave"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              } @else {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="size-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                  [animate.enter]="enterEnabled() ? 'enter' : null"
+                  animate.leave="leave"
+                >
+                  <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                  <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                </svg>
+              }
+            </button>
+          </div>
+          <pre
+            class="landing-page-pre border-t-0! rounded-t-none!"
+          ><code class="landing-page-code language-typescript dark:text-white!" [innerHTML]="drawerUsageSource()"></code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end my-6">
+      <a [routerLink]="['/docs/considerations']" class="flex items-end gap-2">
+        <div class="flex flex-col items-end">
+          <p class="text-zinc-600 dark:text-zinc-400 text-[13px]">Next</p>
+          <p class="text-zinc-600 dark:text-zinc-200 text-sm font-medium">Considerations</p>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="var(--color-zinc-500)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-4.5"
+        >
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="toc">
+    <div class="flex items-baseline gap-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="var(--color-zinc-500)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="size-4"
+      >
+        <path d="M4 14h6" />
+        <path d="M4 2h10" />
+        <rect x="4" y="18" width="16" height="4" rx="1" />
+        <rect x="4" y="6" width="16" height="4" rx="1" />
+      </svg>
+      <span class="text-zinc-500">On this page</span>
+    </div>
+
+    <div class="ml-6 toc-content relative">
+      <div
+        class="absolute top-0 -left-4 w-px h-full border-l border-dashed border-zinc-200 dark:border-zinc-600/50 -z-10"
+      ></div>
+
+      <ul class="space-y-2">
+        <li>
+          <a
+            href="/docs/getting-started#installation"
+            [attr.data-active]="activeSection() === 'installation'"
+            [class]="tocLinkClass('installation')"
+            (click)="activeSection.set('installation')"
+            >Installation</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/getting-started#create-a-drawer-component"
+            [attr.data-active]="activeSection() === 'create-a-drawer-component'"
+            [class]="tocLinkClass('create-a-drawer-component')"
+            (click)="activeSection.set('create-a-drawer-component')"
+            >Create a drawer component</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
