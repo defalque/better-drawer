@@ -1,3 +1,4 @@
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -276,6 +277,7 @@ export class BetterDrawerTrigger {
   },
 })
 export class BetterDrawerContent {
+  private readonly doc = inject(DOCUMENT);
   private readonly drawerRoot = inject(BETTER_DRAWER_ROOT, { optional: true });
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly drawerTitle = contentChild(BetterDrawerTitle, { descendants: true });
@@ -507,6 +509,9 @@ export class BetterDrawerContent {
     if (shouldDismiss) {
       this.setDismissProgress(0);
       this.close();
+    } else if (this.prefersReducedMotion()) {
+      el.style.translate = '';
+      this.setDismissProgress(0);
     } else {
       el.style.transition = 'translate 500ms cubic-bezier(0.32, 0.72, 0, 1)';
       el.style.translate = '0 0';
@@ -551,6 +556,12 @@ export class BetterDrawerContent {
   private activeTouch(event: TouchEvent): Touch | undefined {
     return Array.from(event.changedTouches).find(
       (touch) => touch.identifier === this.touchIdentifier,
+    );
+  }
+
+  private prefersReducedMotion(): boolean {
+    return (
+      this.doc.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches ?? false
     );
   }
 

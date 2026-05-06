@@ -23,3 +23,9 @@
 :host(.overlay-leave) {
   opacity: 0;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    transition: none;
+  }
+}

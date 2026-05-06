@@ -36,6 +36,13 @@
   transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  :host(.drawer-enter),
+  :host(.drawer-leave) {
+    transition: none;
+  }
+}
+
 .bar {
   border-radius: 9999px;
   width: 3rem;
