@@ -35,6 +35,18 @@ class DrawerHostComponent {
 }
 
 @Component({
+  imports: [BetterDrawerContent],
+  template: `
+    <aside bdDrawerContent [(open)]="drawerOpen">
+      <span data-testid="projected">drawer body</span>
+    </aside>
+  `,
+})
+class DrawerNoTitleHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
   imports: [BetterDrawerContent, BetterDrawerTitle],
   template: `
     <aside bdDrawerContent [(open)]="drawerOpen" panelId="fixed-panel-id">
@@ -370,6 +382,54 @@ describe('BetterDrawerContent', () => {
 
   it('should create', () => {
     expect(drawerEl()).toBeTruthy();
+  });
+
+  it('does not warn when bdDrawerTitle is present', async () => {
+    const warnSpy = spyOn(console, 'warn');
+    fixture.componentInstance.drawerOpen.set(true);
+    fixture.detectChanges();
+    await Promise.resolve();
+    expect(warnSpy).not.toHaveBeenCalled();
+  });
+
+  it('logs a console warning when opened without bdDrawerTitle', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [DrawerNoTitleHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const warnSpy = spyOn(console, 'warn');
+    const fx = TestBed.createComponent(DrawerNoTitleHostComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+    await Promise.resolve();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    const message = warnSpy.calls.mostRecent().args[0] as string;
+    expect(message).toContain('[better-drawer]');
+    expect(message).toContain('bdDrawerTitle');
+  });
+
+  it('logs again on a later open if the title is still missing', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [DrawerNoTitleHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const warnSpy = spyOn(console, 'warn');
+    const fx = TestBed.createComponent(DrawerNoTitleHostComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+    await Promise.resolve();
+    fx.componentInstance.drawerOpen.set(false);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+    await Promise.resolve();
+    expect(warnSpy).toHaveBeenCalledTimes(2);
   });
 
   it('projects host element content into the drawer', () => {

@@ -282,6 +282,8 @@ export class BetterDrawerContent {
   private readonly host = inject(ElementRef<HTMLElement>);
   private readonly drawerTitle = contentChild(BetterDrawerTitle, { descendants: true });
   private readonly generatedPanelId = `bd-drawer-panel-${++betterDrawerPanelSeq}`;
+  /** Suppresses duplicate console warnings while the same open cycle misses a title. */
+  private warnedMissingTitleThisOpen = false;
   protected readonly ariaLabelledBy = computed(() => this.drawerTitle()?.titleId() ?? null);
 
   /**
@@ -326,6 +328,37 @@ export class BetterDrawerContent {
       }
       untracked(() => {
         queueMicrotask(() => this.host.nativeElement.focus({ preventScroll: true }));
+      });
+    });
+
+    effect(() => {
+      const isOpen = this.drawerRoot ? this.drawerRoot.open() : this.open();
+      if (!isOpen) {
+        untracked(() => {
+          this.warnedMissingTitleThisOpen = false;
+        });
+        return;
+      }
+      if (this.drawerTitle()) {
+        untracked(() => {
+          this.warnedMissingTitleThisOpen = false;
+        });
+        return;
+      }
+      untracked(() => {
+        queueMicrotask(() => {
+          const stillOpen = this.drawerRoot ? this.drawerRoot.open() : this.open();
+          if (!stillOpen || this.drawerTitle()) {
+            return;
+          }
+          if (this.warnedMissingTitleThisOpen) {
+            return;
+          }
+          this.warnedMissingTitleThisOpen = true;
+          console.warn(
+            '[better-drawer] Add the bdDrawerTitle directive to the <h2> inside its drawer panel. Without it the dialog has no accessible name (aria-labelledby is unset), which hurts screen reader users.',
+          );
+        });
       });
     });
   }
@@ -560,9 +593,7 @@ export class BetterDrawerContent {
   }
 
   private prefersReducedMotion(): boolean {
-    return (
-      this.doc.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches ?? false
-    );
+    return this.doc.defaultView?.matchMedia('(prefers-reduced-motion: reduce)').matches ?? false;
   }
 
   private hasScrolledSwipeContainer(target: EventTarget | null): boolean {
