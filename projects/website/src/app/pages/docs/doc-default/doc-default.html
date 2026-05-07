@@ -1,1 +1,273 @@
-<div class="flex w-full gap-2"></div>
+<div class="flex w-full gap-2">
+  <div
+    class="doc-container divide-y divide-dashed divide-zinc-200 dark:divide-zinc-600/50 overflow-x-auto"
+  >
+    <div class="pb-16">
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+        Drawer
+      </h1>
+      <p class="text-zinc-700 dark:text-zinc-300 mt-4">
+        A simple and customizable drawer library for Angular.
+      </p>
+
+      <div class="space-y-4 pt-20" id="default">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Default
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300">The most basic setup for a drawer.</p>
+        <div class="mt-7 space-y-6">
+          <div class="flex items-center justify-between gap-2 text-[13px] px-0.5 relative">
+            <div
+              class="absolute bottom-[-8px] left-1 w-full h-px bg-zinc-300/50 dark:bg-zinc-800/80 -z-10"
+            ></div>
+            <div class="flex items-center gap-4 relative tab">
+              <button
+                type="button"
+                class="font-medium  cursor-pointer {{
+                  onDefaultTab() === 'preview'
+                    ? 'text-black dark:text-zinc-100'
+                    : 'text-zinc-600 dark:text-zinc-400'
+                }}"
+                (click)="onDefaultTab.set('preview')"
+                [attr.data-active]="onDefaultTab() === 'preview'"
+              >
+                Preview
+              </button>
+              <button
+                type="button"
+                class="font-medium  cursor-pointer {{
+                  onDefaultTab() === 'code'
+                    ? 'text-black dark:text-zinc-100'
+                    : 'text-zinc-600 dark:text-zinc-400'
+                }}"
+                (click)="onDefaultTab.set('code')"
+                [attr.data-active]="onDefaultTab() === 'code'"
+              >
+                Code
+              </button>
+            </div>
+            <button
+              type="button"
+              class="font-medium text-zinc-600 dark:text-zinc-400 cursor-pointer relative w-34"
+              (click)="copyOnDefaultCode()"
+            >
+              @if (onDefaultCodeCopied()) {
+                <span
+                  class="absolute top-1/2 right-0.5 -translate-y-1/2"
+                  animate.enter="enter"
+                  animate.leave="leave"
+                  >Copied!</span
+                >
+              } @else {
+                <span
+                  class="absolute top-1/2 left-1/2 -translate-y-1/2"
+                  [animate.enter]="enterEnabled() ? 'enter' : null"
+                  animate.leave="leave"
+                  >Copy code</span
+                >
+              }
+            </button>
+          </div>
+          @if (onDefaultTab() === 'preview') {
+            <div
+              class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
+            >
+              <div bdDrawerRoot class="contents" [(open)]="openDrawer" direction="bottom">
+                <button type="button" bdDrawerTrigger class="drawer-button">Open Drawer</button>
+                @if (openDrawer()) {
+                  <div bdDrawerOverlay class="bg-black/50"></div>
+                  <aside
+                    bdDrawerContent
+                    class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 left-0 rounded-tr-xl rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+                  >
+                    <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                      <h2
+                        bdDrawerTitle
+                        class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
+                      >
+                        This is a default drawer
+                      </h2>
+                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                        Comes from the bottom side of the screen.
+                      </p>
+                    </div>
+                  </aside>
+                }
+              </div>
+            </div>
+          } @else {
+            <pre class="landing-page-pre h-80! overflow-y-auto!"><code
+                        class=" landing-page-code language-typescript dark:text-white!"
+                        [innerHTML]="onDefaultSource()"
+                      ></code></pre>
+          }
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-20" id="default">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Side drawer
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300">
+          Set the <code class="p-code-snippet">direction</code> input to "right" or "left" to change
+          the position of the drawer.
+        </p>
+        <div class="mt-7 space-y-6">
+          <div class="flex items-center justify-between gap-2 text-[13px] px-0.5 relative">
+            <div
+              class="absolute bottom-[-8px] left-1 w-full h-px bg-zinc-300/50 dark:bg-zinc-800/80 -z-10"
+            ></div>
+            <div class="flex items-center gap-4 relative tab">
+              <button
+                type="button"
+                class="font-medium  cursor-pointer {{
+                  onDefaultTab() === 'preview'
+                    ? 'text-black dark:text-zinc-100'
+                    : 'text-zinc-600 dark:text-zinc-400'
+                }}"
+                (click)="onSideDrawerTab.set('preview')"
+                [attr.data-active]="onSideDrawerTab() === 'preview'"
+              >
+                Preview
+              </button>
+              <button
+                type="button"
+                class="font-medium  cursor-pointer {{
+                  onSideDrawerTab() === 'code'
+                    ? 'text-black dark:text-zinc-100'
+                    : 'text-zinc-600 dark:text-zinc-400'
+                }}"
+                (click)="onSideDrawerTab.set('code')"
+                [attr.data-active]="onSideDrawerTab() === 'code'"
+              >
+                Code
+              </button>
+            </div>
+            <button
+              type="button"
+              class="font-medium text-zinc-600 dark:text-zinc-400 cursor-pointer relative w-34"
+              (click)="copyOnSideDrawerCode()"
+            >
+              @if (onSideDrawerCodeCopied()) {
+                <span
+                  class="absolute top-1/2 right-0.5 -translate-y-1/2"
+                  animate.enter="enter"
+                  animate.leave="leave"
+                  >Copied!</span
+                >
+              } @else {
+                <span
+                  class="absolute top-1/2 left-1/2 -translate-y-1/2"
+                  [animate.enter]="enterEnabled() ? 'enter' : null"
+                  animate.leave="leave"
+                  >Copy code</span
+                >
+              }
+            </button>
+          </div>
+          @if (onSideDrawerTab() === 'preview') {
+            <div
+              class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
+            >
+              <div bdDrawerRoot class="contents" [(open)]="openSideDrawer" direction="left">
+                <button type="button" bdDrawerTrigger class="drawer-button">
+                  Open side drawer
+                </button>
+                @if (openSideDrawer()) {
+                  <div bdDrawerOverlay class="bg-black/50"></div>
+                  <aside
+                    bdDrawerContent
+                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 top-0 rounded-r-xl border-r border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+                  >
+                    <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                      <h2
+                        bdDrawerTitle
+                        class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
+                      >
+                        This is a side drawer
+                      </h2>
+                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                        Comes from the right side of the screen.
+                      </p>
+                    </div>
+                  </aside>
+                }
+              </div>
+            </div>
+          } @else {
+            <pre class="landing-page-pre h-80! overflow-y-auto!"><code
+                        class=" landing-page-code language-typescript dark:text-white!"
+                        [innerHTML]="onSideDrawerSource()"
+                      ></code></pre>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <div class="flex items-baseline gap-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="var(--color-zinc-500)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="size-4"
+      >
+        <path d="M4 14h6" />
+        <path d="M4 2h10" />
+        <rect x="4" y="18" width="16" height="4" rx="1" />
+        <rect x="4" y="6" width="16" height="4" rx="1" />
+      </svg>
+      <span class="text-zinc-500">On this page</span>
+    </div>
+
+    <div class="ml-6 toc-content relative">
+      <div
+        class="absolute top-0 -left-4 w-px h-full border-l border-dashed border-zinc-200 dark:border-zinc-600/50 -z-10"
+      ></div>
+
+      <ul class="space-y-2">
+        <li>
+          <a
+            href="/docs/better-drawer#default"
+            [attr.data-active]="activeSection() === 'default'"
+            [class]="tocLinkClass('default')"
+            (click)="activeSection.set('default')"
+            >Default</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/better-drawer#side-drawer"
+            [attr.data-active]="activeSection() === 'side-drawer'"
+            [class]="tocLinkClass('side-drawer')"
+            (click)="activeSection.set('side-drawer')"
+            >Side drawer</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/better-drawer#nested-drawers"
+            [attr.data-active]="activeSection() === 'nested-drawers'"
+            [class]="tocLinkClass('nested-drawers')"
+            (click)="activeSection.set('nested-drawers')"
+            >Nested drawers</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/better-drawer#scrollable"
+            [attr.data-active]="activeSection() === 'scrollable'"
+            [class]="tocLinkClass('scrollable')"
+            (click)="activeSection.set('scrollable')"
+            >Scrollable</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

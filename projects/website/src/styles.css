@@ -4,7 +4,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 html {
-  scrollbar-gutter: stable;
+  /* scrollbar-gutter: stable; */
   scrollbar-width: thin;
   scrollbar-color: color-mix(gray 50%, transparent) transparent;
 }
@@ -34,7 +34,7 @@ html {
   @apply font-light text-[15px] text-black/70 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-950/90 border border-zinc-200 dark:border-zinc-800/80 rounded-md px-2 py-0.5;
 }
 
-.toast-button {
+.drawer-button {
   @apply font-sans font-medium bg-white shadow-lg shadow-black/5 dark:shadow-black dark:bg-zinc-800/50 text-zinc-900 dark:text-zinc-100 cursor-pointer ring-1 ring-black/10 dark:ring-white/12  py-2 px-6 rounded-full text-sm active:scale-95 transition-transform;
 }
 
