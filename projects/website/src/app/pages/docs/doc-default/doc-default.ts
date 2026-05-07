@@ -81,6 +81,7 @@ export class MySideDrawer {
 @Component({
   selector: 'app-doc-default',
   imports: [
+    RouterLink,
     BetterDrawerRoot,
     BetterDrawerTrigger,
     BetterDrawerOverlay,

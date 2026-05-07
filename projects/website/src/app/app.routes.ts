@@ -34,9 +34,9 @@ export const routes: Routes = [
         title: 'API - Better Drawer',
       },
       {
-        path: 'default',
+        path: 'drawer',
         component: DocDefault,
-        title: 'Default - Better Drawer',
+        title: 'Drawer - Better Drawer',
       },
       {
         path: 'other',

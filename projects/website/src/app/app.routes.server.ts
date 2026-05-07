@@ -14,7 +14,7 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
   },
   {
-    path: 'docs/default',
+    path: 'docs/drawer',
     renderMode: RenderMode.Prerender,
   },
   {

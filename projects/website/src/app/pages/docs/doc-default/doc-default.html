@@ -73,7 +73,9 @@
               class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
             >
               <div bdDrawerRoot class="contents" [(open)]="openDrawer" direction="bottom">
-                <button type="button" bdDrawerTrigger class="drawer-button">Open Drawer</button>
+                <button type="button" bdDrawerTrigger class="drawer-button">
+                  Open default drawer
+                </button>
                 @if (openDrawer()) {
                   <div bdDrawerOverlay class="bg-black/50"></div>
                   <aside
@@ -104,7 +106,7 @@
         </div>
       </div>
 
-      <div class="space-y-4 pt-20" id="default">
+      <div class="space-y-4 pt-20" id="side-drawer">
         <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
           Side drawer
         </h2>
@@ -203,6 +205,46 @@
         </div>
       </div>
     </div>
+
+    <div class="flex justify-between my-6">
+      <a [routerLink]="['/docs/api']" class="flex items-end gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="var(--color-zinc-500)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-4.5"
+        >
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+        <div class="flex flex-col items-start">
+          <p class="text-zinc-600 dark:text-zinc-400 text-[13px]">Previous</p>
+          <p class="text-zinc-600 dark:text-zinc-200 text-sm font-medium">API</p>
+        </div>
+      </a>
+
+      <a [routerLink]="['/docs/other']" class="flex items-end gap-2">
+        <div class="flex flex-col items-end">
+          <p class="text-zinc-600 dark:text-zinc-400 text-[13px]">Next</p>
+          <p class="text-zinc-600 dark:text-zinc-200 text-sm font-medium">Other</p>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="var(--color-zinc-500)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-4.5"
+        >
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </a>
+    </div>
   </div>
 
   <div class="toc">
@@ -233,7 +275,7 @@
       <ul class="space-y-2">
         <li>
           <a
-            href="/docs/better-drawer#default"
+            href="/docs/drawer#default"
             [attr.data-active]="activeSection() === 'default'"
             [class]="tocLinkClass('default')"
             (click)="activeSection.set('default')"
@@ -242,7 +284,7 @@
         </li>
         <li>
           <a
-            href="/docs/better-drawer#side-drawer"
+            href="/docs/drawer#side-drawer"
             [attr.data-active]="activeSection() === 'side-drawer'"
             [class]="tocLinkClass('side-drawer')"
             (click)="activeSection.set('side-drawer')"
@@ -251,7 +293,7 @@
         </li>
         <li>
           <a
-            href="/docs/better-drawer#nested-drawers"
+            href="/docs/drawer#nested-drawers"
             [attr.data-active]="activeSection() === 'nested-drawers'"
             [class]="tocLinkClass('nested-drawers')"
             (click)="activeSection.set('nested-drawers')"
@@ -260,7 +302,7 @@
         </li>
         <li>
           <a
-            href="/docs/better-drawer#scrollable"
+            href="/docs/drawer#scrollable"
             [attr.data-active]="activeSection() === 'scrollable'"
             [class]="tocLinkClass('scrollable')"
             (click)="activeSection.set('scrollable')"
