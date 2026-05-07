@@ -463,6 +463,11 @@ export class BetterDrawerContent {
   private setDragging(value: boolean) {
     this.isDragging.set(value);
     this.drawerRoot?.isDragging.set(value);
+    const body = this.doc.body;
+    if (!body) {
+      return;
+    }
+    body.style.cursor = value ? 'grabbing' : '';
   }
 
   private setDismissProgress(value: number) {

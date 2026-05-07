@@ -2,11 +2,9 @@
   position: fixed;
   inset: 0;
   pointer-events: auto;
-  /* z-index is set inline when bound to bdDrawerRoot */
   transition: opacity 0.5s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-/* Non-modal: no backdrop; pointer events pass through to the page. */
 :host([data-modal='false']),
 :host([data-modal='false'].overlay-enter),
 :host([data-modal='false'].overlay-leave) {

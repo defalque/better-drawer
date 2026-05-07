@@ -5,7 +5,7 @@ import xml from 'highlight.js/lib/languages/xml';
 
 hljs.registerLanguage('xml', xml);
 
-type BetterToasterDocSection =
+type ApiDocSection =
   | 'customization'
   | 'position'
   | 'duration'
@@ -18,18 +18,18 @@ type BetterToasterDocSection =
   | 'api-reference';
 
 @Component({
-  selector: 'app-doc-better-toaster',
+  selector: 'app-doc-api',
   imports: [],
-  templateUrl: './doc-better-toaster.html',
-  styleUrl: './doc-better-toaster.css',
+  templateUrl: './doc-api.html',
+  styleUrl: './doc-api.css',
   host: {
     class: 'block w-full min-w-0 max-w-5xl mx-auto',
   },
 })
-export class DocBetterToaster {
+export class DocApi {
   private readonly meta = inject(Meta);
 
-  protected activeSection = signal<BetterToasterDocSection>('customization');
+  protected activeSection = signal<ApiDocSection>('customization');
   protected readonly destroyRef = inject(DestroyRef);
 
   private watchTocTargets(): void {
@@ -42,12 +42,9 @@ export class DocBetterToaster {
         const id = link.hash.slice(1);
         const target = document.getElementById(id);
 
-        return this.isBetterToasterDocSection(id) && target ? { id, target } : null;
+        return this.isApiDocSection(id) && target ? { id, target } : null;
       })
-      .filter(
-        (section): section is { id: BetterToasterDocSection; target: HTMLElement } =>
-          section !== null,
-      );
+      .filter((section): section is { id: ApiDocSection; target: HTMLElement } => section !== null);
 
     if (sections.length === 0) {
       return;
@@ -82,7 +79,7 @@ export class DocBetterToaster {
     this.destroyRef.onDestroy(() => observer.disconnect());
   }
 
-  private isBetterToasterDocSection(id: string): id is BetterToasterDocSection {
+  private isApiDocSection(id: string): id is ApiDocSection {
     return [
       'customization',
       'position',
@@ -97,7 +94,7 @@ export class DocBetterToaster {
     ].includes(id);
   }
 
-  protected tocLinkClass(section: BetterToasterDocSection): string {
+  protected tocLinkClass(section: ApiDocSection): string {
     return this.activeSection() === section
       ? 'text-black dark:text-white'
       : 'text-zinc-500 dark:text-zinc-300/75';
@@ -106,8 +103,7 @@ export class DocBetterToaster {
   constructor() {
     this.meta.updateTag({
       name: 'description',
-      content:
-        'Host component for the toast stack. Position, theming, and configuration options for the BetterToaster in Angular.',
+      content: 'API reference for Better Drawer.',
     });
 
     afterNextRender(() => {
