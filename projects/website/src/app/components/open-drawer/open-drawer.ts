@@ -31,7 +31,7 @@ import {
           bdDrawerContent
           class="flex flex-col flex-1 bg-zinc-50 dark:bg-zinc-900 h-84 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none"
         >
-          <div class="space-y-4 max-w-md mx-auto pt-4">
+          <div class="space-y-4 max-w-md mx-auto pt-4 px-4">
             <h2
               bdDrawerTitle
               class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
@@ -57,7 +57,7 @@ import {
           <div
             class="bg-gray-200 dark:bg-zinc-800/60 py-4 mt-auto border-t border-zinc-400/30 dark:border-zinc-600/30"
           >
-            <div class="max-w-lg mx-auto flex justify-end gap-2">
+            <div class="max-w-lg mx-auto flex justify-end gap-2 px-4">
               <a
                 href="https://github.com/defalque/better-drawer"
                 target="_blank"

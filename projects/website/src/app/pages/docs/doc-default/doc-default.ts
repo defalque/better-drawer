@@ -78,6 +78,48 @@ export class MySideDrawer {
   protected openSideDrawer = model(false);
 }`;
 
+const ON_NESTED_DRAWER_SOURCE = `import { Component, model } from '@angular/core';
+import { BetterDrawerContent, BetterDrawerOverlay, BetterDrawerRoot, BetterDrawerTitle, BetterDrawerTrigger } from 'better-drawer';
+
+@Component({
+  selector: 'app-my-nested-drawer',
+  imports: [
+    BetterDrawerRoot, BetterDrawerTrigger, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle
+  ],
+  template: '
+    <div bdDrawerRoot class="contents" [(open)]="openNestedDrawer" direction="bottom">
+      <button type="button" bdDrawerTrigger class="drawer-button">Open drawer</button>
+      @if (openNestedDrawer()) {
+        <div bdDrawerOverlay class="overlay"></div>
+        <div bdDrawerContent class="content">
+          <div class="container">
+            <h2 bdDrawerTitle class="title">This is a drawer</h2>
+            <p class="description">Click the button to open the nested drawer.</p>
+            <div bdDrawerRoot class="contents" [(open)]="openNestedDrawer2" direction="bottom">
+              <button type="button" bdDrawerTrigger class="btn">
+                Open nested drawer
+              </button>
+              @if (openNestedDrawer2()) {
+                <div bdDrawerOverlay class="overlay"></div>
+                <div bdDrawerContent class="content">
+                  <div class="container">
+                    <h2 bdDrawerTitle class="title">This is a nested drawer</h2>
+                    <p class="description">This is a drawer inside another drawer.</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }          
+    </div>
+  ',
+})
+export class MyNestedDrawer {
+  protected openSideDrawer = model(false);
+  protected openNestedDrawer2 = model(false);
+}`;
+
 @Component({
   selector: 'app-doc-default',
   imports: [
@@ -119,6 +161,27 @@ export class DocDefault {
   }
   protected async copyOnSideDrawerCode(): Promise<void> {
     await this.copyToClipboard(ON_SIDE_DRAWER_SOURCE, this.onSideDrawerCodeCopied);
+  }
+
+  protected openNestedDrawer = model(false);
+  protected openNestedDrawer2 = model(false);
+  protected onNestedDrawerTab = signal<'preview' | 'code'>('preview');
+  protected onNestedDrawerCodeCopied = signal(false);
+  protected onNestedDrawerSource(): string {
+    return hljs.highlight(ON_NESTED_DRAWER_SOURCE, { language: 'typescript' }).value;
+  }
+  protected async copyOnNestedDrawerCode(): Promise<void> {
+    await this.copyToClipboard(ON_NESTED_DRAWER_SOURCE, this.onNestedDrawerCodeCopied);
+  }
+
+  protected openScrollableDrawer = model(false);
+  protected onScrollableDrawerTab = signal<'preview' | 'code'>('preview');
+  protected onScrollableDrawerCodeCopied = signal(false);
+  protected onScrollableDrawerSource(): string {
+    return hljs.highlight(ON_DEFAULT_SOURCE, { language: 'typescript' }).value;
+  }
+  protected async copyOnScrollableDrawerCode(): Promise<void> {
+    await this.copyToClipboard(ON_DEFAULT_SOURCE, this.onScrollableDrawerCodeCopied);
   }
 
   private watchTocTargets(): void {

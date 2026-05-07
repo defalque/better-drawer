@@ -165,7 +165,8 @@
               "buildTarget": "website:build:production"
             },
             "development": {
-              "buildTarget": "website:build:development"
+              "buildTarget": "website:build:development",
+              "allowedHosts": true
             }
           },
           "defaultConfiguration": "development"

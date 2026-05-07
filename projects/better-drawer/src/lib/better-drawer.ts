@@ -302,6 +302,7 @@ export class BetterDrawerTrigger {
     '[attr.aria-modal]': 'ariaModalAttr()',
     '[attr.tabindex]': '-1',
     '[attr.data-direction]': 'effectiveDirection()',
+    '[attr.data-dismissible]': 'effectiveDismissible()',
     '[attr.data-bd-drawer-content]': '""',
     '[attr.data-bd-drawer-open]': 'drawerOpenAttr()',
     '[attr.data-bd-drawer-nest-level]': 'drawerNestLevelAttr()',
