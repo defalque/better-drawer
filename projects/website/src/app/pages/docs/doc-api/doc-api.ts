@@ -2,6 +2,7 @@ import { afterNextRender, Component, computed, DestroyRef, inject, signal } from
 import { Meta } from '@angular/platform-browser';
 import hljs from 'highlight.js';
 import typescript from 'highlight.js/lib/languages/typescript';
+import { RouterLink } from '@angular/router';
 
 hljs.registerLanguage('typescript', typescript);
 
@@ -52,7 +53,7 @@ type ApiDocSection =
 
 @Component({
   selector: 'app-doc-api',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './doc-api.html',
   styleUrl: './doc-api.css',
   host: {

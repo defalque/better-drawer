@@ -19,6 +19,21 @@
                 : 'light'
               : pref;
           document.documentElement.classList.toggle('dark', resolved === 'dark');
+          document
+            .getElementById('app-favicon')
+            ?.setAttribute(
+              'href',
+              resolved === 'dark' ? '/favicon-dark.ico' : '/favicon-light.ico',
+            );
+          document
+            .getElementById('app-apple-touch-icon')
+            ?.setAttribute(
+              'href',
+              resolved === 'dark' ? '/apple-touch-icon-dark.png' : '/apple-touch-icon-light.png',
+            );
+          document
+            .getElementById('app-theme-color')
+            ?.setAttribute('content', resolved === 'dark' ? '#0a0a0a' : '#ffffff');
         } catch (e) {}
       })();
     </script>

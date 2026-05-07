@@ -1,11 +1,7 @@
 <div class="grid place-items-center min-h-screen mx-auto px-4 py-12 relative">
-  <div
-    class="absolute inset-0 -z-10 overflow-hidden pointer-events-none backdrop-blur-sm"
-    aria-hidden="true"
-  >
-    <!-- Full-page: pattern ripetuto (passo = lato quadrato); slice su un solo blocco non riduce mai le celle -->
+  <div class="absolute -top-1 inset-0 -z-10 overflow-hidden pointer-events-none" aria-hidden="true">
     <svg
-      class="block h-full w-full text-zinc-300/20 dark:text-zinc-700/8"
+      class="block h-full w-full text-zinc-300/40 dark:text-zinc-700/40 mask-radial-[52%_75%] mask-radial-from-10% mask-radial-at-top"
       preserveAspectRatio="none"
     >
       <defs>
@@ -40,6 +36,7 @@
       />
     </svg>
   </div>
+
   <div class="flex flex-col gap-16 w-full max-w-2xl mx-auto z-100">
     <div class="flex flex-col items-center justify-center mt-42 mb-6">
       <h1
@@ -83,18 +80,5 @@
             class="hljs landing-page-code language-bash dark:text-white!"
             >npm install better-drawer</code></pre>
     </div>
-
-    <!-- <span
-      class="text-zinc-900/70 dark:text-zinc-50/80 mt-26 border-t border-dashed border-zinc-200 dark:border-zinc-800 pt-4"
-    >
-      By
-      <a
-        href="https://marcodefalco.dev"
-        target="_blank"
-        rel="noopener"
-        class="text-orange-600 dark:text-orange-400 hover:underline underline-offset-2"
-        >Marco De Falco</a
-      >
-    </span> -->
   </div>
 </div>
