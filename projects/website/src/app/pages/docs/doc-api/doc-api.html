@@ -1,1 +1,371 @@
-<div class="flex w-full gap-2"></div>
+<div class="flex w-full gap-2">
+  <div
+    class="doc-container divide-y divide-dashed divide-zinc-200 dark:divide-zinc-600/50 overflow-x-auto"
+  >
+    <div class="pb-16">
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+        API
+      </h1>
+      <p class="text-zinc-700 dark:text-zinc-300 mt-4">Learn Better Drawer's API.</p>
+
+      <div class="space-y-4 pt-20" id="customization">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          Anatomy
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300">
+          Better Drawer is made up of several attribute directives. Import all parts and piece them
+          together.
+        </p>
+        <div>
+          <pre
+            class="landing-page-pre"
+          ><code class="landing-page-code language-typescript dark:text-white!" [innerHTML]="onAnatomySource()"></code></pre>
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-20" id="bdDrawerRoot">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          bdDrawerRoot
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300 text-pretty">
+          Directive that controls the root of the drawer. You need to set the
+          <code class="p-code-snippet">[(open)]</code> two-way binding to control the open state of
+          the drawer.
+        </p>
+        <div>
+          <pre
+            class="landing-page-pre"
+          ><code class="landing-page-code language-typescript dark:text-white!" [innerHTML]="bdDrawerRootSource()"></code></pre>
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-20" id="bdDrawerTrigger">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          bdDrawerTrigger
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300">
+          Attribute directive by which the drawer is triggered.
+        </p>
+        <div>
+          <pre
+            class="landing-page-pre"
+          ><code class="landing-page-code language-typescript dark:text-white!" [innerHTML]="bdDrawerTriggerSource()"></code></pre>
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-20" id="bdDrawerOverlay">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          bdDrawerOverlay
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300 text-pretty">
+          Attribute directive that controls the overlay of the drawer. Clicking on it will close the
+          drawer.
+        </p>
+        <div>
+          <pre
+            class="landing-page-pre"
+          ><code class="landing-page-code language-typescript dark:text-white!" [innerHTML]="bdDrawerOverlaySource()"></code></pre>
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-20" id="bdDrawerContent">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          bdDrawerContent
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300 text-pretty">
+          Attribute directive that controls the content of the drawer.<br />You need to set the
+          styles accordingly in order to reflect the drawer's direction.
+        </p>
+        <div>
+          <pre
+            class="landing-page-pre"
+          ><code class="landing-page-code language-typescript dark:text-white!" [innerHTML]="bdDrawerContentSource()"></code></pre>
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-20" id="bdDrawerTitle">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          bdDrawerTitle
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300 text-pretty">
+          Attribute directive that controls the title of the drawer. Not setting it will trigger a
+          console warning.
+        </p>
+        <div>
+          <pre
+            class="landing-page-pre"
+          ><code class="landing-page-code language-typescript dark:text-white!" [innerHTML]="bdDrawerTitleSource()"></code></pre>
+        </div>
+      </div>
+
+      <div class="space-y-4 pt-20" id="api-reference">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          API Reference
+        </h2>
+        <div
+          class="w-full overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-600/50 shadow-2xs"
+        >
+          <table class="w-full">
+            <thead
+              class="bg-zinc-100 dark:bg-zinc-900/90 [&_th]:border-b [&_th]:border-zinc-200 dark:[&_th]:border-zinc-600/50"
+            >
+              <tr>
+                <th class="text-left text-zinc-900 dark:text-zinc-300 font-medium px-6 py-2">
+                  Input
+                </th>
+                <th class="text-left text-zinc-900 dark:text-zinc-300 font-medium px-6 py-2">
+                  Type
+                </th>
+                <th class="text-left text-zinc-900 dark:text-zinc-300 font-medium px-6 py-2">
+                  Default
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="divide-y divide-zinc-200 dark:divide-zinc-600/50 bg-gray-50/20 dark:bg-zinc-950/80"
+            >
+              <tr>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top"
+                >
+                  <code class="p-code-snippet">direction</code>
+                </td>
+                <td class="text-left text-zinc-900 dark:text-zinc-500 font-medium px-6 py-4">
+                  <div class="flex flex-wrap gap-2 items-baseline">
+                    <code class="p-code-snippet whitespace-nowrap">'left'</code>
+                    <span class="text-zinc-400 dark:text-zinc-600 select-none" aria-hidden="true"
+                      >|</span
+                    >
+                    <code class="p-code-snippet whitespace-nowrap">'right'</code>
+                    <span class="text-zinc-400 dark:text-zinc-600 select-none" aria-hidden="true"
+                      >|</span
+                    >
+                    <code class="p-code-snippet whitespace-nowrap">'top'</code>
+                    <span class="text-zinc-400 dark:text-zinc-600 select-none" aria-hidden="true"
+                      >|</span
+                    >
+                    <code class="p-code-snippet whitespace-nowrap">'bottom'</code>
+                  </div>
+                </td>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top whitespace-nowrap"
+                >
+                  <code class="p-code-snippet">'bottom'</code>
+                </td>
+              </tr>
+
+              <tr>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top"
+                >
+                  <code class="p-code-snippet">dismissible</code>
+                </td>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-500 font-medium text-sm px-6 py-4 align-top"
+                >
+                  <code class="p-code-snippet">boolean</code>
+                </td>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top whitespace-nowrap"
+                >
+                  <code class="p-code-snippet">true</code>
+                </td>
+              </tr>
+
+              <tr>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top"
+                >
+                  <code class="p-code-snippet text-sm!">hideBar</code>
+                </td>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-500 font-medium text-sm px-6 py-4 align-top"
+                >
+                  <div class="flex flex-wrap gap-2 items-baseline">
+                    <code class="p-code-snippet text-sm!">boolean</code>
+                  </div>
+                </td>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top whitespace-nowrap"
+                >
+                  <code class="p-code-snippet text-sm!">false</code>
+                </td>
+              </tr>
+
+              <tr>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top"
+                >
+                  <code class="p-code-snippet">modal</code>
+                </td>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-500 font-medium text-sm px-6 py-4 align-top"
+                >
+                  <code class="p-code-snippet">boolean</code>
+                </td>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top whitespace-nowrap"
+                >
+                  <code class="p-code-snippet">true</code>
+                </td>
+              </tr>
+
+              <tr>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top"
+                >
+                  <code class="p-code-snippet text-sm!">open</code>
+                </td>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-500 font-medium text-sm px-6 py-4 align-top"
+                >
+                  <div class="flex flex-wrap gap-2 items-baseline">
+                    <code class="p-code-snippet text-sm!">model</code>
+                  </div>
+                </td>
+                <td
+                  class="text-left text-zinc-900 dark:text-zinc-300 font-medium text-sm px-6 py-4 align-top whitespace-nowrap"
+                >
+                  <code class="p-code-snippet text-sm!">false</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between my-6">
+      <a href="/docs/considerations" class="flex items-end gap-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="var(--color-zinc-500)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-4.5"
+        >
+          <path d="m15 18-6-6 6-6" />
+        </svg>
+        <div class="flex flex-col items-start">
+          <p class="text-zinc-600 dark:text-zinc-400 text-[13px]">Previous</p>
+          <p class="text-zinc-600 dark:text-zinc-200 text-sm font-medium">Considerations</p>
+        </div>
+      </a>
+
+      <a href="/docs/toast-types" class="flex items-end gap-2">
+        <div class="flex flex-col items-end">
+          <p class="text-zinc-600 dark:text-zinc-400 text-[13px]">Next</p>
+          <p class="text-zinc-600 dark:text-zinc-200 text-sm font-medium">Toast</p>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="var(--color-zinc-500)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="size-4.5"
+        >
+          <path d="m9 18 6-6-6-6" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="toc">
+    <div class="flex items-baseline gap-2">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="var(--color-zinc-500)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="size-4"
+      >
+        <path d="M4 14h6" />
+        <path d="M4 2h10" />
+        <rect x="4" y="18" width="16" height="4" rx="1" />
+        <rect x="4" y="6" width="16" height="4" rx="1" />
+      </svg>
+      <span class="text-zinc-500">On this page</span>
+    </div>
+
+    <div class="ml-6 toc-content relative">
+      <div
+        class="absolute top-0 -left-4 w-px h-full border-l border-dashed border-zinc-200 dark:border-zinc-600/50 -z-10"
+      ></div>
+
+      <ul class="space-y-2">
+        <li>
+          <a
+            href="/docs/api#anatomy"
+            [attr.data-active]="activeSection() === 'anatomy'"
+            [class]="tocLinkClass('anatomy')"
+            (click)="activeSection.set('anatomy')"
+            >Anatomy</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/api#bdDrawerRoot"
+            [attr.data-active]="activeSection() === 'bdDrawerRoot'"
+            [class]="tocLinkClass('bdDrawerRoot')"
+            (click)="activeSection.set('bdDrawerRoot')"
+            >bdDrawerRoot</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/api#bdDrawerTrigger"
+            [attr.data-active]="activeSection() === 'bdDrawerTrigger'"
+            [class]="tocLinkClass('bdDrawerTrigger')"
+            (click)="activeSection.set('bdDrawerTrigger')"
+            >bdDrawerTrigger</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/api#bdDrawerOverlay"
+            [attr.data-active]="activeSection() === 'bdDrawerOverlay'"
+            [class]="tocLinkClass('bdDrawerOverlay')"
+            (click)="activeSection.set('bdDrawerOverlay')"
+            >bdDrawerOverlay</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/api#bdDrawerContent"
+            [attr.data-active]="activeSection() === 'bdDrawerContent'"
+            [class]="tocLinkClass('bdDrawerContent')"
+            (click)="activeSection.set('bdDrawerContent')"
+            >bdDrawerContent</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/api#bdDrawerTitle"
+            [attr.data-active]="activeSection() === 'bdDrawerTitle'"
+            [class]="tocLinkClass('bdDrawerTitle')"
+            (click)="activeSection.set('bdDrawerTitle')"
+            >bdDrawerTitle</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/api#api-reference"
+            [attr.data-active]="activeSection() === 'api-reference'"
+            [class]="tocLinkClass('api-reference')"
+            (click)="activeSection.set('api-reference')"
+            >API Reference</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,20 +1,53 @@
 import { afterNextRender, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import hljs from 'highlight.js';
-import xml from 'highlight.js/lib/languages/xml';
+import typescript from 'highlight.js/lib/languages/typescript';
 
-hljs.registerLanguage('xml', xml);
+hljs.registerLanguage('typescript', typescript);
+
+const ON_ANATOMY_SOURCE = `import { Component, model } from '@angular/core';
+import { 
+  BetterDrawerContent,
+  BetterDrawerOverlay,
+  BetterDrawerRoot,
+  BetterDrawerTitle,
+  BetterDrawerTrigger,
+} from 'better-drawer';
+
+@Component({
+  selector: 'app-my-drawer',
+  imports: [
+    BetterDrawerRoot, 
+    BetterDrawerTrigger, 
+    BetterDrawerOverlay, 
+    BetterDrawerContent, 
+    BetterDrawerTitle,
+  ],
+  template: '
+    <div bdDrawerRoot [(open)]="openDrawer">
+      <button type="button" bdDrawerTrigger>
+        Open Drawer
+      </button>
+      @if (openDrawer()) {
+        <div bdDrawerOverlay></div>
+        <div bdDrawerContent>
+            <h2 bdDrawerTitle></h2>
+        </div>
+      }
+    </div>
+  ',
+})
+export class MyDrawer {
+  protected openDrawer = model(false);
+}`;
 
 type ApiDocSection =
-  | 'customization'
-  | 'position'
-  | 'duration'
-  | 'offsets'
-  | 'theme'
-  | 'rich-colors'
-  | 'close-button'
-  | 'icons'
-  | 'accessibility-labels'
+  | 'anatomy'
+  | 'bdDrawerRoot'
+  | 'bdDrawerTrigger'
+  | 'bdDrawerOverlay'
+  | 'bdDrawerContent'
+  | 'bdDrawerTitle'
   | 'api-reference';
 
 @Component({
@@ -29,7 +62,7 @@ type ApiDocSection =
 export class DocApi {
   private readonly meta = inject(Meta);
 
-  protected activeSection = signal<ApiDocSection>('customization');
+  protected activeSection = signal<ApiDocSection>('anatomy');
   protected readonly destroyRef = inject(DestroyRef);
 
   private watchTocTargets(): void {
@@ -81,15 +114,12 @@ export class DocApi {
 
   private isApiDocSection(id: string): id is ApiDocSection {
     return [
-      'customization',
-      'position',
-      'duration',
-      'offsets',
-      'theme',
-      'rich-colors',
-      'close-button',
-      'icons',
-      'accessibility-labels',
+      'anatomy',
+      'bdDrawerRoot',
+      'bdDrawerTrigger',
+      'bdDrawerOverlay',
+      'bdDrawerContent',
+      'bdDrawerTitle',
       'api-reference',
     ].includes(id);
   }
@@ -111,117 +141,71 @@ export class DocApi {
     });
   }
 
-  protected readonly positionSource = computed(() => {
+  protected onAnatomySource(): string {
+    return hljs.highlight(ON_ANATOMY_SOURCE, { language: 'typescript' }).value;
+  }
+
+  protected readonly bdDrawerRootSource = computed(() => {
     return hljs.highlight(
-      `<!-- Render toasts at the bottom right corner of the viewport -->
-<!-- Available positions: top-left, top-center, top-right, bottom-left, bottom-center, bottom-right -->
-<better-toaster position="bottom-right" />`,
+      `<!-- my-drawer.ts -->
+protected openDrawer = model(false);
+
+<!-- my-drawer.html -->
+<div bdDrawerRoot [(open)]="openDrawer">...</div>`,
       {
-        language: 'xml',
+        language: 'typescript',
       },
     ).value;
   });
 
-  protected readonly durationSource = computed(() => {
-    return hljs.highlight(
-      `<!-- Duration must be specified in milliseconds -->
-<!-- To keep toasts visible until manually dismissed use "Infinity" literal -->
-<better-toaster [duration]="4000" />`,
-      {
-        language: 'xml',
-      },
-    ).value;
-  });
-
-  protected readonly offsetsSource = computed(() => {
-    return hljs.highlight(
-      `<!-- All sides will have 32px offset -->
-<better-toaster  offset="32px" />
-
-<!-- All sides will have 10vh offset -->
-<better-toaster  offset="10vh" />
-
-<!-- 24px from the bottom, 16px from the right and left -->
-<better-toaster  [offset]="{ bottom: '24px', right: '16px', left: '16px' }" />
-
-<!-- All sides will have 32px offset in mobile devices -->
-<better-toaster 
-  [mobileOffset]="{ top: '32px', right: '32px', bottom: '32px', left: '32px' }"
-/>`,
-      {
-        language: 'xml',
-      },
-    ).value;
-  });
-
-  protected readonly themeSource = computed(() => {
-    return hljs.highlight(
-      `<!-- Available themes: light, dark, system -->
-<better-toaster theme="light" />`,
-      {
-        language: 'xml',
-      },
-    ).value;
-  });
-
-  protected readonly richColorsSource = computed(() => {
-    return hljs.highlight(`<better-toaster [richColors]="true" />`, {
+  protected readonly bdDrawerTriggerSource = computed(() => {
+    return hljs.highlight(`<button bdDrawerTrigger type="button">...</button>`, {
       language: 'xml',
     }).value;
   });
 
-  protected readonly closeButtonSource = computed(() => {
-    return hljs.highlight(`<better-toaster [closeButton]="false" />`, {
-      language: 'xml',
-    }).value;
-  });
-
-  protected readonly iconsSource = computed(() => {
+  protected readonly bdDrawerOverlaySource = computed(() => {
     return hljs.highlight(
-      `<!-- app-custom-success-icon.component.ts -->
-<!-- Use fill/stroke utilities (including dark: variants) on the SVG so the icon matches light and dark themes. -->
-<!-- recommended stroke-width is "1.75" -->
-@Component({
-  selector: 'app-custom-success-icon',
-  standalone: true,
-  template: \`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-      stroke-width="1.75"  
-      class="fill-black! dark:fill-none! stroke-black! dark:stroke-white! size-4!"
-    >
-      <!-- Your SVG code here -->
-    </svg>
-  \`,
-})
-export class CustomSuccessIconComponent {}
+      `<!-- my-drawer.ts -->
+protected openDrawer = model(false);
 
-<!-- app.html -->
-<better-toaster 
-  [icons]="{
-    default: CustomDefaultIconComponent,
-    description: CustomDescriptionIconComponent,
-    success: CustomSuccessIconComponent,
-    error: null,
-    info: CustomInfoIconComponent,
-    warning: null,
-    loading: CustomLoadingIconComponent,
-  }"
-/>`,
+<!-- my-drawer.html -->
+@if (openDrawer()) {
+  <div bdDrawerOverlay></div>
+  ...
+}`,
       {
         language: 'xml',
       },
     ).value;
   });
 
-  protected readonly accessibilityLabelsSource = computed(() => {
+  protected readonly bdDrawerContentSource = computed(() => {
     return hljs.highlight(
-      `<!-- Override the default accessibility labels to italian -->
-<better-toaster
-  [accessibilityLabels]="{
-    notificationsRegion: 'Notifiche',
-    dismissButton: 'Chiudi',
-  }"
-/>`,
+      `<!-- my-drawer.ts -->
+protected openDrawer = model(false);
+
+<!-- my-drawer.html -->
+@if (openDrawer()) {
+  ...
+  <div bdDrawerContent></div>
+}`,
+      {
+        language: 'xml',
+      },
+    ).value;
+  });
+
+  protected readonly bdDrawerTitleSource = computed(() => {
+    return hljs.highlight(
+      `<!-- my-drawer.ts -->
+protected openDrawer = model(false);
+
+<!-- my-drawer.html -->
+@if (openDrawer()) {
+  ...
+  <h2 bdDrawerTitle></h2>
+}`,
       {
         language: 'xml',
       },
