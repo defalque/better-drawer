@@ -18,6 +18,7 @@ const ON_ANATOMY_SOURCE = `import { Component, model } from '@angular/core';
 import { 
   BetterDrawerContent,
   BetterDrawerOverlay,
+  BetterDrawerPortal,
   BetterDrawerRoot,
   BetterDrawerTitle,
   BetterDrawerTrigger,
@@ -26,23 +27,26 @@ import {
 @Component({
   selector: 'app-my-drawer',
   imports: [
-    BetterDrawerRoot, 
-    BetterDrawerTrigger, 
-    BetterDrawerOverlay, 
     BetterDrawerContent, 
+    BetterDrawerOverlay, 
+    BetterDrawerPortal,
+    BetterDrawerRoot, 
     BetterDrawerTitle,
+    BetterDrawerTrigger, 
   ],
   template: '
     <div bdDrawerRoot [(open)]="openDrawer">
       <button type="button" bdDrawerTrigger>
         Open Drawer
       </button>
-      @if (openDrawer()) {
-        <div bdDrawerOverlay></div>
-        <div bdDrawerContent>
-            <h2 bdDrawerTitle></h2>
-        </div>
-      }
+      <ng-template bdDrawerPortal>
+        @if (openDrawer()) {
+          <div bdDrawerOverlay></div>
+          <div bdDrawerContent>
+              <h2 bdDrawerTitle></h2>
+          </div>
+        }
+      </ng-template>
     </div>
   ',
 })
@@ -54,6 +58,7 @@ type ApiDocSection =
   | 'anatomy'
   | 'bdDrawerRoot'
   | 'bdDrawerTrigger'
+  | 'bdDrawerPortal'
   | 'bdDrawerOverlay'
   | 'bdDrawerContent'
   | 'bdDrawerTitle'
@@ -127,6 +132,7 @@ export class DocApi {
       'anatomy',
       'bdDrawerRoot',
       'bdDrawerTrigger',
+      'bdDrawerPortal',
       'bdDrawerOverlay',
       'bdDrawerContent',
       'bdDrawerTitle',
@@ -161,7 +167,9 @@ export class DocApi {
 protected openDrawer = model(false);
 
 <!-- my-drawer.html -->
-<div bdDrawerRoot [(open)]="openDrawer">...</div>`,
+<div bdDrawerRoot [(open)]="openDrawer">
+  <!-- place your drawer trigger and content parts here -->
+</div>`,
       {
         language: 'typescript',
       },
@@ -169,9 +177,30 @@ protected openDrawer = model(false);
   });
 
   protected readonly bdDrawerTriggerSource = computed(() => {
-    return hljs.highlight(`<button bdDrawerTrigger type="button">...</button>`, {
-      language: 'xml',
-    }).value;
+    return hljs.highlight(
+      `<!-- my-drawer.html -->
+<!-- inside your drawer root -->
+<button bdDrawerTrigger type="button">...</button>`,
+      {
+        language: 'xml',
+      },
+    ).value;
+  });
+
+  protected readonly bdDrawerPortalSource = computed(() => {
+    return hljs.highlight(
+      `<!-- my-drawer.ts -->
+protected openDrawer = model(false);
+
+<!-- my-drawer.html -->
+<!-- inside your drawer root -->
+<ng-template bdDrawerPortal>
+  <!-- overlay and content parts -->
+</ng-template>`,
+      {
+        language: 'xml',
+      },
+    ).value;
   });
 
   protected readonly bdDrawerOverlaySource = computed(() => {
@@ -180,9 +209,10 @@ protected openDrawer = model(false);
 protected openDrawer = model(false);
 
 <!-- my-drawer.html -->
+<!-- inside your drawer root -->
 @if (openDrawer()) {
   <div bdDrawerOverlay></div>
-  ...
+  <!-- content part -->
 }`,
       {
         language: 'xml',
@@ -196,8 +226,9 @@ protected openDrawer = model(false);
 protected openDrawer = model(false);
 
 <!-- my-drawer.html -->
+<!-- inside your drawer root -->
 @if (openDrawer()) {
-  ...
+  <!-- overlay part -->
   <div bdDrawerContent></div>
 }`,
       {
@@ -212,9 +243,12 @@ protected openDrawer = model(false);
 protected openDrawer = model(false);
 
 <!-- my-drawer.html -->
+<!-- inside your drawer root -->
 @if (openDrawer()) {
-  ...
-  <h2 bdDrawerTitle></h2>
+  <!-- overlay part -->
+   <div bdDrawerContent>
+    <h2 bdDrawerTitle></h2>
+   </div>
 }`,
       {
         language: 'xml',

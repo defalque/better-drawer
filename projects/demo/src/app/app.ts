@@ -6,6 +6,7 @@ import {
   BetterDrawerOverlay,
   BetterDrawerTitle,
   BetterDrawerTrigger,
+  BetterDrawerPortal,
 } from 'better-drawer';
 import { MyDrawer } from './components/my-drawer';
 
@@ -19,12 +20,15 @@ import { MyDrawer } from './components/my-drawer';
     BetterDrawerTitle,
     BetterDrawerTrigger,
     MyDrawer,
+    BetterDrawerPortal,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('demo');
+  protected readonly renderInPortal = signal(false);
+  protected readonly secondPortal = signal(false);
 
   /** Bound to `[bdDrawerRoot]` `[(open)]` for each demo drawer */
   protected readonly leftOpen = model(false);

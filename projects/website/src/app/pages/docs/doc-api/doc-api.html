@@ -53,6 +53,20 @@
         </div>
       </div>
 
+      <div class="space-y-4 pt-20" id="bdDrawerPortal">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          bdDrawerPortal
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300 text-pretty">
+          Optional attribute directive that portals your overlay and content parts into the body.
+        </p>
+        <div>
+          <pre
+            class="landing-page-pre"
+          ><code class="landing-page-code language-typescript dark:text-white!" [innerHTML]="bdDrawerPortalSource()"></code></pre>
+        </div>
+      </div>
+
       <div class="space-y-4 pt-20" id="bdDrawerOverlay">
         <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
           bdDrawerOverlay
@@ -296,7 +310,7 @@
       <span class="text-zinc-500">On this page</span>
     </div>
 
-    <div class="ml-6 toc-content relative">
+    <div class="ml-6 toc-content relative font-semibold">
       <div
         class="absolute top-0 -left-4 w-px h-full border-l border-dashed border-zinc-200 dark:border-zinc-600/50 -z-10"
       ></div>
@@ -327,6 +341,15 @@
             [class]="tocLinkClass('bdDrawerTrigger')"
             (click)="activeSection.set('bdDrawerTrigger')"
             >bdDrawerTrigger</a
+          >
+        </li>
+        <li>
+          <a
+            href="/docs/api#bdDrawerPortal"
+            [attr.data-active]="activeSection() === 'bdDrawerPortal'"
+            [class]="tocLinkClass('bdDrawerPortal')"
+            (click)="activeSection.set('bdDrawerPortal')"
+            >bdDrawerPortal</a
           >
         </li>
         <li>

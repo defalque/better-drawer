@@ -4,14 +4,22 @@ import {
   Component,
   computed,
   contentChild,
+  createComponent,
   Directive,
   effect,
   ElementRef,
+  EnvironmentInjector,
+  ApplicationRef,
   inject,
+  Injector,
   input,
   model,
+  OnDestroy,
   signal,
+  TemplateRef,
   untracked,
+  OnInit,
+  EmbeddedViewRef,
 } from '@angular/core';
 import { BetterDrawerDirection } from './better-drawer.types';
 import { BETTER_DRAWER_ROOT, type BetterDrawerRootContext } from './better-drawer.context';
@@ -731,5 +739,40 @@ export class BetterDrawerContent {
     const boundaryTolerance = 1;
 
     return positiveDismiss ? el.scrollTop > 0 : el.scrollTop < maxScroll - boundaryTolerance;
+  }
+}
+
+@Directive({
+  selector: '[bdDrawerPortal]',
+  standalone: true,
+})
+export class BetterDrawerPortal implements OnInit, OnDestroy {
+  private readonly templateRef = inject(TemplateRef<unknown>);
+  private readonly appRef = inject(ApplicationRef);
+  private readonly document = inject(DOCUMENT);
+
+  private viewRef?: EmbeddedViewRef<unknown>;
+  private host?: HTMLElement;
+
+  ngOnInit(): void {
+    this.host = this.document.createElement('div');
+    this.host.setAttribute('better-drawer-portal', '');
+
+    this.document.body.appendChild(this.host);
+
+    this.viewRef = this.templateRef.createEmbeddedView({});
+
+    this.appRef.attachView(this.viewRef);
+
+    this.viewRef.detectChanges();
+
+    for (const node of this.viewRef.rootNodes) {
+      this.host.appendChild(node);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.viewRef?.destroy();
+    this.host?.remove();
   }
 }
