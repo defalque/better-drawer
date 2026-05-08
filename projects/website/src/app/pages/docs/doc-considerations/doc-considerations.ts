@@ -1,4 +1,11 @@
-import { afterNextRender, Component, DestroyRef, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 
@@ -12,6 +19,7 @@ type ConsiderationsDocSection = 'bundle-size' | 'caveats';
   host: {
     class: 'block w-full min-w-0 max-w-5xl mx-auto',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocConsiderations {
   private readonly meta = inject(Meta);

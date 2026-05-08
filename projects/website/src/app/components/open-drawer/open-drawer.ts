@@ -1,4 +1,4 @@
-import { Component, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import {
   BetterDrawerContent,
   BetterDrawerOverlay,
@@ -9,6 +9,7 @@ import {
 
 @Component({
   selector: 'app-my-drawer',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     BetterDrawerRoot,
     BetterDrawerTrigger,

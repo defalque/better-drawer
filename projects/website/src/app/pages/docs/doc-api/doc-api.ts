@@ -1,4 +1,12 @@
-import { afterNextRender, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import hljs from 'highlight.js';
 import typescript from 'highlight.js/lib/languages/typescript';
@@ -59,6 +67,7 @@ type ApiDocSection =
   host: {
     class: 'block w-full min-w-0 max-w-5xl mx-auto',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocApi {
   private readonly meta = inject(Meta);

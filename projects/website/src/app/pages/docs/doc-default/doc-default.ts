@@ -1,4 +1,12 @@
-import { afterNextRender, Component, DestroyRef, inject, model, signal } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  model,
+  signal,
+} from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import hljs from 'highlight.js';
@@ -135,6 +143,7 @@ export class MyNestedDrawer {
   host: {
     class: 'block w-full min-w-0 max-w-5xl mx-auto',
   },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DocDefault {
   private readonly meta = inject(Meta);
