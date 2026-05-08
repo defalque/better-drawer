@@ -26,10 +26,10 @@ import {
         Open Drawer
       </button>
       @if (openDrawer()) {
-        <div bdDrawerOverlay class="bg-black/50"></div>
+        <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
         <div
           bdDrawerContent
-          class="flex flex-col flex-1 bg-zinc-50 dark:bg-zinc-900 h-84 fixed bottom-0 left-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+          class="flex flex-col flex-1 bg-zinc-50 dark:bg-zinc-900 h-84 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
         >
           <div class="space-y-4 max-w-md mx-auto pt-4 px-4">
             <h2

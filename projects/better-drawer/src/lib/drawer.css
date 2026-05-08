@@ -2,6 +2,7 @@
   --better-drawer-closed-transform: translateX(100%);
 
   overflow-y: auto;
+  overscroll-behavior: contain;
   pointer-events: auto;
   touch-action: none;
   user-select: none;
@@ -32,7 +33,8 @@
 }
 :host(.drawer-leave) {
   transform: var(--better-drawer-closed-transform);
-  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.25s ease-out;
+  /* transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); */
 }
 
 @media (prefers-reduced-motion: reduce) {

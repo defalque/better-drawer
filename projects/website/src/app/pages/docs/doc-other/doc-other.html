@@ -84,10 +84,10 @@
                   Open non modal drawer
                 </button>
                 @if (openNonModalDrawer()) {
-                  <div bdDrawerOverlay class="bg-black/50"></div>
+                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
                   <aside
                     bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 left-0 rounded-tr-xl rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+                    class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 left-0 rounded-tr-xl rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
                   >
                     <div class="p-4 grid gap-4 max-w-lg mx-auto">
                       <h2
@@ -190,10 +190,10 @@
                   Open non dismissible drawer
                 </button>
                 @if (openNonDismissibleDrawer()) {
-                  <div bdDrawerOverlay class="bg-black/50"></div>
+                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
                   <aside
                     bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 right-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
                   >
                     <div class="p-4 grid gap-4 max-w-lg mx-auto">
                       <h2

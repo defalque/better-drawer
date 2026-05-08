@@ -36,10 +36,10 @@
             </svg>
           </button>
           @if (openMobileDrawer()) {
-            <div bdDrawerOverlay class="bg-black/50"></div>
+            <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
             <aside
               bdDrawerContent
-              class="w-68 border border-dashed border-zinc-200 dark:border-zinc-800 block lg:hidden fixed right-2 top-2 bottom-2 bg-gray-100 dark:bg-zinc-950 divide-y divide-zinc-200 dark:divide-zinc-800 divide-dashed rounded-lg flex-1 outline-none"
+              class="w-68 shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 block lg:hidden fixed right-2 top-2 bottom-2 bg-gray-50 dark:bg-zinc-950 divide-y divide-zinc-200 dark:divide-zinc-800 divide-dashed rounded-lg flex-1 outline-none"
             >
               <h2 bdDrawerTitle class="sr-only">Better Drawer Mobile Sidebar</h2>
               <nav
@@ -166,7 +166,7 @@
 
   <!-- Desktop sidebar -->
   <aside
-    class="w-68 border-r border-dashed border-zinc-200 dark:border-zinc-800 hidden lg:flex lg:flex-col fixed left-0 top-0 bottom-0 bg-gray-100/60 dark:bg-zinc-950/50 divide-y divide-zinc-200 dark:divide-zinc-800 divide-dashed"
+    class="w-70 border-r border-dashed border-zinc-200 dark:border-zinc-800 hidden lg:flex lg:flex-col fixed left-0 top-0 bottom-0 bg-gray-100/60 dark:bg-zinc-950/50 divide-y divide-zinc-200 dark:divide-zinc-800 divide-dashed"
   >
     <div class="shrink-0 px-3 py-4 space-x-2">
       <a href="/" class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"

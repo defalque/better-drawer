@@ -75,10 +75,10 @@
                   Open default drawer
                 </button>
                 @if (openDrawer()) {
-                  <div bdDrawerOverlay class="bg-black/50"></div>
+                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
                   <aside
                     bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 left-0 rounded-tr-xl rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+                    class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 left-0 rounded-tr-xl rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
                   >
                     <div class="p-4 grid gap-4 max-w-lg mx-auto">
                       <h2
@@ -174,10 +174,10 @@
                   Open side drawer
                 </button>
                 @if (openSideDrawer()) {
-                  <div bdDrawerOverlay class="bg-black/50"></div>
+                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
                   <aside
                     bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 top-0 rounded-r-xl border-r border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 top-0 rounded-r-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
                   >
                     <div class="p-4 grid gap-4 max-w-lg mx-auto">
                       <h2
@@ -271,10 +271,10 @@
               <div bdDrawerRoot class="contents" [(open)]="openNestedDrawer" direction="bottom">
                 <button type="button" bdDrawerTrigger class="drawer-button">Open drawer</button>
                 @if (openNestedDrawer()) {
-                  <div bdDrawerOverlay class="bg-black/50"></div>
+                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
                   <aside
                     bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 right-0 bottom-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none"
+                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 right-0 bottom-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
                   >
                     <div class="p-4 grid gap-4 max-w-lg mx-auto">
                       <h2
@@ -300,10 +300,10 @@
                           Open nested drawer
                         </button>
                         @if (openNestedDrawer2()) {
-                          <div bdDrawerOverlay class="bg-black/50"></div>
+                          <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
                           <aside
                             bdDrawerContent
-                            class="fixed left-0 right-0 bottom-0 rounded-t-xl border-t border-zinc-200/50 dark:border-zinc-800/50 outline-none bg-zinc-50 dark:bg-zinc-900"
+                            class="fixed left-0 right-0 bottom-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none bg-zinc-50 dark:bg-zinc-900"
                           >
                             <div class="p-4 grid gap-4 max-w-lg mx-auto">
                               <h2
@@ -402,13 +402,17 @@
                   Open scrollable drawer
                 </button>
                 @if (openScrollableDrawer()) {
-                  <div bdDrawerOverlay class="bg-black/50"></div>
+                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
                   <div
                     bdDrawerContent
                     class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px] outline-none"
+                    style="scrollbar-width: thin"
                   >
                     <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">
-                      <h2 bdDrawerTitle class="text-2xl font-bold text-zinc-950 dark:text-white">
+                      <h2
+                        bdDrawerTitle
+                        class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
+                      >
                         Scrollable content
                       </h2>
                       <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
@@ -416,26 +420,22 @@
                         eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
                         illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
                         illo.
-                      </p>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                        <br /><br />
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam
                         eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
                         illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
                         illo.
-                      </p>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                        <br /><br />
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam
                         eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
                         illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
                         illo.
-                      </p>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                        <br /><br />
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam
                         eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
                         illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
                         illo.
-                      </p>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                        <br /><br />
                         Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam
                         eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
                         illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
