@@ -7,9 +7,6 @@ import {
   signal,
 } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
-import hljs from 'highlight.js';
-import typescript from 'highlight.js/lib/languages/typescript';
-import html from 'highlight.js/lib/languages/xml';
 import { RouterLink } from '@angular/router';
 import {
   ON_ANATOMY_SOURCE,
@@ -20,15 +17,7 @@ import {
   ON_DRAWER_CONTENT_SOURCE,
   ON_DRAWER_TITLE_SOURCE,
 } from './helpers/sources';
-
-hljs.registerLanguage('typescript', typescript);
-hljs.registerLanguage('html', html);
-
-function higlightHtmlSource(source: string) {
-  return hljs.highlight(source, {
-    language: 'html',
-  }).value;
-}
+import { higlightTypescriptSource, higlightHtmlSource } from '../../../helpers/highlight';
 
 type ApiDocSection =
   | 'anatomy'
@@ -134,7 +123,7 @@ export class DocApi {
   }
 
   protected onAnatomySource(): string {
-    return hljs.highlight(ON_ANATOMY_SOURCE, { language: 'typescript' }).value;
+    return higlightTypescriptSource(ON_ANATOMY_SOURCE);
   }
 
   protected bdDrawerRootSource() {

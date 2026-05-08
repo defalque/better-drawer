@@ -9,13 +9,8 @@ import {
 } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-import hljs from 'highlight.js';
-import bash from 'highlight.js/lib/languages/bash';
-import typescript from 'highlight.js/lib/languages/typescript';
 import { DRAWER_INSTALLATION_SOURCE, DRAWER_USAGE_SOURCE } from './helpers/sources';
-
-hljs.registerLanguage('bash', bash);
-hljs.registerLanguage('typescript', typescript);
+import { higlightBashSource, higlightTypescriptSource } from '../../../helpers/highlight';
 
 type GettingStartedDocSection = 'installation' | 'create-a-drawer-component';
 
@@ -118,11 +113,11 @@ export class DocGettingStarted {
   }
 
   protected readonly drawerInstallationSource = computed(() => {
-    return hljs.highlight(DRAWER_INSTALLATION_SOURCE, { language: 'bash' }).value;
+    return higlightBashSource(DRAWER_INSTALLATION_SOURCE);
   });
 
   protected readonly drawerUsageSource = computed(() => {
-    return hljs.highlight(DRAWER_USAGE_SOURCE, { language: 'typescript' }).value;
+    return higlightTypescriptSource(DRAWER_USAGE_SOURCE);
   });
 
   protected async copyInstallationCode(): Promise<void> {
