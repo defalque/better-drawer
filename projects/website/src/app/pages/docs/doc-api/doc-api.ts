@@ -2,7 +2,6 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
-  computed,
   DestroyRef,
   inject,
   signal,
@@ -10,49 +9,26 @@ import {
 import { Meta } from '@angular/platform-browser';
 import hljs from 'highlight.js';
 import typescript from 'highlight.js/lib/languages/typescript';
+import html from 'highlight.js/lib/languages/xml';
 import { RouterLink } from '@angular/router';
+import {
+  ON_ANATOMY_SOURCE,
+  ON_DRAWER_PORTAL_SOURCE,
+  ON_DRAWER_ROOT_SOURCE,
+  ON_DRAWER_TRIGGER_SOURCE,
+  ON_DRAWER_OVERLAY_SOURCE,
+  ON_DRAWER_CONTENT_SOURCE,
+  ON_DRAWER_TITLE_SOURCE,
+} from './helpers/sources';
 
 hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('html', html);
 
-const ON_ANATOMY_SOURCE = `import { Component, model } from '@angular/core';
-import { 
-  BetterDrawerContent,
-  BetterDrawerOverlay,
-  BetterDrawerPortal,
-  BetterDrawerRoot,
-  BetterDrawerTitle,
-  BetterDrawerTrigger,
-} from 'better-drawer';
-
-@Component({
-  selector: 'app-my-drawer',
-  imports: [
-    BetterDrawerContent, 
-    BetterDrawerOverlay, 
-    BetterDrawerPortal,
-    BetterDrawerRoot, 
-    BetterDrawerTitle,
-    BetterDrawerTrigger, 
-  ],
-  template: '
-    <div bdDrawerRoot [(open)]="openDrawer">
-      <button type="button" bdDrawerTrigger>
-        Open Drawer
-      </button>
-      <ng-template bdDrawerPortal>
-        @if (openDrawer()) {
-          <div bdDrawerOverlay></div>
-          <div bdDrawerContent>
-              <h2 bdDrawerTitle></h2>
-          </div>
-        }
-      </ng-template>
-    </div>
-  ',
-})
-export class MyDrawer {
-  protected openDrawer = model(false);
-}`;
+function higlightHtmlSource(source: string) {
+  return hljs.highlight(source, {
+    language: 'html',
+  }).value;
+}
 
 type ApiDocSection =
   | 'anatomy'
@@ -161,98 +137,27 @@ export class DocApi {
     return hljs.highlight(ON_ANATOMY_SOURCE, { language: 'typescript' }).value;
   }
 
-  protected readonly bdDrawerRootSource = computed(() => {
-    return hljs.highlight(
-      `<!-- my-drawer.ts -->
-protected openDrawer = model(false);
+  protected bdDrawerRootSource() {
+    return higlightHtmlSource(ON_DRAWER_ROOT_SOURCE);
+  }
 
-<!-- my-drawer.html -->
-<div bdDrawerRoot [(open)]="openDrawer">
-  <!-- place your drawer trigger and content parts here -->
-</div>`,
-      {
-        language: 'typescript',
-      },
-    ).value;
-  });
+  protected bdDrawerTriggerSource() {
+    return higlightHtmlSource(ON_DRAWER_TRIGGER_SOURCE);
+  }
 
-  protected readonly bdDrawerTriggerSource = computed(() => {
-    return hljs.highlight(
-      `<!-- my-drawer.html -->
-<!-- inside your drawer root -->
-<button bdDrawerTrigger type="button">...</button>`,
-      {
-        language: 'xml',
-      },
-    ).value;
-  });
+  protected bdDrawerPortalSource() {
+    return higlightHtmlSource(ON_DRAWER_PORTAL_SOURCE);
+  }
 
-  protected readonly bdDrawerPortalSource = computed(() => {
-    return hljs.highlight(
-      `<!-- my-drawer.ts -->
-protected openDrawer = model(false);
+  protected bdDrawerOverlaySource() {
+    return higlightHtmlSource(ON_DRAWER_OVERLAY_SOURCE);
+  }
 
-<!-- my-drawer.html -->
-<!-- inside your drawer root -->
-<ng-template bdDrawerPortal>
-  <!-- overlay and content parts -->
-</ng-template>`,
-      {
-        language: 'xml',
-      },
-    ).value;
-  });
+  protected bdDrawerContentSource() {
+    return higlightHtmlSource(ON_DRAWER_CONTENT_SOURCE);
+  }
 
-  protected readonly bdDrawerOverlaySource = computed(() => {
-    return hljs.highlight(
-      `<!-- my-drawer.ts -->
-protected openDrawer = model(false);
-
-<!-- my-drawer.html -->
-<!-- inside your drawer root -->
-@if (openDrawer()) {
-  <div bdDrawerOverlay></div>
-  <!-- content part -->
-}`,
-      {
-        language: 'xml',
-      },
-    ).value;
-  });
-
-  protected readonly bdDrawerContentSource = computed(() => {
-    return hljs.highlight(
-      `<!-- my-drawer.ts -->
-protected openDrawer = model(false);
-
-<!-- my-drawer.html -->
-<!-- inside your drawer root -->
-@if (openDrawer()) {
-  <!-- overlay part -->
-  <div bdDrawerContent></div>
-}`,
-      {
-        language: 'xml',
-      },
-    ).value;
-  });
-
-  protected readonly bdDrawerTitleSource = computed(() => {
-    return hljs.highlight(
-      `<!-- my-drawer.ts -->
-protected openDrawer = model(false);
-
-<!-- my-drawer.html -->
-<!-- inside your drawer root -->
-@if (openDrawer()) {
-  <!-- overlay part -->
-   <div bdDrawerContent>
-    <h2 bdDrawerTitle></h2>
-   </div>
-}`,
-      {
-        language: 'xml',
-      },
-    ).value;
-  });
+  protected bdDrawerTitleSource() {
+    return higlightHtmlSource(ON_DRAWER_TITLE_SOURCE);
+  }
 }
