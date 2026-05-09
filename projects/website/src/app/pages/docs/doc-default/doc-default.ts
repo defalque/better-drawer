@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-import hljs from 'highlight.js';
 import {
   BetterDrawerContent,
   BetterDrawerOverlay,
@@ -22,6 +21,7 @@ import {
   ON_SIDE_DRAWER_SOURCE,
   ON_NESTED_DRAWER_SOURCE,
 } from './helpers/sources';
+import { higlightTypescriptSource } from '../../../helpers/highlight';
 
 type DefaultDocSection = 'default' | 'side-drawer' | 'nested-drawers' | 'scrollable';
 
@@ -53,7 +53,7 @@ export class DocDefault {
   protected onDefaultTab = signal<'preview' | 'code'>('preview');
   protected onDefaultCodeCopied = signal(false);
   protected onDefaultSource(): string {
-    return hljs.highlight(ON_DEFAULT_SOURCE, { language: 'typescript' }).value;
+    return higlightTypescriptSource(ON_DEFAULT_SOURCE);
   }
   protected async copyOnDefaultCode(): Promise<void> {
     await this.copyToClipboard(ON_DEFAULT_SOURCE, this.onDefaultCodeCopied);
@@ -63,7 +63,7 @@ export class DocDefault {
   protected onSideDrawerTab = signal<'preview' | 'code'>('preview');
   protected onSideDrawerCodeCopied = signal(false);
   protected onSideDrawerSource(): string {
-    return hljs.highlight(ON_SIDE_DRAWER_SOURCE, { language: 'typescript' }).value;
+    return higlightTypescriptSource(ON_SIDE_DRAWER_SOURCE);
   }
   protected async copyOnSideDrawerCode(): Promise<void> {
     await this.copyToClipboard(ON_SIDE_DRAWER_SOURCE, this.onSideDrawerCodeCopied);
@@ -74,7 +74,7 @@ export class DocDefault {
   protected onNestedDrawerTab = signal<'preview' | 'code'>('preview');
   protected onNestedDrawerCodeCopied = signal(false);
   protected onNestedDrawerSource(): string {
-    return hljs.highlight(ON_NESTED_DRAWER_SOURCE, { language: 'typescript' }).value;
+    return higlightTypescriptSource(ON_NESTED_DRAWER_SOURCE);
   }
   protected async copyOnNestedDrawerCode(): Promise<void> {
     await this.copyToClipboard(ON_NESTED_DRAWER_SOURCE, this.onNestedDrawerCodeCopied);
@@ -84,7 +84,7 @@ export class DocDefault {
   protected onScrollableDrawerTab = signal<'preview' | 'code'>('preview');
   protected onScrollableDrawerCodeCopied = signal(false);
   protected onScrollableDrawerSource(): string {
-    return hljs.highlight(ON_DEFAULT_SOURCE, { language: 'typescript' }).value;
+    return higlightTypescriptSource(ON_DEFAULT_SOURCE);
   }
   protected async copyOnScrollableDrawerCode(): Promise<void> {
     await this.copyToClipboard(ON_DEFAULT_SOURCE, this.onScrollableDrawerCodeCopied);

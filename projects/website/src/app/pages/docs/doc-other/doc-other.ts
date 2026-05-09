@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-import hljs from 'highlight.js';
 import {
   BetterDrawerContent,
   BetterDrawerOverlay,
@@ -18,6 +17,7 @@ import {
   BetterDrawerTrigger,
 } from 'better-drawer';
 import { ON_NON_MODAL_DRAWER_SOURCE, ON_NON_DISMISSIBLE_DRAWER_SOURCE } from './helpers/sources';
+import { higlightTypescriptSource } from '../../../helpers/highlight';
 
 type OtherDocSection = 'non-modal' | 'non-dismissible' | 'dynamic';
 
@@ -49,7 +49,7 @@ export class DocOther {
   protected onNonModalDrawerTab = signal<'preview' | 'code'>('preview');
   protected onNonModalDrawerCodeCopied = signal(false);
   protected onNonModalDrawerSource(): string {
-    return hljs.highlight(ON_NON_MODAL_DRAWER_SOURCE, { language: 'typescript' }).value;
+    return higlightTypescriptSource(ON_NON_MODAL_DRAWER_SOURCE);
   }
   protected async copyOnNonModalDrawerCode(): Promise<void> {
     await this.copyToClipboard(ON_NON_MODAL_DRAWER_SOURCE, this.onNonModalDrawerCodeCopied);
@@ -59,7 +59,7 @@ export class DocOther {
   protected onNonDismissibleDrawerTab = signal<'preview' | 'code'>('preview');
   protected onNonDismissibleDrawerCodeCopied = signal(false);
   protected onNonDismissibleDrawerSource(): string {
-    return hljs.highlight(ON_NON_DISMISSIBLE_DRAWER_SOURCE, { language: 'typescript' }).value;
+    return higlightTypescriptSource(ON_NON_DISMISSIBLE_DRAWER_SOURCE);
   }
   protected async copyOnNonDismissibleDrawerCode(): Promise<void> {
     await this.copyToClipboard(
