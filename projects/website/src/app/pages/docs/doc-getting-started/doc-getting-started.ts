@@ -5,12 +5,14 @@ import {
   computed,
   DestroyRef,
   inject,
+  model,
   signal,
 } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { DRAWER_INSTALLATION_SOURCE, DRAWER_USAGE_SOURCE } from './helpers/sources';
 import { higlightBashSource, higlightTypescriptSource } from '../../../helpers/highlight';
+import { Toc } from '../../../components/toc/toc';
 
 type GettingStartedDocSection = 'installation' | 'create-a-drawer-component';
 
@@ -18,7 +20,7 @@ type GettingStartedDocSection = 'installation' | 'create-a-drawer-component';
   selector: 'app-doc-getting-started',
   templateUrl: './doc-getting-started.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink, Toc],
   styleUrl: './doc-getting-started.css',
   host: {
     class: 'block w-full min-w-0 max-w-5xl mx-auto',
@@ -33,68 +35,7 @@ export class DocGettingStarted {
   protected readonly usageCodeCopied = signal(false);
   protected readonly typesCodeCopied = signal(false);
 
-  protected activeSection = signal<GettingStartedDocSection>('installation');
-  protected readonly destroyRef = inject(DestroyRef);
-
-  private watchTocTargets(): void {
-    const tocLinks = Array.from(
-      document.querySelectorAll<HTMLAnchorElement>('.toc-content a[href*="#"]'),
-    );
-
-    const sections = tocLinks
-      .map((link) => {
-        const id = link.hash.slice(1);
-        const target = document.getElementById(id);
-
-        return this.isGettingStartedDocSection(id) && target ? { id, target } : null;
-      })
-      .filter(
-        (section): section is { id: GettingStartedDocSection; target: HTMLElement } =>
-          section !== null,
-      );
-
-    if (sections.length === 0) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-
-        if (!visibleEntry) {
-          return;
-        }
-
-        const activeSection = sections.find((section) => section.target === visibleEntry.target);
-
-        if (activeSection) {
-          this.activeSection.set(activeSection.id);
-        }
-      },
-      {
-        rootMargin: '-120px 0px -70% 0px',
-        threshold: 0,
-      },
-    );
-
-    for (const section of sections) {
-      observer.observe(section.target);
-    }
-
-    this.destroyRef.onDestroy(() => observer.disconnect());
-  }
-
-  private isGettingStartedDocSection(id: string): id is GettingStartedDocSection {
-    return ['installation', 'create-a-drawer-component'].includes(id);
-  }
-
-  protected tocLinkClass(section: GettingStartedDocSection): string {
-    return this.activeSection() === section
-      ? 'text-black dark:text-white'
-      : 'text-zinc-600 dark:text-zinc-300/75';
-  }
+  activeSection = model<GettingStartedDocSection>('installation');
 
   constructor() {
     this.meta.updateTag({
@@ -107,8 +48,6 @@ export class DocGettingStarted {
       setTimeout(() => {
         this.enterEnabled.set(true);
       }, 100);
-
-      this.watchTocTargets();
     });
   }
 

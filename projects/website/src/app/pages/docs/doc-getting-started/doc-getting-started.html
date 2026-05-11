@@ -197,31 +197,11 @@
       <span class="text-zinc-500">On this page</span>
     </div>
 
-    <div class="ml-6 toc-content relative font-semibold">
-      <div
-        class="absolute top-0 -left-4 w-px h-full border-l border-dashed border-zinc-200 dark:border-zinc-600/50 -z-10"
-      ></div>
-
-      <ul class="space-y-2">
-        <li>
-          <a
-            href="/docs/getting-started#installation"
-            [attr.data-active]="activeSection() === 'installation'"
-            [class]="tocLinkClass('installation')"
-            (click)="activeSection.set('installation')"
-            >Installation</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/getting-started#create-a-drawer-component"
-            [attr.data-active]="activeSection() === 'create-a-drawer-component'"
-            [class]="tocLinkClass('create-a-drawer-component')"
-            (click)="activeSection.set('create-a-drawer-component')"
-            >Create a drawer component</a
-          >
-        </li>
-      </ul>
-    </div>
+    <app-toc
+      route="getting-started"
+      [sections]="['installation', 'create-a-drawer-component']"
+      [labels]="['Installation', 'Create a drawer component']"
+      [(activeSection)]="activeSection"
+    ></app-toc>
   </div>
 </div>

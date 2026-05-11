@@ -7,7 +7,7 @@
     @for (section of sections(); track section; let index = $index) {
       <li>
         <a
-          [href]="'/docs/api#' + section"
+          [href]="'/docs/' + route() + '#' + section"
           [attr.data-active]="activeSection() === section"
           [class]="tocLinkClass(section)"
           (click)="activeSection.set(section)"

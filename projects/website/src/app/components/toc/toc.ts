@@ -18,8 +18,9 @@ import {
 export class Toc {
   protected readonly destroyRef = inject(DestroyRef);
 
-  sections = input<string[]>([]);
-  labels = input<string[]>([]);
+  route = input.required<string>();
+  sections = input.required<string[]>();
+  labels = input.required<string[]>();
   activeSection = model<string>('');
 
   constructor() {
