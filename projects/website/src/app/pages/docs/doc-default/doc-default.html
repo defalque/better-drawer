@@ -517,49 +517,11 @@
       <span class="text-zinc-500">On this page</span>
     </div>
 
-    <div class="ml-6 toc-content relative font-semibold">
-      <div
-        class="absolute top-0 -left-4 w-px h-full border-l border-dashed border-zinc-200 dark:border-zinc-600/50 -z-10"
-      ></div>
-
-      <ul class="space-y-2">
-        <li>
-          <a
-            href="/docs/drawer#default"
-            [attr.data-active]="activeSection() === 'default'"
-            [class]="tocLinkClass('default')"
-            (click)="activeSection.set('default')"
-            >Default</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/drawer#side-drawer"
-            [attr.data-active]="activeSection() === 'side-drawer'"
-            [class]="tocLinkClass('side-drawer')"
-            (click)="activeSection.set('side-drawer')"
-            >Side drawer</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/drawer#nested-drawers"
-            [attr.data-active]="activeSection() === 'nested-drawers'"
-            [class]="tocLinkClass('nested-drawers')"
-            (click)="activeSection.set('nested-drawers')"
-            >Nested drawers</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/drawer#scrollable"
-            [attr.data-active]="activeSection() === 'scrollable'"
-            [class]="tocLinkClass('scrollable')"
-            (click)="activeSection.set('scrollable')"
-            >Scrollable</a
-          >
-        </li>
-      </ul>
-    </div>
+    <app-toc
+      route="default"
+      [sections]="['default', 'side-drawer', 'nested-drawers', 'scrollable']"
+      [labels]="['Default', 'Side drawer', 'Nested drawers', 'Scrollable']"
+      [(activeSection)]="activeSection"
+    ></app-toc>
   </div>
 </div>

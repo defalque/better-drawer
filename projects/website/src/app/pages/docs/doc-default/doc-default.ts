@@ -2,7 +2,6 @@ import {
   afterNextRender,
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   inject,
   model,
   signal,
@@ -22,6 +21,7 @@ import {
   ON_NESTED_DRAWER_SOURCE,
 } from './helpers/sources';
 import { higlightTypescriptSource } from '../../../helpers/highlight';
+import { Toc } from '../../../components/toc/toc';
 
 type DefaultDocSection = 'default' | 'side-drawer' | 'nested-drawers' | 'scrollable';
 
@@ -34,6 +34,7 @@ type DefaultDocSection = 'default' | 'side-drawer' | 'nested-drawers' | 'scrolla
     BetterDrawerOverlay,
     BetterDrawerContent,
     BetterDrawerTitle,
+    Toc,
   ],
   templateUrl: './doc-default.html',
   styleUrl: './doc-default.css',
@@ -44,9 +45,22 @@ type DefaultDocSection = 'default' | 'side-drawer' | 'nested-drawers' | 'scrolla
 })
 export class DocDefault {
   private readonly meta = inject(Meta);
+  protected activeSection = model<DefaultDocSection>('default');
+
+  constructor() {
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Main features of Better Drawer.',
+    });
+
+    afterNextRender(() => {
+      setTimeout(() => {
+        this.enterEnabled.set(true);
+      }, 100);
+    });
+  }
+
   protected readonly enterEnabled = signal(false);
-  protected activeSection = signal<DefaultDocSection>('default');
-  protected readonly destroyRef = inject(DestroyRef);
   private copyResetTimeout: ReturnType<typeof setTimeout> | null = null;
 
   protected openDrawer = model(false);
@@ -88,82 +102,6 @@ export class DocDefault {
   }
   protected async copyOnScrollableDrawerCode(): Promise<void> {
     await this.copyToClipboard(ON_DEFAULT_SOURCE, this.onScrollableDrawerCodeCopied);
-  }
-
-  private watchTocTargets(): void {
-    const tocLinks = Array.from(
-      document.querySelectorAll<HTMLAnchorElement>('.toc-content a[href*="#"]'),
-    );
-
-    const sections = tocLinks
-      .map((link) => {
-        const id = link.hash.slice(1);
-        const target = document.getElementById(id);
-
-        return this.isDefaultDocSection(id) && target ? { id, target } : null;
-      })
-      .filter(
-        (section): section is { id: DefaultDocSection; target: HTMLElement } => section !== null,
-      );
-
-    if (sections.length === 0) {
-      return;
-    }
-
-    /** Match sidebar offset used elsewhere (-120px region); keeps TOC in sync on short pages where IntersectionObserver often misses. */
-    const scrollLinePx = 130;
-
-    const updateActiveFromScroll = (): void => {
-      const scrollable = document.documentElement;
-      const nearBottom = window.scrollY + window.innerHeight >= scrollable.scrollHeight - 8;
-
-      if (nearBottom) {
-        this.activeSection.set(sections[sections.length - 1].id);
-        return;
-      }
-
-      let active = sections[0].id;
-      for (const s of sections) {
-        if (s.target.getBoundingClientRect().top <= scrollLinePx) {
-          active = s.id;
-        }
-      }
-      this.activeSection.set(active);
-    };
-
-    updateActiveFromScroll();
-    window.addEventListener('scroll', updateActiveFromScroll, { passive: true });
-    window.addEventListener('resize', updateActiveFromScroll, { passive: true });
-
-    this.destroyRef.onDestroy(() => {
-      window.removeEventListener('scroll', updateActiveFromScroll);
-      window.removeEventListener('resize', updateActiveFromScroll);
-    });
-  }
-
-  private isDefaultDocSection(id: string): id is DefaultDocSection {
-    return ['default', 'side-drawer', 'nested-drawers', 'scrollable'].includes(id);
-  }
-
-  protected tocLinkClass(section: DefaultDocSection): string {
-    return this.activeSection() === section
-      ? 'text-black dark:text-white'
-      : 'text-zinc-600 dark:text-zinc-300/75';
-  }
-
-  constructor() {
-    this.meta.updateTag({
-      name: 'description',
-      content: 'Main features of Better Drawer.',
-    });
-
-    afterNextRender(() => {
-      setTimeout(() => {
-        this.enterEnabled.set(true);
-      }, 100);
-
-      this.watchTocTargets();
-    });
   }
 
   private async copyToClipboard(
