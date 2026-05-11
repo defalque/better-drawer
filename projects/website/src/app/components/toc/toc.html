@@ -1,0 +1,19 @@
+<div class="ml-6 toc-content relative font-semibold">
+  <div
+    class="absolute top-0 -left-4 w-px h-full border-l border-dashed border-zinc-200 dark:border-zinc-600/50 -z-10"
+  ></div>
+
+  <ul class="space-y-2">
+    @for (section of sections(); track section; let index = $index) {
+      <li>
+        <a
+          [href]="'/docs/api#' + section"
+          [attr.data-active]="activeSection() === section"
+          [class]="tocLinkClass(section)"
+          (click)="activeSection.set(section)"
+          >{{ labels()[index] }}</a
+        >
+      </li>
+    }
+  </ul>
+</div>

@@ -100,7 +100,7 @@ export class DocGettingStarted {
     this.meta.updateTag({
       name: 'description',
       content:
-        'Install Better Drawer, create a drawer component, and start using it in your app. A step-by-step guide for Angular applications.',
+        'Install Better Drawer, compose a drawer component, and start using it in your app. A step-by-step guide for Angular applications.',
     });
 
     afterNextRender(() => {

@@ -154,7 +154,7 @@ export class DocDefault {
   constructor() {
     this.meta.updateTag({
       name: 'description',
-      content: 'Default usage for Better Drawer.',
+      content: 'Main features of Better Drawer.',
     });
 
     afterNextRender(() => {

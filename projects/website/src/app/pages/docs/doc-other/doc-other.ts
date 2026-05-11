@@ -132,7 +132,7 @@ export class DocOther {
   constructor() {
     this.meta.updateTag({
       name: 'description',
-      content: 'Other features for Better Drawer.',
+      content: 'Other useful configuration setups for Better Drawer.',
     });
 
     afterNextRender(() => {

@@ -310,85 +310,28 @@
       <span class="text-zinc-500">On this page</span>
     </div>
 
-    <div class="ml-6 toc-content relative font-semibold">
-      <div
-        class="absolute top-0 -left-4 w-px h-full border-l border-dashed border-zinc-200 dark:border-zinc-600/50 -z-10"
-      ></div>
-
-      <ul class="space-y-2">
-        <li>
-          <a
-            href="/docs/api#anatomy"
-            [attr.data-active]="activeSection() === 'anatomy'"
-            [class]="tocLinkClass('anatomy')"
-            (click)="activeSection.set('anatomy')"
-            >Anatomy</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/api#bdDrawerRoot"
-            [attr.data-active]="activeSection() === 'bdDrawerRoot'"
-            [class]="tocLinkClass('bdDrawerRoot')"
-            (click)="activeSection.set('bdDrawerRoot')"
-            >bdDrawerRoot</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/api#bdDrawerTrigger"
-            [attr.data-active]="activeSection() === 'bdDrawerTrigger'"
-            [class]="tocLinkClass('bdDrawerTrigger')"
-            (click)="activeSection.set('bdDrawerTrigger')"
-            >bdDrawerTrigger</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/api#bdDrawerPortal"
-            [attr.data-active]="activeSection() === 'bdDrawerPortal'"
-            [class]="tocLinkClass('bdDrawerPortal')"
-            (click)="activeSection.set('bdDrawerPortal')"
-            >bdDrawerPortal</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/api#bdDrawerOverlay"
-            [attr.data-active]="activeSection() === 'bdDrawerOverlay'"
-            [class]="tocLinkClass('bdDrawerOverlay')"
-            (click)="activeSection.set('bdDrawerOverlay')"
-            >bdDrawerOverlay</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/api#bdDrawerContent"
-            [attr.data-active]="activeSection() === 'bdDrawerContent'"
-            [class]="tocLinkClass('bdDrawerContent')"
-            (click)="activeSection.set('bdDrawerContent')"
-            >bdDrawerContent</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/api#bdDrawerTitle"
-            [attr.data-active]="activeSection() === 'bdDrawerTitle'"
-            [class]="tocLinkClass('bdDrawerTitle')"
-            (click)="activeSection.set('bdDrawerTitle')"
-            >bdDrawerTitle</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/api#api-reference"
-            [attr.data-active]="activeSection() === 'api-reference'"
-            [class]="tocLinkClass('api-reference')"
-            (click)="activeSection.set('api-reference')"
-            >API Reference</a
-          >
-        </li>
-      </ul>
-    </div>
+    <app-toc
+      [sections]="[
+        'anatomy',
+        'bdDrawerRoot',
+        'bdDrawerTrigger',
+        'bdDrawerPortal',
+        'bdDrawerOverlay',
+        'bdDrawerContent',
+        'bdDrawerTitle',
+        'api-reference',
+      ]"
+      [labels]="[
+        'Anatomy',
+        'bdDrawerRoot',
+        'bdDrawerTrigger',
+        'bdDrawerPortal',
+        'bdDrawerOverlay',
+        'bdDrawerContent',
+        'bdDrawerTitle',
+        'API Reference',
+      ]"
+      [(activeSection)]="activeSection"
+    ></app-toc>
   </div>
 </div>
