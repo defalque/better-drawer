@@ -270,31 +270,12 @@
       <span class="text-zinc-500">On this page</span>
     </div>
 
-    <div class="ml-6 toc-content relative font-semibold">
-      <div
-        class="absolute top-0 -left-4 w-px h-full border-l border-dashed border-zinc-200 dark:border-zinc-600/50 -z-10"
-      ></div>
-
-      <ul class="space-y-2">
-        <li>
-          <a
-            href="/docs/other#non-modal"
-            [attr.data-active]="activeSection() === 'non-modal'"
-            [class]="tocLinkClass('non-modal')"
-            (click)="activeSection.set('non-modal')"
-            >Non modal</a
-          >
-        </li>
-        <li>
-          <a
-            href="/docs/other#non-dismissible"
-            [attr.data-active]="activeSection() === 'non-dismissible'"
-            [class]="tocLinkClass('non-dismissible')"
-            (click)="activeSection.set('non-dismissible')"
-            >Non dismissible</a
-          >
-        </li>
-      </ul>
-    </div>
+    <app-toc
+      route="other"
+      [sections]="['non-modal', 'non-dismissible']"
+      [labels]="['Non modal', 'Non dismissible']"
+      [(activeSection)]="activeSection"
+      [observerEnabled]="false"
+    ></app-toc>
   </div>
 </div>

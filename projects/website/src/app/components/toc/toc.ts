@@ -18,6 +18,7 @@ import {
 export class Toc {
   protected readonly destroyRef = inject(DestroyRef);
 
+  observerEnabled = input<boolean>(true);
   route = input.required<string>();
   sections = input.required<string[]>();
   labels = input.required<string[]>();
@@ -47,33 +48,65 @@ export class Toc {
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    if (this.observerEnabled()) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const visibleEntry = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
 
-        if (!visibleEntry) {
+          if (!visibleEntry) {
+            return;
+          }
+
+          const activeSection = sections.find((section) => section.target === visibleEntry.target);
+
+          if (activeSection) {
+            this.activeSection.set(activeSection.id);
+          }
+        },
+        {
+          rootMargin: '-120px 0px -70% 0px',
+          threshold: 0,
+        },
+      );
+
+      for (const section of sections) {
+        observer.observe(section.target);
+      }
+
+      this.destroyRef.onDestroy(() => observer.disconnect());
+    } else {
+      /** Match sidebar offset used elsewhere (-120px region); keeps TOC in sync on short pages where IntersectionObserver often misses. */
+      const scrollLinePx = 130;
+
+      const updateActiveFromScroll = (): void => {
+        const scrollable = document.documentElement;
+        const nearBottom = window.scrollY + window.innerHeight >= scrollable.scrollHeight - 8;
+
+        if (nearBottom) {
+          this.activeSection.set(sections[sections.length - 1].id);
           return;
         }
 
-        const activeSection = sections.find((section) => section.target === visibleEntry.target);
-
-        if (activeSection) {
-          this.activeSection.set(activeSection.id);
+        let active = sections[0].id;
+        for (const s of sections) {
+          if (s.target.getBoundingClientRect().top <= scrollLinePx) {
+            active = s.id;
+          }
         }
-      },
-      {
-        rootMargin: '-120px 0px -70% 0px',
-        threshold: 0,
-      },
-    );
+        this.activeSection.set(active);
+      };
 
-    for (const section of sections) {
-      observer.observe(section.target);
+      updateActiveFromScroll();
+      window.addEventListener('scroll', updateActiveFromScroll, { passive: true });
+      window.addEventListener('resize', updateActiveFromScroll, { passive: true });
+
+      this.destroyRef.onDestroy(() => {
+        window.removeEventListener('scroll', updateActiveFromScroll);
+        window.removeEventListener('resize', updateActiveFromScroll);
+      });
     }
-
-    this.destroyRef.onDestroy(() => observer.disconnect());
   }
 
   private isDocSection(id: string): id is string {
