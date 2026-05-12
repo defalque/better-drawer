@@ -1,19 +1,30 @@
 import { InjectionToken, type ModelSignal, type Signal, type WritableSignal } from '@angular/core';
 import type { BetterDrawerDirection } from './better-drawer.types';
 
-/** Stateful API from `[bdDrawerRoot]` for `bdDrawerContent`, `bdDrawerOverlay`, and `bdDrawerTrigger`. */
+/** Stateful API from `[bdDrawerRoot]` for `bdDrawerContent`, `bdDrawerOverlay`, `bdDrawerTrigger` and `bdDrawerPortal`. */
 export interface BetterDrawerRootContext {
-  /** Depth in nested `[bdDrawerRoot]` trees; `0` for the outermost root. */
-  readonly nestingLevel: Signal<number>;
+  /** Whether the drawer and overlay are visible (bind with `[(open)]` on the root). */
   readonly open: ModelSignal<boolean>;
+  /** Slide direction for the drawer. @default `bottom` */
   readonly direction: Signal<BetterDrawerDirection>;
+  /** When true (default), the overlay blocks the page and the dialog is aria-modal. */
   readonly modal: Signal<boolean>;
   /**
    * When false, the drawer cannot be closed via overlay click, swipe-to-dismiss,
    * or Escape; callers still close by updating `open` (for example a button inside the panel).
    */
   readonly dismissible: Signal<boolean>;
+  /**
+   * When true, omit the decorative pill handle (`.bar`) on `bdDrawerContent`
+   * for `top` / `bottom` drawers.
+   */
+  readonly hideBar: Signal<boolean>;
+
+  /** Depth in nested `[bdDrawerRoot]` trees; `0` for the outermost root. */
+  readonly nestingLevel: Signal<number>;
+  /** Optional DOM id for the dialog panel. When omitted, a stable auto id is assigned. */
   readonly resolvedPanelId: Signal<string>;
+  /** Optional id for trigger `aria-controls`. Defaults to the resolved dialog panel id. */
   readonly resolvedControlsId: Signal<string>;
   /**
    * Normalized swipe-to-dismiss progress, between `0` (no swipe) and `1`
@@ -24,11 +35,6 @@ export interface BetterDrawerRootContext {
   readonly swipeDismissProgress: WritableSignal<number>;
   /** True while the user is actively dragging the drawer past the start threshold. */
   readonly isDragging: WritableSignal<boolean>;
-  /**
-   * When true, omit the decorative pill handle (`.bar`) on `bdDrawerContent`
-   * for `top` / `bottom` drawers.
-   */
-  readonly hideBar: Signal<boolean>;
   /**
    * Whether an open drawer panel with a higher nesting level exists inside this
    * root (used to ignore Escape and swipe from an outer instance while a nested

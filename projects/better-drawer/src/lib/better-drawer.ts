@@ -56,7 +56,7 @@ function swipeAxisAndSign(position: BetterDrawerDirection): {
  * Single source of truth for open state and shared drawer options.
  * Provide `panelId` / `controlsId` overrides here; descendants read them via injection.
  *
- * Use `class="contents"` on the host if you need no extra layout box.
+ * Use `display: contents;` CSS property or, if you're using Tailwind CSS, `class="contents"` on the host element if you need no extra layout box.
  * Intended for one dialog panel per root (multiple triggers are fine).
  */
 @Directive({
@@ -65,19 +65,17 @@ function swipeAxisAndSign(position: BetterDrawerDirection): {
 })
 export class BetterDrawerRoot implements BetterDrawerRootContext {
   private readonly hostRef = inject(ElementRef<HTMLElement>);
+
   private readonly parentDrawerRoot = inject(BETTER_DRAWER_ROOT, {
     optional: true,
     skipSelf: true,
   });
 
-  /** `0` for the outermost root; increments for each nested `[bdDrawerRoot]`. */
-  readonly nestingLevel = computed(() => (this.parentDrawerRoot?.nestingLevel() ?? -1) + 1);
-
   /** Whether the drawer and overlay are visible (bind with `[(open)]` on the root). */
   readonly open = model(false);
-  /** Slide direction for the drawer. @default `left` */
-  readonly direction = input<BetterDrawerDirection>('left');
-  /** When true (default), the overlay blocks the page and the dialog is aria-modal. */
+  /** Slide direction for the drawer. @default `bottom` */
+  readonly direction = input<BetterDrawerDirection>('bottom');
+  /** When true (default), the overlay blocks the page background and the dialog is aria-modal. */
   readonly modal = input<boolean>(true);
   /**
    * When false, overlay clicks, swipe-to-dismiss, and Escape do not close the drawer;
@@ -85,25 +83,31 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
    * @default true
    */
   readonly dismissible = input<boolean>(true);
-  /** Optional DOM id for the dialog panel. When omitted, a stable auto id is assigned. */
-  readonly panelId = input<string | undefined>(undefined);
-  /** Optional id for trigger `aria-controls`. Defaults to the resolved dialog panel id. */
-  readonly controlsId = input<string | undefined>(undefined);
   /**
    * When true, the pill handle (`.bar`) is not rendered for `top` / `bottom` drawers.
    * @default false
    */
   readonly hideBar = input<boolean>(false);
 
-  private readonly autoPanelId = `bd-drawer-panel-${++betterDrawerPanelSeq}`;
-  readonly resolvedPanelId = computed(() => this.panelId() ?? this.autoPanelId);
-  readonly resolvedControlsId = computed(() => this.controlsId() ?? this.resolvedPanelId());
-
+  /** `0` for the outermost root; increments for each nested `[bdDrawerRoot]`. */
+  readonly nestingLevel = computed(() => (this.parentDrawerRoot?.nestingLevel() ?? -1) + 1);
+  /** Optional DOM id for the dialog panel. When omitted, a stable auto id is assigned. */
+  readonly panelId = input<string | undefined>(undefined);
+  /** Optional id for trigger `aria-controls`. Defaults to the resolved dialog panel id. */
+  readonly controlsId = input<string | undefined>(undefined);
   /** Shared swipe progress (0..1); written by `bdDrawerContent`, read by `bdDrawerOverlay`. */
   readonly swipeDismissProgress = signal(0);
   /** Shared dragging flag; lets the overlay disable its opacity transition during the drag. */
   readonly isDragging = signal(false);
 
+  /** Auto-generated panel id when no `panelId` is provided. */
+  private readonly autoPanelId = `bd-drawer-panel-${++betterDrawerPanelSeq}`;
+  /** Resolved panel id when no `panelId` is provided. */
+  readonly resolvedPanelId = computed(() => this.panelId() ?? this.autoPanelId);
+  /** Resolved controls id when no `controlsId` is provided. */
+  readonly resolvedControlsId = computed(() => this.controlsId() ?? this.resolvedPanelId());
+
+  /** Checks if there is an open drawer with a higher nesting level. */
   descendantOpenDrawerWithHigherNesting(): boolean {
     const myLevel = this.nestingLevel();
     const host = this.hostRef.nativeElement;
