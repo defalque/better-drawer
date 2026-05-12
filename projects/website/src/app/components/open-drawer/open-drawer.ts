@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import {
+  BetterDrawerCloseButton,
   BetterDrawerContent,
   BetterDrawerOverlay,
   BetterDrawerRoot,
@@ -16,6 +17,7 @@ import {
     BetterDrawerTrigger,
     BetterDrawerOverlay,
     BetterDrawerContent,
+    BetterDrawerCloseButton,
     BetterDrawerTitle,
     BetterDrawerPortal,
   ],
@@ -35,6 +37,7 @@ import {
             bdDrawerContent
             class="flex flex-col flex-1 bg-zinc-50 dark:bg-zinc-900 h-84 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
           >
+            <button bdDrawerCloseButton></button>
             <div class="space-y-4 max-w-md mx-auto pt-4 px-4">
               <h2
                 bdDrawerTitle

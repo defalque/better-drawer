@@ -228,6 +228,46 @@ export class BetterDrawerTitle {
   readonly titleId = signal(`bd-drawer-title-${++betterDrawerTitleSeq}`);
 }
 
+@Component({
+  selector: '[bdDrawerCloseButton]',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrl: './close-button.css',
+  template: `
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M19.207 6.207a1 1 0 0 0-1.414-1.414L12 10.586 6.207 4.793a1 1 0 0 0-1.414 1.414L10.586 12l-5.793 5.793a1 1 0 1 0 1.414 1.414L12 13.414l5.793 5.793a1 1 0 0 0 1.414-1.414L13.414 12l5.793-5.793z"
+        fill="currentColor"
+      />
+    </svg>
+  `,
+  host: {
+    '(click)': 'close()',
+  },
+})
+export class BetterDrawerCloseButton {
+  private readonly drawerRoot = inject(BETTER_DRAWER_ROOT, { optional: true });
+  /**
+   * Two-way binding when this panel sits outside `[bdDrawerRoot]`.
+   * Inside a root, use `[(open)]` on `bdDrawerRoot` instead.
+   */
+  readonly open = model(false);
+
+  /** Collapses the drawer. */
+  protected close(): void {
+    const root = this.drawerRoot;
+    if (root && !root.dismissible()) {
+      return;
+    }
+    if (root?.descendantOpenDrawerWithHigherNesting()) {
+      return;
+    }
+    (root?.open ?? this.open).set(false);
+  }
+}
+
 @Directive({
   selector: '[bdDrawerTrigger]',
   host: {
