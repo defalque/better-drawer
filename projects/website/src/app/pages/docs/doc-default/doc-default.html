@@ -13,95 +13,31 @@
           Default
         </h2>
         <p class="text-zinc-700 dark:text-zinc-300">The most basic setup for a drawer.</p>
-        <div class="mt-7 space-y-6">
-          <div class="flex items-center justify-between gap-2 text-[13px] px-0.5 relative">
-            <div
-              class="absolute bottom-[-8px] left-1 w-full h-px bg-zinc-300/50 dark:bg-zinc-800/80 -z-10"
-            ></div>
-            <div class="flex items-center gap-4 relative tab">
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onDefaultTab() === 'preview'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onDefaultTab.set('preview')"
-                [attr.data-active]="onDefaultTab() === 'preview'"
+
+        <app-code-tabs [codeSource]="defaultDrawerCodeSource">
+          <div bdDrawerRoot class="contents" [(open)]="openDrawer">
+            <button type="button" bdDrawerTrigger class="drawer-button">Open default drawer</button>
+            @if (openDrawer()) {
+              <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
+              <aside
+                bdDrawerContent
+                class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 left-0 rounded-tr-xl rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
               >
-                Preview
-              </button>
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onDefaultTab() === 'code'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onDefaultTab.set('code')"
-                [attr.data-active]="onDefaultTab() === 'code'"
-              >
-                Code
-              </button>
-            </div>
-            <button
-              type="button"
-              class="font-medium text-zinc-600 dark:text-zinc-400 cursor-pointer relative w-34"
-              (click)="copyOnDefaultCode()"
-            >
-              @if (onDefaultCodeCopied()) {
-                <span
-                  class="absolute top-1/2 right-0.5 -translate-y-1/2"
-                  animate.enter="enter"
-                  animate.leave="leave"
-                  >Copied!</span
-                >
-              } @else {
-                <span
-                  class="absolute top-1/2 left-1/2 -translate-y-1/2"
-                  [animate.enter]="enterEnabled() ? 'enter' : null"
-                  animate.leave="leave"
-                  >Copy code</span
-                >
-              }
-            </button>
-          </div>
-          @if (onDefaultTab() === 'preview') {
-            <div
-              class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
-            >
-              <div bdDrawerRoot class="contents" [(open)]="openDrawer" direction="bottom">
-                <button type="button" bdDrawerTrigger class="drawer-button">
-                  Open default drawer
-                </button>
-                @if (openDrawer()) {
-                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
-                  <aside
-                    bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 left-0 rounded-tr-xl rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
+                <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                  <h2
+                    bdDrawerTitle
+                    class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
                   >
-                    <div class="p-4 grid gap-4 max-w-lg mx-auto">
-                      <h2
-                        bdDrawerTitle
-                        class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
-                      >
-                        This is a default drawer
-                      </h2>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
-                        Comes from the bottom side of the screen.
-                      </p>
-                    </div>
-                  </aside>
-                }
-              </div>
-            </div>
-          } @else {
-            <pre class="landing-page-pre h-80! overflow-y-auto!"><code
-                        class=" landing-page-code language-typescript dark:text-white!"
-                        [innerHTML]="onDefaultSource()"
-                      ></code></pre>
-          }
-        </div>
+                    This is a default drawer
+                  </h2>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    Comes from the bottom side of the screen.
+                  </p>
+                </div>
+              </aside>
+            }
+          </div>
+        </app-code-tabs>
       </div>
 
       <div class="space-y-4 pt-20" id="side-drawer">
@@ -112,95 +48,31 @@
           Set the <code class="p-code-snippet">direction</code> input to "right" or "left" to change
           the position of the drawer.
         </p>
-        <div class="mt-7 space-y-6">
-          <div class="flex items-center justify-between gap-2 text-[13px] px-0.5 relative">
-            <div
-              class="absolute bottom-[-8px] left-1 w-full h-px bg-zinc-300/50 dark:bg-zinc-800/80 -z-10"
-            ></div>
-            <div class="flex items-center gap-4 relative tab">
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onDefaultTab() === 'preview'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onSideDrawerTab.set('preview')"
-                [attr.data-active]="onSideDrawerTab() === 'preview'"
+
+        <app-code-tabs [codeSource]="sideDrawerCodeSource"
+          ><div bdDrawerRoot class="contents" [(open)]="openSideDrawer" direction="left">
+            <button type="button" bdDrawerTrigger class="drawer-button">Open side drawer</button>
+            @if (openSideDrawer()) {
+              <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
+              <aside
+                bdDrawerContent
+                class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 top-0 rounded-r-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
               >
-                Preview
-              </button>
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onSideDrawerTab() === 'code'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onSideDrawerTab.set('code')"
-                [attr.data-active]="onSideDrawerTab() === 'code'"
-              >
-                Code
-              </button>
-            </div>
-            <button
-              type="button"
-              class="font-medium text-zinc-600 dark:text-zinc-400 cursor-pointer relative w-34"
-              (click)="copyOnSideDrawerCode()"
-            >
-              @if (onSideDrawerCodeCopied()) {
-                <span
-                  class="absolute top-1/2 right-0.5 -translate-y-1/2"
-                  animate.enter="enter"
-                  animate.leave="leave"
-                  >Copied!</span
-                >
-              } @else {
-                <span
-                  class="absolute top-1/2 left-1/2 -translate-y-1/2"
-                  [animate.enter]="enterEnabled() ? 'enter' : null"
-                  animate.leave="leave"
-                  >Copy code</span
-                >
-              }
-            </button>
-          </div>
-          @if (onSideDrawerTab() === 'preview') {
-            <div
-              class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
-            >
-              <div bdDrawerRoot class="contents" [(open)]="openSideDrawer" direction="left">
-                <button type="button" bdDrawerTrigger class="drawer-button">
-                  Open side drawer
-                </button>
-                @if (openSideDrawer()) {
-                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
-                  <aside
-                    bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 top-0 rounded-r-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
+                <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                  <h2
+                    bdDrawerTitle
+                    class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
                   >
-                    <div class="p-4 grid gap-4 max-w-lg mx-auto">
-                      <h2
-                        bdDrawerTitle
-                        class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
-                      >
-                        This is a side drawer
-                      </h2>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
-                        Comes from the right side of the screen.
-                      </p>
-                    </div>
-                  </aside>
-                }
-              </div>
-            </div>
-          } @else {
-            <pre class="landing-page-pre h-80! overflow-y-auto!"><code
-                        class=" landing-page-code language-typescript dark:text-white!"
-                        [innerHTML]="onSideDrawerSource()"
-                      ></code></pre>
-          }
-        </div>
+                    This is a side drawer
+                  </h2>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    Comes from the right side of the screen.
+                  </p>
+                </div>
+              </aside>
+            }
+          </div>
+        </app-code-tabs>
       </div>
 
       <div class="space-y-4 pt-20" id="nested-drawers">
@@ -211,126 +83,64 @@
           You can nest drawers inside other drawers to create a stack of drawers. <br />It works
           with any direction.
         </p>
-        <div class="mt-7 space-y-6">
-          <div class="flex items-center justify-between gap-2 text-[13px] px-0.5 relative">
-            <div
-              class="absolute bottom-[-8px] left-1 w-full h-px bg-zinc-300/50 dark:bg-zinc-800/80 -z-10"
-            ></div>
-            <div class="flex items-center gap-4 relative tab">
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onNestedDrawerTab() === 'preview'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onNestedDrawerTab.set('preview')"
-                [attr.data-active]="onNestedDrawerTab() === 'preview'"
+
+        <app-code-tabs [codeSource]="nestedDrawerCodeSource">
+          <div bdDrawerRoot class="contents" [(open)]="openNestedDrawer">
+            <button type="button" bdDrawerTrigger class="drawer-button">Open drawer</button>
+            @if (openNestedDrawer()) {
+              <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
+              <aside
+                bdDrawerContent
+                class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 right-0 bottom-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
               >
-                Preview
-              </button>
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onNestedDrawerTab() === 'code'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onNestedDrawerTab.set('code')"
-                [attr.data-active]="onNestedDrawerTab() === 'code'"
-              >
-                Code
-              </button>
-            </div>
-            <button
-              type="button"
-              class="font-medium text-zinc-600 dark:text-zinc-400 cursor-pointer relative w-34"
-              (click)="copyOnNestedDrawerCode()"
-            >
-              @if (onNestedDrawerCodeCopied()) {
-                <span
-                  class="absolute top-1/2 right-0.5 -translate-y-1/2"
-                  animate.enter="enter"
-                  animate.leave="leave"
-                  >Copied!</span
-                >
-              } @else {
-                <span
-                  class="absolute top-1/2 left-1/2 -translate-y-1/2"
-                  [animate.enter]="enterEnabled() ? 'enter' : null"
-                  animate.leave="leave"
-                  >Copy code</span
-                >
-              }
-            </button>
-          </div>
-          @if (onNestedDrawerTab() === 'preview') {
-            <div
-              class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
-            >
-              <div bdDrawerRoot class="contents" [(open)]="openNestedDrawer" direction="bottom">
-                <button type="button" bdDrawerTrigger class="drawer-button">Open drawer</button>
-                @if (openNestedDrawer()) {
-                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
-                  <aside
-                    bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 right-0 bottom-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
+                <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                  <h2
+                    bdDrawerTitle
+                    class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
                   >
-                    <div class="p-4 grid gap-4 max-w-lg mx-auto">
-                      <h2
-                        bdDrawerTitle
-                        class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
+                    This is a drawer
+                  </h2>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    Click the button to open the nested drawer.
+                  </p>
+                  <div
+                    bdDrawerRoot
+                    class="contents"
+                    [(open)]="openNestedDrawer2"
+                    direction="bottom"
+                  >
+                    <button
+                      type="button"
+                      bdDrawerTrigger
+                      class="w-full py-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black font-medium rounded-lg cursor-pointer"
+                    >
+                      Open nested drawer
+                    </button>
+                    @if (openNestedDrawer2()) {
+                      <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
+                      <aside
+                        bdDrawerContent
+                        class="fixed left-0 right-0 bottom-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none bg-zinc-50 dark:bg-zinc-900"
                       >
-                        This is a drawer
-                      </h2>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
-                        Click the button to open the nested drawer.
-                      </p>
-                      <div
-                        bdDrawerRoot
-                        class="contents"
-                        [(open)]="openNestedDrawer2"
-                        direction="bottom"
-                      >
-                        <button
-                          type="button"
-                          bdDrawerTrigger
-                          class="w-full py-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black font-medium rounded-lg cursor-pointer"
-                        >
-                          Open nested drawer
-                        </button>
-                        @if (openNestedDrawer2()) {
-                          <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
-                          <aside
-                            bdDrawerContent
-                            class="fixed left-0 right-0 bottom-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none bg-zinc-50 dark:bg-zinc-900"
+                        <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                          <h2
+                            bdDrawerTitle
+                            class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
                           >
-                            <div class="p-4 grid gap-4 max-w-lg mx-auto">
-                              <h2
-                                bdDrawerTitle
-                                class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
-                              >
-                                This is a nested drawer
-                              </h2>
-                              <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
-                                This is a drawer inside another drawer.
-                              </p>
-                            </div>
-                          </aside>
-                        }
-                      </div>
-                    </div>
-                  </aside>
-                }
-              </div>
-            </div>
-          } @else {
-            <pre class="landing-page-pre h-80! overflow-y-auto!"><code
-                        class=" landing-page-code language-typescript dark:text-white!"
-                        [innerHTML]="onNestedDrawerSource()"
-                      ></code></pre>
-          }
-        </div>
+                            This is a nested drawer
+                          </h2>
+                          <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                            This is a drawer inside another drawer.
+                          </p>
+                        </div>
+                      </aside>
+                    }
+                  </div>
+                </div>
+              </aside>
+            }
+          </div>
+        </app-code-tabs>
       </div>
 
       <div class="space-y-4 pt-20" id="scrollable">
@@ -340,119 +150,52 @@
         <p class="text-zinc-700 dark:text-zinc-300">
           A scrollable drawer. The behavior here mimics Apple's Sheet component.
         </p>
-        <div class="mt-7 space-y-6">
-          <div class="flex items-center justify-between gap-2 text-[13px] px-0.5 relative">
-            <div
-              class="absolute bottom-[-8px] left-1 w-full h-px bg-zinc-300/50 dark:bg-zinc-800/80 -z-10"
-            ></div>
-            <div class="flex items-center gap-4 relative tab">
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onScrollableDrawerTab() === 'preview'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onScrollableDrawerTab.set('preview')"
-                [attr.data-active]="onScrollableDrawerTab() === 'preview'"
-              >
-                Preview
-              </button>
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onScrollableDrawerTab() === 'code'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onScrollableDrawerTab.set('code')"
-                [attr.data-active]="onScrollableDrawerTab() === 'code'"
-              >
-                Code
-              </button>
-            </div>
-            <button
-              type="button"
-              class="font-medium text-zinc-600 dark:text-zinc-400 cursor-pointer relative w-34"
-              (click)="copyOnScrollableDrawerCode()"
-            >
-              @if (onScrollableDrawerCodeCopied()) {
-                <span
-                  class="absolute top-1/2 right-0.5 -translate-y-1/2"
-                  animate.enter="enter"
-                  animate.leave="leave"
-                  >Copied!</span
-                >
-              } @else {
-                <span
-                  class="absolute top-1/2 left-1/2 -translate-y-1/2"
-                  [animate.enter]="enterEnabled() ? 'enter' : null"
-                  animate.leave="leave"
-                  >Copy code</span
-                >
-              }
+
+        <app-code-tabs [codeSource]="scrollableDrawerCodeSource">
+          <div bdDrawerRoot class="contents" [(open)]="openScrollableDrawer">
+            <button type="button" bdDrawerTrigger class="drawer-button">
+              Open scrollable drawer
             </button>
-          </div>
-          @if (onScrollableDrawerTab() === 'preview') {
-            <div
-              class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
-            >
-              <div bdDrawerRoot class="contents" [(open)]="openScrollableDrawer" direction="bottom">
-                <button type="button" bdDrawerTrigger class="drawer-button">
-                  Open scrollable drawer
-                </button>
-                @if (openScrollableDrawer()) {
-                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
-                  <div
-                    bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px] outline-none"
-                    style="scrollbar-width: thin"
+            @if (openScrollableDrawer()) {
+              <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
+              <div
+                bdDrawerContent
+                class="bg-zinc-50 dark:bg-zinc-900 fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px] outline-none"
+                style="scrollbar-width: thin"
+              >
+                <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">
+                  <h2
+                    bdDrawerTitle
+                    class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
                   >
-                    <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">
-                      <h2
-                        bdDrawerTitle
-                        class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
-                      >
-                        Scrollable content
-                      </h2>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam
-                        eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
-                        illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
-                        illo.
-                        <br /><br />
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam
-                        eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
-                        illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
-                        illo.
-                        <br /><br />
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam
-                        eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
-                        illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
-                        illo.
-                        <br /><br />
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam
-                        eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
-                        illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
-                        illo.
-                        <br /><br />
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam
-                        eaque, sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum,
-                        illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam
-                        illo.
-                      </p>
-                    </div>
-                  </div>
-                }
+                    Scrollable content
+                  </h2>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                    sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
+                    voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                    <br /><br />
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                    sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
+                    voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                    <br /><br />
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                    sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
+                    voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                    <br /><br />
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                    sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
+                    voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                    <br /><br />
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                    sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo
+                    voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+                  </p>
+                </div>
               </div>
-            </div>
-          } @else {
-            <pre class="landing-page-pre h-80! overflow-y-auto!"><code
-                        class=" landing-page-code language-typescript dark:text-white!"
-                        [innerHTML]="onScrollableDrawerSource()"
-                      ></code></pre>
-          }
-        </div>
+            }
+          </div>
+        </app-code-tabs>
       </div>
     </div>
 

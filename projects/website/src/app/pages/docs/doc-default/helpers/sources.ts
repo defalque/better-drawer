@@ -105,3 +105,38 @@ export class MyNestedDrawer {
   protected openSideDrawer = model(false);
   protected openNestedDrawer2 = model(false);
 }`;
+
+export const ON_SCROLLABLE_DRAWER_SOURCE = `import { Component, model } from '@angular/core';
+import { BetterDrawerContent, BetterDrawerOverlay, BetterDrawerRoot, BetterDrawerTitle, BetterDrawerTrigger } from 'better-drawer';
+
+@Component({
+  selector: 'app-my-nested-drawer',
+  imports: [
+    BetterDrawerRoot, BetterDrawerTrigger, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle
+  ],
+  template: '
+    <div bdDrawerRoot class="contents" [(open)]="openScrollableDrawer">
+        <button type="button" bdDrawerTrigger class="drawer-button">
+              Open scrollable drawer
+        </button>
+        @if (openScrollableDrawer()) {
+          <div bdDrawerOverlay class="overlay"></div>
+          <div
+            bdDrawerContent
+            class="fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px] outline-none"
+            style="scrollbar-width: thin"
+          >
+            <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">
+              <p class="text">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,
+                sapiente omnis voluptas incidunt officiis pariatur explicabo ipsum, illo voluptate quas distinctio blanditiis corrupti. Ipsa minima velit nam illo.
+              </p>
+            </div>
+          </div>
+        }
+    </div>
+  ',
+})
+export class MyScrollableDrawer {
+    protected openScrollableDrawer = model(false);
+}`;

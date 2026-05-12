@@ -42,7 +42,7 @@ export class DocApi {
     });
   }
 
-  activeSection = model<ApiDocSection>('anatomy');
+  protected activeSection = model<ApiDocSection>('anatomy');
 
   protected onAnatomySource(): string {
     return higlightTypescriptSource(ON_ANATOMY_SOURCE);
