@@ -16,101 +16,38 @@
           Set the <code class="p-code-snippet">modal</code> input to false to allow interaction with
           the background while the drawer is open.
         </p>
-        <div class="mt-7 space-y-6">
-          <div class="flex items-center justify-between gap-2 text-[13px] px-0.5 relative">
-            <div
-              class="absolute bottom-[-8px] left-1 w-full h-px bg-zinc-300/50 dark:bg-zinc-800/80 -z-10"
-            ></div>
-            <div class="flex items-center gap-4 relative tab">
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onNonModalDrawerTab() === 'preview'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onNonModalDrawerTab.set('preview')"
-                [attr.data-active]="onNonModalDrawerTab() === 'preview'"
-              >
-                Preview
-              </button>
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onNonModalDrawerTab() === 'code'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onNonModalDrawerTab.set('code')"
-                [attr.data-active]="onNonModalDrawerTab() === 'code'"
-              >
-                Code
-              </button>
-            </div>
-            <button
-              type="button"
-              class="font-medium text-zinc-600 dark:text-zinc-400 cursor-pointer relative w-34"
-              (click)="copyOnNonModalDrawerCode()"
-            >
-              @if (onNonModalDrawerCodeCopied()) {
-                <span
-                  class="absolute top-1/2 right-0.5 -translate-y-1/2"
-                  animate.enter="enter"
-                  animate.leave="leave"
-                  >Copied!</span
-                >
-              } @else {
-                <span
-                  class="absolute top-1/2 left-1/2 -translate-y-1/2"
-                  [animate.enter]="enterEnabled() ? 'enter' : null"
-                  animate.leave="leave"
-                  >Copy code</span
-                >
-              }
+        <app-code-tabs [codeSource]="nonModalDrawerCodeSource">
+          <div
+            bdDrawerRoot
+            class="contents"
+            [(open)]="openNonModalDrawer"
+            direction="bottom"
+            [modal]="false"
+          >
+            <button type="button" bdDrawerTrigger class="drawer-button">
+              Open non modal drawer
             </button>
-          </div>
-          @if (onNonModalDrawerTab() === 'preview') {
-            <div
-              class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
-            >
-              <div
-                bdDrawerRoot
-                class="contents"
-                [(open)]="openNonModalDrawer"
-                direction="bottom"
-                [modal]="false"
+            @if (openNonModalDrawer()) {
+              <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
+              <aside
+                bdDrawerContent
+                class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 left-0 rounded-tr-xl rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
               >
-                <button type="button" bdDrawerTrigger class="drawer-button">
-                  Open non modal drawer
-                </button>
-                @if (openNonModalDrawer()) {
-                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
-                  <aside
-                    bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 left-0 rounded-tr-xl rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
+                <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                  <h2
+                    bdDrawerTitle
+                    class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
                   >
-                    <div class="p-4 grid gap-4 max-w-lg mx-auto">
-                      <h2
-                        bdDrawerTitle
-                        class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
-                      >
-                        This is a non modal drawer
-                      </h2>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
-                        Interaction with the background is allowed while the drawer is open.
-                      </p>
-                    </div>
-                  </aside>
-                }
-              </div>
-            </div>
-          } @else {
-            <pre class="landing-page-pre h-80! overflow-y-auto!"><code
-                          class=" landing-page-code language-typescript dark:text-white!"
-                          [innerHTML]="onNonModalDrawerSource()"
-                        ></code></pre>
-          }
-        </div>
+                    This is a non modal drawer
+                  </h2>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    Interaction with the background is allowed while the drawer is open.
+                  </p>
+                </div>
+              </aside>
+            }
+          </div>
+        </app-code-tabs>
       </div>
 
       <div class="space-y-4 pt-20" id="non-dismissible">
@@ -122,109 +59,47 @@
           from closing the drawer by clicking outside of it, pressing the escape key, or dragging it
           down.
         </p>
-        <div class="mt-7 space-y-6">
-          <div class="flex items-center justify-between gap-2 text-[13px] px-0.5 relative">
-            <div
-              class="absolute bottom-[-8px] left-1 w-full h-px bg-zinc-300/50 dark:bg-zinc-800/80 -z-10"
-            ></div>
-            <div class="flex items-center gap-4 relative tab">
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onNonDismissibleDrawerTab() === 'preview'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onNonDismissibleDrawerTab.set('preview')"
-                [attr.data-active]="onNonDismissibleDrawerTab() === 'preview'"
-              >
-                Preview
-              </button>
-              <button
-                type="button"
-                class="font-medium  cursor-pointer {{
-                  onNonDismissibleDrawerTab() === 'code'
-                    ? 'text-black dark:text-zinc-100'
-                    : 'text-zinc-600 dark:text-zinc-400'
-                }}"
-                (click)="onNonDismissibleDrawerTab.set('code')"
-                [attr.data-active]="onNonDismissibleDrawerTab() === 'code'"
-              >
-                Code
-              </button>
-            </div>
-            <button
-              type="button"
-              class="font-medium text-zinc-600 dark:text-zinc-400 cursor-pointer relative w-34"
-              (click)="copyOnNonDismissibleDrawerCode()"
-            >
-              @if (onNonDismissibleDrawerCodeCopied()) {
-                <span
-                  class="absolute top-1/2 right-0.5 -translate-y-1/2"
-                  animate.enter="enter"
-                  animate.leave="leave"
-                  >Copied!</span
-                >
-              } @else {
-                <span
-                  class="absolute top-1/2 left-1/2 -translate-y-1/2"
-                  [animate.enter]="enterEnabled() ? 'enter' : null"
-                  animate.leave="leave"
-                  >Copy code</span
-                >
-              }
+
+        <app-code-tabs [codeSource]="nonDismissibleDrawerCodeSource"
+          ><div
+            bdDrawerRoot
+            class="contents"
+            [(open)]="openNonDismissibleDrawer"
+            direction="bottom"
+            [dismissible]="false"
+          >
+            <button type="button" bdDrawerTrigger class="drawer-button">
+              Open non dismissible drawer
             </button>
-          </div>
-          @if (onNonDismissibleDrawerTab() === 'preview') {
-            <div
-              class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
-            >
-              <div
-                bdDrawerRoot
-                class="contents"
-                [(open)]="openNonDismissibleDrawer"
-                direction="bottom"
-                [dismissible]="false"
+            @if (openNonDismissibleDrawer()) {
+              <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
+              <aside
+                bdDrawerContent
+                class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
               >
-                <button type="button" bdDrawerTrigger class="drawer-button">
-                  Open non dismissible drawer
-                </button>
-                @if (openNonDismissibleDrawer()) {
-                  <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
-                  <aside
-                    bdDrawerContent
-                    class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
+                <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                  <h2
+                    bdDrawerTitle
+                    class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
                   >
-                    <div class="p-4 grid gap-4 max-w-lg mx-auto">
-                      <h2
-                        bdDrawerTitle
-                        class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
-                      >
-                        This is a non dismissible drawer
-                      </h2>
-                      <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
-                        You can't close the drawer by clicking outside of it, pressing the escape
-                        key, or dragging it down.
-                      </p>
-                      <button
-                        type="button"
-                        (click)="openNonDismissibleDrawer.set(false)"
-                        class="w-full py-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black font-medium rounded-lg cursor-pointer"
-                      >
-                        Close drawer
-                      </button>
-                    </div>
-                  </aside>
-                }
-              </div>
-            </div>
-          } @else {
-            <pre class="landing-page-pre h-80! overflow-y-auto!"><code
-                          class=" landing-page-code language-typescript dark:text-white!"
-                          [innerHTML]="onNonDismissibleDrawerSource()"
-                        ></code></pre>
-          }
-        </div>
+                    This is a non dismissible drawer
+                  </h2>
+                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                    You can't close the drawer by clicking outside of it, pressing the escape key,
+                    or dragging it down.
+                  </p>
+                  <button
+                    type="button"
+                    (click)="openNonDismissibleDrawer.set(false)"
+                    class="w-full py-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black font-medium rounded-lg cursor-pointer"
+                  >
+                    Close drawer
+                  </button>
+                </div>
+              </aside>
+            }
+          </div>
+        </app-code-tabs>
       </div>
     </div>
 
