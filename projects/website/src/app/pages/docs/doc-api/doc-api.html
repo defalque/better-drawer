@@ -112,6 +112,20 @@
         </div>
       </div>
 
+      <div class="space-y-4 pt-20" id="bdDrawerCloseButton">
+        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+          bdDrawerCloseButton
+        </h2>
+        <p class="text-zinc-700 dark:text-zinc-300 text-pretty">
+          Attribute directive that controls the optional close button to be displayed in the drawer.
+        </p>
+        <div>
+          <pre
+            class="landing-page-pre"
+          ><code class="landing-page-code language-typescript dark:text-white!" [innerHTML]="bdDrawerCloseButtonSource()"></code></pre>
+        </div>
+      </div>
+
       <div class="space-y-4 pt-20" id="api-reference">
         <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
           API Reference
@@ -320,6 +334,7 @@
         'bdDrawerOverlay',
         'bdDrawerContent',
         'bdDrawerTitle',
+        'bdDrawerCloseButton',
         'api-reference',
       ]"
       [labels]="[
@@ -330,6 +345,7 @@
         'bdDrawerOverlay',
         'bdDrawerContent',
         'bdDrawerTitle',
+        'bdDrawerCloseButton',
         'API Reference',
       ]"
       [(activeSection)]="activeSection"

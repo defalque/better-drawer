@@ -9,6 +9,7 @@ import {
   ON_DRAWER_OVERLAY_SOURCE,
   ON_DRAWER_CONTENT_SOURCE,
   ON_DRAWER_TITLE_SOURCE,
+  ON_DRAWER_CLOSE_BUTTON_SOURCE,
 } from './helpers/sources';
 import { higlightTypescriptSource, higlightHtmlSource } from '../../../helpers/highlight';
 import { Toc } from '../../../components/toc/toc';
@@ -21,6 +22,7 @@ type ApiDocSection =
   | 'bdDrawerOverlay'
   | 'bdDrawerContent'
   | 'bdDrawerTitle'
+  | 'bdDrawerCloseButton'
   | 'api-reference';
 
 @Component({
@@ -70,5 +72,9 @@ export class DocApi {
 
   protected bdDrawerTitleSource() {
     return higlightHtmlSource(ON_DRAWER_TITLE_SOURCE);
+  }
+
+  protected bdDrawerCloseButtonSource() {
+    return higlightHtmlSource(ON_DRAWER_CLOSE_BUTTON_SOURCE);
   }
 }

@@ -1,6 +1,7 @@
 export const ON_ANATOMY_SOURCE = `import { Component, model } from '@angular/core';
 import { 
   BetterDrawerContent,
+  BetterDrawerCloseButton,
   BetterDrawerOverlay,
   BetterDrawerPortal,
   BetterDrawerRoot,
@@ -12,6 +13,7 @@ import {
   selector: 'app-my-drawer',
   imports: [
     BetterDrawerContent, 
+    BetterDrawerCloseButton,
     BetterDrawerOverlay, 
     BetterDrawerPortal,
     BetterDrawerRoot, 
@@ -27,6 +29,7 @@ import {
         @if (openDrawer()) {
           <div bdDrawerOverlay></div>
           <div bdDrawerContent>
+              <button bdDrawerCloseButton aria-label="Close drawer"></button>
               <h2 bdDrawerTitle></h2>
           </div>
         }
@@ -88,5 +91,17 @@ protected openDrawer = model(false);
     <!-- overlay part -->
     <div bdDrawerContent>
         <h2 bdDrawerTitle></h2>
+    </div>
+}`;
+
+export const ON_DRAWER_CLOSE_BUTTON_SOURCE = `<!-- my-drawer.ts -->
+protected openDrawer = model(false);
+
+<!-- my-drawer.html -->
+<!-- inside your drawer root -->
+@if (openDrawer()) {
+    <!-- overlay part -->
+    <div bdDrawerContent>
+        <button bdDrawerCloseButton aria-label="Close drawer"></button>
     </div>
 }`;
