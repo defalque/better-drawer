@@ -1,7 +1,6 @@
 :host {
   --better-drawer-closed-transform: translateX(100%);
 
-  overflow-y: auto;
   overscroll-behavior: contain;
   pointer-events: auto;
   touch-action: none;

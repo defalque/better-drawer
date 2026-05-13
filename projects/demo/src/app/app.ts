@@ -7,6 +7,7 @@ import {
   BetterDrawerTitle,
   BetterDrawerTrigger,
   BetterDrawerPortal,
+  BetterDrawerCloseButton,
 } from 'better-drawer';
 import { MyDrawer } from './components/my-drawer';
 
@@ -19,8 +20,9 @@ import { MyDrawer } from './components/my-drawer';
     BetterDrawerOverlay,
     BetterDrawerTitle,
     BetterDrawerTrigger,
-    MyDrawer,
+    BetterDrawerCloseButton,
     BetterDrawerPortal,
+    MyDrawer,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',

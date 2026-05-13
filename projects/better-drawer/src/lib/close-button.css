@@ -1,7 +1,8 @@
 :host {
   position: absolute;
   top: 1rem;
-  right: 0.5rem;
+  right: 1rem;
+  border-radius: 9999px;
 
   display: inline-flex;
   align-items: center;
@@ -11,10 +12,26 @@
   height: 2rem;
   padding: 0;
 
-  background: none;
-
-  color: white;
+  color: oklch(55.2% 0.016 285.938);
   cursor: pointer;
+  transition:
+    scale 0.2s ease-in-out,
+    background-color 0.2s ease;
+}
+:host(:hover) {
+  background: oklch(55.2% 0.016 285.938 / 0.1);
+}
+:host(:active) {
+  scale: 0.92;
+}
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    transition: none;
+  }
+
+  :host(:active) {
+    scale: 1;
+  }
 }
 
 :host svg {
