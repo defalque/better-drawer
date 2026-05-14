@@ -13,6 +13,9 @@ describe('Toc', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(Toc);
+    fixture.componentRef.setInput('route', '/docs');
+    fixture.componentRef.setInput('sections', ['intro']);
+    fixture.componentRef.setInput('labels', ['Intro']);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

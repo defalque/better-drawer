@@ -22,9 +22,11 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "tsConfig": "projects/better-drawer/tsconfig.spec.json"
+            "runner": "vitest",
+            "tsConfig": "projects/better-drawer/tsconfig.spec.json",
+            "setupFiles": ["projects/better-drawer/src/test-setup.ts"]
           }
         }
       }
@@ -90,17 +92,12 @@
           "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": [],
+            "runner": "vitest",
+            "buildTarget": "demo:build:development",
             "tsConfig": "projects/demo/tsconfig.spec.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "projects/demo/public"
-              }
-            ],
-            "styles": ["projects/demo/src/styles.css"]
+            "setupFiles": ["projects/shared/test-setup-browser-shims.ts"]
           }
         }
       }
@@ -175,17 +172,12 @@
           "builder": "@angular/build:extract-i18n"
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@angular/build:unit-test",
           "options": {
-            "polyfills": [],
+            "runner": "vitest",
+            "buildTarget": "website:build:development",
             "tsConfig": "projects/website/tsconfig.spec.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "projects/website/public"
-              }
-            ],
-            "styles": ["projects/website/src/styles.css"]
+            "setupFiles": ["projects/shared/test-setup-browser-shims.ts"]
           }
         }
       }

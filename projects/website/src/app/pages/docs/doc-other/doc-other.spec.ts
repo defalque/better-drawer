@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
 
 import { DocOther } from './doc-other';
 
@@ -8,9 +10,9 @@ describe('DocOther', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DocOther]
-    })
-    .compileComponents();
+      imports: [DocOther],
+      providers: [provideZonelessChangeDetection(), provideRouter([])],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DocOther);
     component = fixture.componentInstance;

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
 
 import { DocApi } from './doc-api';
 
@@ -9,6 +11,7 @@ describe('DocApi', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DocApi],
+      providers: [provideZonelessChangeDetection(), provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DocApi);

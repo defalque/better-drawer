@@ -412,7 +412,7 @@ describe('BetterDrawerContent', () => {
   });
 
   it('does not warn when bdDrawerTitle is present', async () => {
-    const warnSpy = spyOn(console, 'warn');
+    const warnSpy = vi.spyOn(console, 'warn');
     fixture.componentInstance.drawerOpen.set(true);
     fixture.detectChanges();
     await Promise.resolve();
@@ -426,14 +426,14 @@ describe('BetterDrawerContent', () => {
       providers: [provideZonelessChangeDetection()],
     }).compileComponents();
 
-    const warnSpy = spyOn(console, 'warn');
+    const warnSpy = vi.spyOn(console, 'warn');
     const fx = TestBed.createComponent(DrawerNoTitleHostComponent);
     fx.detectChanges();
     fx.componentInstance.drawerOpen.set(true);
     fx.detectChanges();
     await Promise.resolve();
     expect(warnSpy).toHaveBeenCalledTimes(1);
-    const message = warnSpy.calls.mostRecent().args[0] as string;
+    const message = warnSpy.mock.lastCall?.[0] as string;
     expect(message).toContain('[better-drawer]');
     expect(message).toContain('bdDrawerTitle');
   });
@@ -445,7 +445,7 @@ describe('BetterDrawerContent', () => {
       providers: [provideZonelessChangeDetection()],
     }).compileComponents();
 
-    const warnSpy = spyOn(console, 'warn');
+    const warnSpy = vi.spyOn(console, 'warn');
     const fx = TestBed.createComponent(DrawerNoTitleHostComponent);
     fx.detectChanges();
     fx.componentInstance.drawerOpen.set(true);

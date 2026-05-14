@@ -44,7 +44,7 @@ Once the project is built, you can publish your library by following these steps
 
 ## Running unit tests
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Unit tests run with the Angular CLI [`unit-test`](https://angular.dev/cli/test) builder ([Vitest](https://vitest.dev/) runner). Use:
 
 ```bash
 ng test
