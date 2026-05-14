@@ -18,7 +18,7 @@ export interface BetterDrawerRootContext {
    * When true, omit the decorative pill handle (`.bar`) on `bdDrawerContent`
    * for `top` / `bottom` drawers.
    */
-  readonly hideBar: Signal<boolean>;
+  readonly hideHandleBar: Signal<boolean>;
 
   /** Depth in nested `[bdDrawerRoot]` trees; `0` for the outermost root. */
   readonly nestingLevel: Signal<number>;

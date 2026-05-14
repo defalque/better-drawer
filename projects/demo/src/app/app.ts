@@ -41,7 +41,7 @@ export class App {
   protected readonly nonModalOpen = model(false);
   protected readonly formDrawerOpen = model(false);
   protected readonly floatingOpen = model(false);
-  protected readonly hideBarOpen = model(false);
+  protected readonly hideHandleBarOpen = model(false);
   protected readonly scrollableContentOpen = model(false);
 
   /** Nested drawer demos: outer / inner `[(open)]` per direction */

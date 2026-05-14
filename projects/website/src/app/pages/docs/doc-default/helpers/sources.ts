@@ -123,7 +123,7 @@ import { BetterDrawerContent, BetterDrawerOverlay, BetterDrawerRoot, BetterDrawe
           <div bdDrawerOverlay class="overlay"></div>
           <div
             bdDrawerContent
-            class="fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px] outline-none"
+            class="fixed bottom-0 left-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 h-[320px] outline-none overflow-y-auto"
             style="scrollbar-width: thin"
           >
             <div class="p-4 grid gap-4 max-w-lg overflow-y-auto mx-auto">

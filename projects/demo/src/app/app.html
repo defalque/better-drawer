@@ -518,7 +518,7 @@
           class="contents"
           [(open)]="scrollableContentOpen"
           direction="bottom"
-          [hideBar]="true"
+          [hideHandleBar]="true"
         >
           <button type="button" bdDrawerTrigger class="btn">Scrollable content</button>
           @if (scrollableContentOpen()) {
@@ -561,9 +561,15 @@
           }
         </div>
 
-        <div bdDrawerRoot class="contents" [(open)]="hideBarOpen" direction="top" [hideBar]="true">
+        <div
+          bdDrawerRoot
+          class="contents"
+          [(open)]="hideHandleBarOpen"
+          direction="top"
+          [hideHandleBar]="true"
+        >
           <button type="button" bdDrawerTrigger class="btn">Hide bar</button>
-          @if (hideBarOpen()) {
+          @if (hideHandleBarOpen()) {
             <div bdDrawerOverlay class="bg-black/50"></div>
             <div
               bdDrawerContent
@@ -575,7 +581,7 @@
                   Hide default bar
                 </h2>
                 <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
-                  Hide the default bar by setting `[hideBar]="true"` on the drawer root.
+                  Hide the default bar by setting `[hideHandleBar]="true"` on the drawer root.
                 </p>
                 <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus ullam eaque,

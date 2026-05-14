@@ -7,7 +7,7 @@ import { BetterDrawerContent, BetterDrawerOverlay, BetterDrawerRoot, BetterDrawe
     BetterDrawerRoot, BetterDrawerTrigger, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle
   ],
   template: '
-    <div bdDrawerRoot class="contents" [(open)]="openNonModalDrawer" [modal]="false">
+    <div bdDrawerRoot [(open)]="openNonModalDrawer" [modal]="false">
       <button type="button" bdDrawerTrigger class="btn">
         Open non modal drawer
       </button>
@@ -40,7 +40,7 @@ import { BetterDrawerContent, BetterDrawerOverlay, BetterDrawerRoot, BetterDrawe
     BetterDrawerRoot, BetterDrawerTrigger, BetterDrawerOverlay, BetterDrawerContent, BetterDrawerTitle
   ],
   template: '
-    <div bdDrawerRoot class="contents" [(open)]="openNonDismissibleDrawer" direction="bottom" [dismissible]="false">
+    <div bdDrawerRoot [(open)]="openNonDismissibleDrawer" [dismissible]="false">
       <button type="button" bdDrawerTrigger class="btn">
         Open non dismissible drawer
       </button>
@@ -52,7 +52,7 @@ import { BetterDrawerContent, BetterDrawerOverlay, BetterDrawerRoot, BetterDrawe
               This is a non dismissible drawer
             </h2>
             <p class="description">
-              You can't close the drawer by clicking outside of it, pressing the escape key, or dragging it down.
+              You cannot close the drawer by clicking outside of it, pressing the escape key, or dragging it down.
             </p>
           </div>
         </aside>

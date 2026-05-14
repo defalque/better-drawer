@@ -87,7 +87,7 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
    * When true, the pill handle (`.bar`) is not rendered for `top` / `bottom` drawers.
    * @default false
    */
-  readonly hideBar = input<boolean>(false);
+  readonly hideHandleBar = input<boolean>(false);
 
   /** `0` for the outermost root; increments for each nested `[bdDrawerRoot]`. */
   readonly nestingLevel = computed(() => (this.parentDrawerRoot?.nestingLevel() ?? -1) + 1);
@@ -335,11 +335,11 @@ export class BetterDrawerTrigger {
   selector: '[bdDrawerContent]',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (effectiveDirection() === 'bottom' && !effectiveHideBar()) {
+    @if (effectiveDirection() === 'bottom' && !effectivehideHandleBar()) {
       <div aria-hidden="true" class="bar"></div>
     }
     <ng-content />
-    @if (effectiveDirection() === 'top' && !effectiveHideBar()) {
+    @if (effectiveDirection() === 'top' && !effectivehideHandleBar()) {
       <div aria-hidden="true" class="bar"></div>
     }
   `,
@@ -393,16 +393,16 @@ export class BetterDrawerContent {
   /** When not inside `[bdDrawerRoot]`. @default `true` */
   readonly modal = input<boolean>(true);
   /**
-   * When not inside `[bdDrawerRoot]`; otherwise use `hideBar` on `bdDrawerRoot`.
+   * When not inside `[bdDrawerRoot]`; otherwise use `hideHandleBar` on `bdDrawerRoot`.
    * Hides the pill handle for vertical drawers.
    * @default `false`
    */
-  readonly hideBar = input<boolean>(false);
+  readonly hideHandleBar = input<boolean>(false);
   protected readonly effectiveDirection = computed(
     () => this.drawerRoot?.direction() ?? this.direction(),
   );
-  protected readonly effectiveHideBar = computed(
-    () => this.drawerRoot?.hideBar() ?? this.hideBar(),
+  protected readonly effectivehideHandleBar = computed(
+    () => this.drawerRoot?.hideHandleBar() ?? this.hideHandleBar(),
   );
   protected readonly effectiveModal = computed(() => this.drawerRoot?.modal() ?? this.modal());
   protected readonly effectiveDismissible = computed(() => this.drawerRoot?.dismissible() ?? true);

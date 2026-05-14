@@ -161,14 +161,14 @@ class DrawerGroupDirectionHostComponent {
   standalone: true,
   imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle],
   template: `
-    <div bdDrawerRoot [(open)]="drawerOpen" direction="bottom" [hideBar]="true">
+    <div bdDrawerRoot [(open)]="drawerOpen" direction="bottom" [hideHandleBar]="true">
       <aside bdDrawerContent data-testid="panel">
         <h2 bdDrawerTitle>Title</h2>
       </aside>
     </div>
   `,
 })
-class DrawerBottomHideBarHostComponent {
+class DrawerBottomhideHandleBarHostComponent {
   readonly drawerOpen = model(false);
 }
 
@@ -697,13 +697,13 @@ describe('BetterDrawerRoot', () => {
     expect(panel.querySelector('.bar')).not.toBeNull();
   });
 
-  it('omits the handle bar when root hideBar is true', async () => {
+  it('omits the handle bar when root hideHandleBar is true', async () => {
     await TestBed.configureTestingModule({
-      imports: [DrawerBottomHideBarHostComponent],
+      imports: [DrawerBottomhideHandleBarHostComponent],
       providers: [provideZonelessChangeDetection()],
     }).compileComponents();
 
-    const fx = TestBed.createComponent(DrawerBottomHideBarHostComponent);
+    const fx = TestBed.createComponent(DrawerBottomhideHandleBarHostComponent);
     fx.detectChanges();
     const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
     expect(panel.querySelector('.bar')).toBeNull();
