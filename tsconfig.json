@@ -39,13 +39,7 @@
       "path": "./projects/demo/tsconfig.app.json"
     },
     {
-      "path": "./projects/demo/tsconfig.spec.json"
-    },
-    {
       "path": "./projects/website/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/website/tsconfig.spec.json"
     }
   ]
 }
