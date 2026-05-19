@@ -2,7 +2,9 @@ import { Component, model, provideZonelessChangeDetection, signal } from '@angul
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {
+  BetterDrawerCloseButton,
   BetterDrawerContent,
+  BetterDrawerPortal,
   BetterDrawerRoot,
   BetterDrawerOverlay,
   BetterDrawerTitle,
@@ -303,6 +305,93 @@ class DrawerRootTopWithScrollableContentComponent {
 class DrawerRootRightWithScrollableContentComponent {
   readonly drawerOpen = model(false);
 }
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle, BetterDrawerCloseButton],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen">
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+        <button type="button" bdDrawerCloseButton data-testid="close-btn"></button>
+      </aside>
+    </div>
+  `,
+})
+class CloseButtonInRootHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerCloseButton],
+  template: `
+    <button type="button" bdDrawerCloseButton [(open)]="drawerOpen" data-testid="close-btn"></button>
+  `,
+})
+class CloseButtonStandaloneHostComponent {
+  readonly drawerOpen = model(true);
+}
+
+@Component({
+  standalone: true,
+  imports: [
+    BetterDrawerRoot,
+    BetterDrawerOverlay,
+    BetterDrawerContent,
+    BetterDrawerTitle,
+    BetterDrawerCloseButton,
+  ],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" [dismissible]="false">
+      <div bdDrawerOverlay data-testid="overlay"></div>
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+        <button type="button" bdDrawerCloseButton data-testid="close-btn"></button>
+      </aside>
+    </div>
+  `,
+})
+class CloseButtonNonDismissibleHostComponent {
+  readonly drawerOpen = model(true);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle, BetterDrawerCloseButton],
+  template: `
+    <div bdDrawerRoot [(open)]="outerOpen">
+      @if (outerOpen()) {
+        <aside data-testid="outer-panel" bdDrawerContent direction="bottom">
+          <h2 bdDrawerTitle>Outer</h2>
+          <button type="button" bdDrawerCloseButton data-testid="outer-close"></button>
+          <div bdDrawerRoot [(open)]="innerOpen">
+            @if (innerOpen()) {
+              <aside data-testid="inner-panel" bdDrawerContent direction="bottom">
+                <h2 bdDrawerTitle>Inner</h2>
+              </aside>
+            }
+          </div>
+        </aside>
+      }
+    </div>
+  `,
+})
+class CloseButtonNestedHostComponent {
+  readonly outerOpen = model(true);
+  readonly innerOpen = model(true);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerPortal],
+  template: `
+    <ng-template bdDrawerPortal>
+      <p data-testid="portal-content">Portal content</p>
+    </ng-template>
+  `,
+})
+class PortalHostComponent {}
 
 function touchEvent(
   type: 'touchstart' | 'touchmove' | 'touchend' | 'touchcancel',
@@ -1122,5 +1211,112 @@ describe('BetterDrawerRoot', () => {
     fx.detectChanges();
 
     expect(fx.componentInstance.outerOpen()).toBe(false);
+  });
+});
+
+describe('BetterDrawerCloseButton', () => {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+  });
+
+  it('closes the root open state when clicked inside bdDrawerRoot', async () => {
+    const fx = TestBed.createComponent(CloseButtonInRootHostComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const closeBtn = fx.nativeElement.querySelector('[data-testid="close-btn"]') as HTMLElement;
+    closeBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('closes standalone open when used outside bdDrawerRoot', async () => {
+    const fx = TestBed.createComponent(CloseButtonStandaloneHostComponent);
+    fx.detectChanges();
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+
+    const closeBtn = fx.nativeElement.querySelector('[data-testid="close-btn"]') as HTMLElement;
+    closeBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('does not close when the root is not dismissible', async () => {
+    const fx = TestBed.createComponent(CloseButtonNonDismissibleHostComponent);
+    fx.detectChanges();
+
+    const closeBtn = fx.nativeElement.querySelector('[data-testid="close-btn"]') as HTMLElement;
+    closeBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+  });
+
+  it('does not close the outer drawer while a nested drawer is open', async () => {
+    const fx = TestBed.createComponent(CloseButtonNestedHostComponent);
+    fx.detectChanges();
+
+    const outerClose = fx.nativeElement.querySelector('[data-testid="outer-close"]') as HTMLElement;
+    outerClose.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.outerOpen()).toBe(true);
+    expect(fx.componentInstance.innerOpen()).toBe(true);
+  });
+
+  it('closes the outer drawer after the nested drawer is closed', async () => {
+    const fx = TestBed.createComponent(CloseButtonNestedHostComponent);
+    fx.detectChanges();
+    fx.componentInstance.innerOpen.set(false);
+    fx.detectChanges();
+
+    const outerClose = fx.nativeElement.querySelector('[data-testid="outer-close"]') as HTMLElement;
+    outerClose.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.outerOpen()).toBe(false);
+  });
+});
+
+describe('BetterDrawerPortal', () => {
+  function portalHost(): HTMLElement | null {
+    return document.body.querySelector('[better-drawer-portal]');
+  }
+
+  beforeEach(async () => {
+    document.body.querySelectorAll('[better-drawer-portal]').forEach((el) => el.remove());
+    await TestBed.configureTestingModule({
+      imports: [PortalHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+  });
+
+  afterEach(() => {
+    document.body.querySelectorAll('[better-drawer-portal]').forEach((el) => el.remove());
+  });
+
+  it('appends portal content to document.body on init', () => {
+    const fx = TestBed.createComponent(PortalHostComponent);
+    fx.detectChanges();
+
+    const host = portalHost();
+    expect(host).not.toBeNull();
+    expect(host?.querySelector('[data-testid="portal-content"]')?.textContent?.trim()).toBe(
+      'Portal content',
+    );
+  });
+
+  it('removes the portal host from document.body on destroy', () => {
+    const fx = TestBed.createComponent(PortalHostComponent);
+    fx.detectChanges();
+    expect(portalHost()).not.toBeNull();
+
+    fx.destroy();
+    expect(portalHost()).toBeNull();
   });
 });
