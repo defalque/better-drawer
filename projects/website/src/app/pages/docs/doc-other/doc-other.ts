@@ -7,6 +7,7 @@ import {
   BetterDrawerRoot,
   BetterDrawerTitle,
   BetterDrawerTrigger,
+  BetterDrawerPortal,
 } from 'better-drawer';
 import { ON_NON_MODAL_DRAWER_SOURCE, ON_NON_DISMISSIBLE_DRAWER_SOURCE } from './helpers/sources';
 import { Toc } from '../../../components/toc/toc';
@@ -23,6 +24,7 @@ type OtherDocSection = 'non-modal' | 'non-dismissible' | 'dynamic';
     BetterDrawerOverlay,
     BetterDrawerContent,
     BetterDrawerTitle,
+    BetterDrawerPortal,
     Toc,
     CodeTabs,
   ],

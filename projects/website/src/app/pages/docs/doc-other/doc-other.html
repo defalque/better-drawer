@@ -72,33 +72,35 @@
             <button type="button" bdDrawerTrigger class="drawer-button">
               Open non dismissible drawer
             </button>
-            @if (openNonDismissibleDrawer()) {
-              <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
-              <aside
-                bdDrawerContent
-                class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
-              >
-                <div class="p-4 grid gap-4 max-w-lg mx-auto">
-                  <h2
-                    bdDrawerTitle
-                    class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
-                  >
-                    This is a non dismissible drawer
-                  </h2>
-                  <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
-                    You cannot close the drawer by clicking outside of it, pressing the escape key,
-                    or dragging it down.
-                  </p>
-                  <button
-                    type="button"
-                    (click)="openNonDismissibleDrawer.set(false)"
-                    class="w-full py-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black font-medium rounded-lg cursor-pointer"
-                  >
-                    Close drawer
-                  </button>
-                </div>
-              </aside>
-            }
+            <ng-template bdDrawerPortal>
+              @if (openNonDismissibleDrawer()) {
+                <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
+                <aside
+                  bdDrawerContent
+                  class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 right-0 rounded-t-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
+                >
+                  <div class="p-4 grid gap-4 max-w-lg mx-auto">
+                    <h2
+                      bdDrawerTitle
+                      class="text-xl font-semibold tracking-tight text-zinc-950 dark:text-white"
+                    >
+                      This is a non dismissible drawer
+                    </h2>
+                    <p class="text-zinc-600 dark:text-zinc-300 text-pretty">
+                      You cannot close the drawer by clicking outside of it, pressing the escape
+                      key, or dragging it down.
+                    </p>
+                    <button
+                      type="button"
+                      (click)="openNonDismissibleDrawer.set(false)"
+                      class="w-full py-2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-black font-medium rounded-lg cursor-pointer"
+                    >
+                      Close drawer
+                    </button>
+                  </div>
+                </aside>
+              }
+            </ng-template>
           </div>
         </app-code-tabs>
       </div>
