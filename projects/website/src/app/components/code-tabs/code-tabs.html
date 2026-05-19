@@ -61,17 +61,11 @@
     class="landing-page-pre h-80! grid place-items-center w-full font-sans text-zinc-900 dark:text-zinc-100"
     aria-label="Preview"
     role="tabpanel"
-    tabindex="0"
   >
     <ng-content></ng-content>
   </div>
 } @else {
-  <pre
-    aria-label="Code"
-    role="tabpanel"
-    tabindex="0"
-    class="landing-page-pre h-80! overflow-y-auto!"
-  ><code
+  <pre aria-label="Code" role="tabpanel" class="landing-page-pre h-80! overflow-y-auto!"><code
     class=" landing-page-code language-typescript dark:text-white!"
     [innerHTML]="drawerCodeSource()"
   ></code></pre>
