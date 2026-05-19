@@ -393,6 +393,207 @@ class CloseButtonNestedHostComponent {
 })
 class PortalHostComponent {}
 
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerTrigger, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" panelId="custom-panel" controlsId="custom-controls">
+      <button type="button" bdDrawerTrigger data-testid="trigger"></button>
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+      </aside>
+    </div>
+  `,
+})
+class DrawerRootCustomIdsHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" direction="top">
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+      </aside>
+    </div>
+  `,
+})
+class DrawerRootTopHandleHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerRoot, BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <div bdDrawerRoot [(open)]="drawerOpen" direction="left">
+      <aside bdDrawerContent data-testid="panel">
+        <h2 bdDrawerTitle>Title</h2>
+      </aside>
+    </div>
+  `,
+})
+class DrawerRootLeftHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  standalone: true,
+  imports: [BetterDrawerContent, BetterDrawerTitle],
+  template: `
+    <aside bdDrawerContent [(open)]="drawerOpen" direction="bottom" [hideHandleBar]="true">
+      <h2 bdDrawerTitle>Title</h2>
+    </aside>
+  `,
+})
+class DrawerStandaloneHideHandleHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  imports: [BetterDrawerTrigger],
+  template: `
+    <button type="button" bdDrawerTrigger [(open)]="drawerOpen" data-testid="trigger">
+      <a href="#section" data-testid="anchor">Open</a>
+    </button>
+  `,
+})
+class TriggerAnchorHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+@Component({
+  imports: [BetterDrawerTrigger],
+  template: `
+    <div
+      bdDrawerTrigger
+      role="button"
+      tabindex="0"
+      [(open)]="drawerOpen"
+      data-testid="trigger"
+      aria-disabled="true"
+    ></div>
+  `,
+})
+class TriggerAriaDisabledHostComponent {
+  readonly drawerOpen = model(false);
+}
+
+async function flushMicrotasks(): Promise<void> {
+  await Promise.resolve();
+  await Promise.resolve();
+}
+
+function mockPanelSwipeRect(panel: HTMLElement, width: number, height: number): void {
+  panel.getBoundingClientRect = (): DOMRect =>
+    ({
+      width,
+      height,
+      top: 0,
+      left: 0,
+      right: width,
+      bottom: height,
+      x: 0,
+      y: 0,
+      toJSON() {
+        return {};
+      },
+    }) as DOMRect;
+  panel.setPointerCapture = vi.fn();
+  panel.releasePointerCapture = vi.fn();
+}
+
+function pointerSwipe(
+  target: HTMLElement,
+  opts: { startX: number; startY: number; endX: number; endY: number; pointerId?: number },
+): void {
+  const pid = opts.pointerId ?? 1;
+  const midX = opts.startX + (opts.endX - opts.startX) / 2;
+  const midY = opts.startY + (opts.endY - opts.startY) / 2;
+  target.dispatchEvent(
+    new PointerEvent('pointerdown', {
+      bubbles: true,
+      clientX: opts.startX,
+      clientY: opts.startY,
+      pointerId: pid,
+    }),
+  );
+  target.dispatchEvent(
+    new PointerEvent('pointermove', {
+      bubbles: true,
+      clientX: midX,
+      clientY: midY,
+      pointerId: pid,
+    }),
+  );
+  target.dispatchEvent(
+    new PointerEvent('pointermove', {
+      bubbles: true,
+      clientX: opts.endX,
+      clientY: opts.endY,
+      pointerId: pid,
+    }),
+  );
+  target.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: pid }));
+}
+
+function touchDrag(
+  target: HTMLElement,
+  opts: { startX: number; startY: number; endX: number; endY: number; identifier?: number },
+): void {
+  const id = opts.identifier ?? 1;
+  const midX = opts.startX + (opts.endX - opts.startX) / 2;
+  const midY = opts.startY + (opts.endY - opts.startY) / 2;
+  target.dispatchEvent(
+    touchEvent('touchstart', { identifier: id, clientX: opts.startX, clientY: opts.startY }),
+  );
+  target.dispatchEvent(
+    touchEvent('touchmove', { identifier: id, clientX: midX, clientY: midY }),
+  );
+  target.dispatchEvent(
+    touchEvent('touchmove', { identifier: id, clientX: opts.endX, clientY: opts.endY }),
+  );
+}
+
+function touchSwipe(
+  target: HTMLElement,
+  opts: { startX: number; startY: number; endX: number; endY: number; identifier?: number },
+): void {
+  const id = opts.identifier ?? 1;
+  const midX = opts.startX + (opts.endX - opts.startX) / 2;
+  const midY = opts.startY + (opts.endY - opts.startY) / 2;
+  target.dispatchEvent(
+    touchEvent('touchstart', { identifier: id, clientX: opts.startX, clientY: opts.startY }),
+  );
+  target.dispatchEvent(
+    touchEvent('touchmove', { identifier: id, clientX: midX, clientY: midY }),
+  );
+  target.dispatchEvent(
+    touchEvent('touchmove', { identifier: id, clientX: opts.endX, clientY: opts.endY }),
+  );
+  target.dispatchEvent(
+    touchEvent('touchend', { identifier: id, clientX: opts.endX, clientY: opts.endY }),
+  );
+}
+
+function mockReducedMotion(matches: boolean): void {
+  vi.spyOn(window, 'matchMedia').mockImplementation(
+    (query: string): MediaQueryList =>
+      ({
+        matches: query === '(prefers-reduced-motion: reduce)' ? matches : false,
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }) as MediaQueryList,
+  );
+}
+
 function touchEvent(
   type: 'touchstart' | 'touchmove' | 'touchend' | 'touchcancel',
   touch: Pick<Touch, 'identifier' | 'clientX' | 'clientY'>,
@@ -475,6 +676,26 @@ describe('BetterDrawerOverlay', () => {
 
     const el = nonModalFx.nativeElement.querySelector('[data-testid="overlay"]') as HTMLElement;
     expect(el.getAttribute('data-modal')).toBe('false');
+  });
+
+  it('does not close the outer drawer when the inner drawer is open and the outer overlay is clicked', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [NestedDrawersHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(NestedDrawersHostComponent);
+    fx.detectChanges();
+
+    const outerOverlay = fx.nativeElement.querySelector(
+      '[data-testid="outer-overlay"]',
+    ) as HTMLElement;
+    outerOverlay.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.outerOpen()).toBe(true);
+    expect(fx.componentInstance.innerOpen()).toBe(true);
   });
 });
 
@@ -648,6 +869,48 @@ describe('BetterDrawerContent', () => {
     const panel = nonModalFx.nativeElement.querySelector('[bdDrawerContent]') as HTMLElement;
     expect(panel.hasAttribute('aria-modal')).toBe(false);
   });
+
+  it('focuses the panel when opened', async () => {
+    fixture.componentInstance.drawerOpen.set(true);
+    fixture.detectChanges();
+    await flushMicrotasks();
+
+    expect(document.activeElement).toBe(drawerEl());
+  });
+
+  it('reflects data-dismissible and data-bd-drawer-open on the host', () => {
+    const panel = drawerEl();
+    expect(panel.getAttribute('data-dismissible')).toBe('true');
+    expect(panel.hasAttribute('data-bd-drawer-open')).toBe(false);
+
+    fixture.componentInstance.drawerOpen.set(true);
+    fixture.detectChanges();
+
+    expect(panel.getAttribute('data-bd-drawer-open')).toBe('true');
+  });
+
+  it('omits the handle bar for left and right directions', () => {
+    const directions: BetterDrawerDirection[] = ['left', 'right'];
+
+    for (const direction of directions) {
+      fixture.componentInstance.direction.set(direction);
+      fixture.detectChanges();
+      expect(drawerEl().querySelector('.bar')).toBeNull();
+    }
+  });
+
+  it('omits the handle bar when hideHandleBar is true on standalone content', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [DrawerStandaloneHideHandleHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerStandaloneHideHandleHostComponent);
+    fx.detectChanges();
+    const panel = fx.nativeElement.querySelector('[bdDrawerContent]') as HTMLElement;
+    expect(panel.querySelector('.bar')).toBeNull();
+  });
 });
 
 describe('BetterDrawerTrigger', () => {
@@ -723,6 +986,41 @@ describe('BetterDrawerTrigger', () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     trigFixture.detectChanges();
     expect(trigFixture.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('calls preventDefault when activated via a nested anchor', async () => {
+    await TestBed.configureTestingModule({
+      imports: [TriggerAnchorHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(TriggerAnchorHostComponent);
+    fx.detectChanges();
+
+    const anchor = fx.nativeElement.querySelector('[data-testid="anchor"]') as HTMLAnchorElement;
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true });
+    const preventSpy = vi.spyOn(click, 'preventDefault');
+    anchor.dispatchEvent(click);
+    fx.detectChanges();
+
+    expect(preventSpy).toHaveBeenCalled();
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+  });
+
+  it('does not toggle open when aria-disabled is true on a non-form host', async () => {
+    await TestBed.configureTestingModule({
+      imports: [TriggerAriaDisabledHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(TriggerAriaDisabledHostComponent);
+    fx.detectChanges();
+
+    const trigger = fx.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+    trigger.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
   });
 });
 
@@ -1211,6 +1509,204 @@ describe('BetterDrawerRoot', () => {
     fx.detectChanges();
 
     expect(fx.componentInstance.outerOpen()).toBe(false);
+  });
+
+  it('uses custom panelId and controlsId from the root on panel and trigger', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootCustomIdsHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootCustomIdsHostComponent);
+    fx.detectChanges();
+
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+    const trigger = fx.nativeElement.querySelector('[data-testid="trigger"]') as HTMLElement;
+
+    expect(panel.id).toBe('custom-panel');
+    expect(trigger.getAttribute('aria-controls')).toBe('custom-controls');
+  });
+
+  it('renders the handle bar on top drawer by default', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootTopHandleHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootTopHandleHostComponent);
+    fx.detectChanges();
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+    expect(panel.querySelector('.bar')).not.toBeNull();
+  });
+
+  it('sets data-bd-drawer-nest-level on nested panels', async () => {
+    await TestBed.configureTestingModule({
+      imports: [NestedDrawersHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(NestedDrawersHostComponent);
+    fx.detectChanges();
+
+    const outerPanel = fx.nativeElement.querySelector('[data-testid="outer-panel"]') as HTMLElement;
+    const innerPanel = fx.nativeElement.querySelector('[data-testid="inner-panel"]') as HTMLElement;
+
+    expect(outerPanel.getAttribute('data-bd-drawer-nest-level')).toBe('0');
+    expect(innerPanel.getAttribute('data-bd-drawer-nest-level')).toBe('1');
+  });
+});
+
+describe('swipe-to-dismiss', () => {
+  async function openDrawerWithOverlay(): Promise<{
+    fx: ComponentFixture<DrawerRootWithOverlayComponent>;
+    panel: HTMLElement;
+    overlay: HTMLElement;
+  }> {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootWithOverlayComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootWithOverlayComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+    const overlay = fx.nativeElement.querySelector('[data-testid="overlay"]') as HTMLElement;
+    mockPanelSwipeRect(panel, 320, 200);
+    return { fx, panel, overlay };
+  }
+
+  it('dims overlay opacity while dragging and disables its transition', async () => {
+    const { fx, panel, overlay } = await openDrawerWithOverlay();
+
+    touchDrag(panel, { startX: 160, startY: 100, endX: 160, endY: 200 });
+    fx.detectChanges();
+
+    expect(parseFloat(overlay.style.opacity)).toBeCloseTo(0.5, 1);
+    expect(overlay.style.transition).toBe('none');
+  });
+
+  it('clears overlay opacity after a swipe that snaps back below the dismiss threshold', async () => {
+    mockReducedMotion(true);
+    const { fx, panel, overlay } = await openDrawerWithOverlay();
+
+    touchSwipe(panel, { startX: 160, startY: 100, endX: 160, endY: 120 });
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+    expect(overlay.style.opacity).toBe('');
+    expect(panel.style.translate).toBe('');
+  });
+
+  it('dismisses the drawer when the pointer swipe passes the threshold', async () => {
+    const { fx, panel } = await openDrawerWithOverlay();
+
+    touchSwipe(panel, { startX: 160, startY: 100, endX: 160, endY: 250 });
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
+  });
+
+  it('resets the panel on pointercancel without closing', async () => {
+    const { fx, panel } = await openDrawerWithOverlay();
+    const pid = 8;
+
+    panel.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        clientX: 160,
+        clientY: 100,
+        pointerId: pid,
+      }),
+    );
+    panel.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        clientX: 160,
+        clientY: 180,
+        pointerId: pid,
+      }),
+    );
+    panel.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: pid }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+    expect(panel.style.translate).toBe('');
+  });
+
+  it('resets the panel on touchcancel without closing', async () => {
+    const { fx, panel } = await openDrawerWithOverlay();
+
+    panel.dispatchEvent(
+      touchEvent('touchstart', { identifier: 2, clientX: 160, clientY: 100 }),
+    );
+    panel.dispatchEvent(touchEvent('touchmove', { identifier: 2, clientX: 160, clientY: 180 }));
+    panel.dispatchEvent(touchEvent('touchcancel', { identifier: 2, clientX: 160, clientY: 180 }));
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+    expect(panel.style.translate).toBe('');
+  });
+
+  it('snaps back immediately without a transition when prefers-reduced-motion is reduce', async () => {
+    mockReducedMotion(true);
+    const { fx, panel } = await openDrawerWithOverlay();
+
+    pointerSwipe(panel, { startX: 160, startY: 100, endX: 160, endY: 130 });
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(true);
+    expect(panel.style.transition).toBe('');
+    expect(panel.style.translate).toBe('');
+  });
+
+  it('sets body cursor to grabbing while dragging and clears it afterward', async () => {
+    const { fx, panel } = await openDrawerWithOverlay();
+    const pid = 9;
+
+    panel.dispatchEvent(
+      new PointerEvent('pointerdown', {
+        bubbles: true,
+        clientX: 160,
+        clientY: 100,
+        pointerId: pid,
+      }),
+    );
+    panel.dispatchEvent(
+      new PointerEvent('pointermove', {
+        bubbles: true,
+        clientX: 160,
+        clientY: 160,
+        pointerId: pid,
+      }),
+    );
+    fx.detectChanges();
+    expect(document.body.style.cursor).toBe('grabbing');
+
+    panel.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: pid }));
+    fx.detectChanges();
+    expect(document.body.style.cursor).toBe('');
+  });
+
+  it('swipe-dismisses a left drawer via touch events', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DrawerRootLeftHostComponent],
+      providers: [provideZonelessChangeDetection()],
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(DrawerRootLeftHostComponent);
+    fx.detectChanges();
+    fx.componentInstance.drawerOpen.set(true);
+    fx.detectChanges();
+
+    const panel = fx.nativeElement.querySelector('[data-testid="panel"]') as HTMLElement;
+    mockPanelSwipeRect(panel, 320, 400);
+    touchSwipe(panel, { startX: 300, startY: 200, endX: 20, endY: 200 });
+    fx.detectChanges();
+
+    expect(fx.componentInstance.drawerOpen()).toBe(false);
   });
 });
 
