@@ -7,10 +7,13 @@ import {
   input,
   model,
 } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+type TrackedSection = { id: string; target: HTMLElement };
 
 @Component({
   selector: 'app-toc',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './toc.html',
   styleUrl: './toc.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,15 +21,27 @@ import {
 export class Toc {
   protected readonly destroyRef = inject(DestroyRef);
 
-  observerEnabled = input<boolean>(true);
   route = input.required<string>();
   sections = input.required<string[]>();
   labels = input.required<string[]>();
   activeSection = model<string>('');
 
+  /** Sidebar offset region; sections whose top has passed this line are considered passed. */
+  private readonly scrollLinePx = 130;
+  private readonly nearBottomThresholdPx = 8;
+
+  private trackedSections: TrackedSection[] = [];
+
   constructor() {
     afterNextRender(() => {
       this.watchTocTargets();
+    });
+  }
+
+  protected onSectionClick(section: string): void {
+    this.activeSection.set(section);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => this.updateActiveFromScroll());
     });
   }
 
@@ -35,78 +50,57 @@ export class Toc {
       document.querySelectorAll<HTMLAnchorElement>('.toc-content a[href*="#"]'),
     );
 
-    const sections = tocLinks
+    this.trackedSections = tocLinks
       .map((link) => {
         const id = link.hash.slice(1);
         const target = document.getElementById(id);
 
         return this.isDocSection(id) && target ? { id, target } : null;
       })
-      .filter((section): section is { id: string; target: HTMLElement } => section !== null);
+      .filter((section): section is TrackedSection => section !== null);
 
-    if (sections.length === 0) {
+    if (this.trackedSections.length === 0) {
       return;
     }
 
-    if (this.observerEnabled()) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          const visibleEntry = entries
-            .filter((entry) => entry.isIntersecting)
-            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+    this.updateActiveFromScroll();
 
-          if (!visibleEntry) {
-            return;
-          }
+    const onScrollOrResize = (): void => this.updateActiveFromScroll();
 
-          const activeSection = sections.find((section) => section.target === visibleEntry.target);
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
 
-          if (activeSection) {
-            this.activeSection.set(activeSection.id);
-          }
-        },
-        {
-          rootMargin: '-120px 0px -70% 0px',
-          threshold: 0,
-        },
-      );
+    this.destroyRef.onDestroy(() => {
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+    });
+  }
 
-      for (const section of sections) {
-        observer.observe(section.target);
-      }
-
-      this.destroyRef.onDestroy(() => observer.disconnect());
-    } else {
-      /** Match sidebar offset used elsewhere (-120px region); keeps TOC in sync on short pages where IntersectionObserver often misses. */
-      const scrollLinePx = 130;
-
-      const updateActiveFromScroll = (): void => {
-        const scrollable = document.documentElement;
-        const nearBottom = window.scrollY + window.innerHeight >= scrollable.scrollHeight - 8;
-
-        if (nearBottom) {
-          this.activeSection.set(sections[sections.length - 1].id);
-          return;
-        }
-
-        let active = sections[0].id;
-        for (const s of sections) {
-          if (s.target.getBoundingClientRect().top <= scrollLinePx) {
-            active = s.id;
-          }
-        }
-        this.activeSection.set(active);
-      };
-
-      updateActiveFromScroll();
-      window.addEventListener('scroll', updateActiveFromScroll, { passive: true });
-      window.addEventListener('resize', updateActiveFromScroll, { passive: true });
-
-      this.destroyRef.onDestroy(() => {
-        window.removeEventListener('scroll', updateActiveFromScroll);
-        window.removeEventListener('resize', updateActiveFromScroll);
-      });
+  private updateActiveFromScroll(): void {
+    if (this.trackedSections.length === 0) {
+      return;
     }
+
+    this.activeSection.set(this.resolveActiveSection());
+  }
+
+  private resolveActiveSection(): string {
+    const sections = this.trackedSections;
+    const scrollable = document.documentElement;
+    const nearBottom =
+      window.scrollY + window.innerHeight >= scrollable.scrollHeight - this.nearBottomThresholdPx;
+
+    if (nearBottom) {
+      return sections[sections.length - 1].id;
+    }
+
+    let active = sections[0].id;
+    for (const s of sections) {
+      if (s.target.getBoundingClientRect().top <= this.scrollLinePx) {
+        active = s.id;
+      }
+    }
+    return active;
   }
 
   private isDocSection(id: string): id is string {

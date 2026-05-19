@@ -7,10 +7,11 @@
     @for (section of sections(); track section; let index = $index) {
       <li>
         <a
-          [href]="'/docs/' + route() + '#' + section"
+          [routerLink]="['/docs', route()]"
+          [fragment]="section"
           [attr.data-active]="activeSection() === section"
           [class]="tocLinkClass(section)"
-          (click)="activeSection.set(section)"
+          (click)="onSectionClick(section)"
           >{{ labels()[index] }}</a
         >
       </li>
