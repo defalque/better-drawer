@@ -24,9 +24,28 @@
       </div>
 
       <div class="space-y-4 pt-20" id="bdDrawerRoot">
-        <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-          bdDrawerRoot
-        </h2>
+        <a
+          [routerLink]="['/docs', 'api']"
+          fragment="api-reference"
+          class="flex items-center gap-3 cursor-pointer"
+        >
+          <h2 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+            bdDrawerRoot
+          </h2>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="size-4 text-zinc-900 dark:text-zinc-100 rotate-6"
+          >
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          </svg>
+        </a>
         <p class="text-zinc-700 dark:text-zinc-300 text-pretty">
           Directive that controls the root of the drawer. You need to set the
           <code class="p-code-snippet">[(open)]</code> two-way binding to control the open state of
