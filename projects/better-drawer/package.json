@@ -1,6 +1,20 @@
 {
   "name": "better-drawer",
   "version": "0.0.1",
+  "description": "A simple and customizable drawer library for Angular v21+.",
+  "keywords": [
+    "angular",
+    "drawer",
+    "sidebar",
+    "modal",
+    "dialog"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/defalque/better-drawer.git",
+    "directory": "projects/better-drawer"
+  },
+  "author": "Marco De Falco",
   "peerDependencies": {
     "@angular/common": "^21.0.0",
     "@angular/core": "^21.0.0"

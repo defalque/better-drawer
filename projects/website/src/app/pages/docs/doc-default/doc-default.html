@@ -50,13 +50,13 @@
         </p>
 
         <app-code-tabs [codeSource]="sideDrawerCodeSource"
-          ><div bdDrawerRoot class="contents" [(open)]="openSideDrawer" direction="left">
+          ><div bdDrawerRoot class="contents" [(open)]="openSideDrawer" direction="right">
             <button type="button" bdDrawerTrigger class="drawer-button">Open side drawer</button>
             @if (openSideDrawer()) {
               <div bdDrawerOverlay class="dark:bg-black/50 bg-zinc-500/30"></div>
               <aside
                 bdDrawerContent
-                class="bg-zinc-50 dark:bg-zinc-900 fixed left-0 bottom-0 top-0 rounded-r-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
+                class="bg-zinc-50 dark:bg-zinc-900 fixed right-0 bottom-0 top-0 rounded-r-xl shadow-lg shadow-black/5 ring-1 ring-black/5 dark:ring-white/10 outline-none"
               >
                 <div class="p-4 grid gap-4 max-w-lg mx-auto">
                   <h2
