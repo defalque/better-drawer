@@ -326,7 +326,12 @@ class CloseButtonInRootHostComponent {
   standalone: true,
   imports: [BetterDrawerCloseButton],
   template: `
-    <button type="button" bdDrawerCloseButton [(open)]="drawerOpen" data-testid="close-btn"></button>
+    <button
+      type="button"
+      bdDrawerCloseButton
+      [(open)]="drawerOpen"
+      data-testid="close-btn"
+    ></button>
   `,
 })
 class CloseButtonStandaloneHostComponent {
@@ -549,9 +554,7 @@ function touchDrag(
   target.dispatchEvent(
     touchEvent('touchstart', { identifier: id, clientX: opts.startX, clientY: opts.startY }),
   );
-  target.dispatchEvent(
-    touchEvent('touchmove', { identifier: id, clientX: midX, clientY: midY }),
-  );
+  target.dispatchEvent(touchEvent('touchmove', { identifier: id, clientX: midX, clientY: midY }));
   target.dispatchEvent(
     touchEvent('touchmove', { identifier: id, clientX: opts.endX, clientY: opts.endY }),
   );
@@ -567,9 +570,7 @@ function touchSwipe(
   target.dispatchEvent(
     touchEvent('touchstart', { identifier: id, clientX: opts.startX, clientY: opts.startY }),
   );
-  target.dispatchEvent(
-    touchEvent('touchmove', { identifier: id, clientX: midX, clientY: midY }),
-  );
+  target.dispatchEvent(touchEvent('touchmove', { identifier: id, clientX: midX, clientY: midY }));
   target.dispatchEvent(
     touchEvent('touchmove', { identifier: id, clientX: opts.endX, clientY: opts.endY }),
   );
@@ -1639,9 +1640,7 @@ describe('swipe-to-dismiss', () => {
   it('resets the panel on touchcancel without closing', async () => {
     const { fx, panel } = await openDrawerWithOverlay();
 
-    panel.dispatchEvent(
-      touchEvent('touchstart', { identifier: 2, clientX: 160, clientY: 100 }),
-    );
+    panel.dispatchEvent(touchEvent('touchstart', { identifier: 2, clientX: 160, clientY: 100 }));
     panel.dispatchEvent(touchEvent('touchmove', { identifier: 2, clientX: 160, clientY: 180 }));
     panel.dispatchEvent(touchEvent('touchcancel', { identifier: 2, clientX: 160, clientY: 180 }));
     fx.detectChanges();
