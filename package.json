@@ -7,6 +7,7 @@
     "build": "ng build",
     "build:website": "ng build website",
     "build:lib": "ng build better-drawer",
+    "test:better-drawer": "ng test better-drawer",
     "serve:demo": "ng serve demo",
     "serve:website": "ng serve website",
     "watch": "ng build --watch --configuration development",
