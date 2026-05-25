@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve demo",
     "build": "ng build",
+    "build:website": "ng build website",
     "build:lib": "ng build better-drawer",
     "serve:demo": "ng serve demo",
     "serve:website": "ng serve website",
