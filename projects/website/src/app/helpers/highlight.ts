@@ -1,4 +1,4 @@
-import hljs from 'highlight.js';
+import hljs from 'highlight.js/lib/core';
 import typescript from 'highlight.js/lib/languages/typescript';
 import html from 'highlight.js/lib/languages/xml';
 import xml from 'highlight.js/lib/languages/xml';

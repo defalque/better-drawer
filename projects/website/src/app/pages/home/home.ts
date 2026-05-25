@@ -1,15 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import hljs from 'highlight.js/lib/core';
-import bash from 'highlight.js/lib/languages/bash';
-import typescript from 'highlight.js/lib/languages/typescript';
-import xml from 'highlight.js/lib/languages/xml';
 import { Meta } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { MyDrawer } from '../../components/open-drawer/open-drawer';
-
-hljs.registerLanguage('bash', bash);
-hljs.registerLanguage('typescript', typescript);
-hljs.registerLanguage('xml', xml);
 
 @Component({
   selector: 'app-home',
