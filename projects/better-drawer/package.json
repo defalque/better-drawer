@@ -9,12 +9,17 @@
     "modal",
     "dialog"
   ],
+  "author": "Marco De Falco",
+  "license": "MIT",
+  "homepage": "https://better-drawer.vercel.app",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/defalque/better-drawer.git",
     "directory": "projects/better-drawer"
   },
-  "author": "Marco De Falco",
+  "bugs": {
+    "url": "https://github.com/defalque/better-toast/issues"
+  },
   "peerDependencies": {
     "@angular/common": "^21.0.0",
     "@angular/core": "^21.0.0"
