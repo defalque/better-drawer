@@ -39,7 +39,7 @@
     "@tailwindcss/postcss": "^4.2.4",
     "express": "^5.1.0",
     "highlight.js": "^11.11.1",
-    "postcss": "^8.5.13",
+    "postcss": "^8.5.15",
     "rxjs": "~7.8.0",
     "tailwindcss": "^4.2.4",
     "tslib": "^2.3.0"
