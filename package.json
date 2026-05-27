@@ -50,7 +50,7 @@
     "@angular/compiler-cli": "^21.2.11",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
-    "jsdom": "^26.1.0",
+    "jsdom": "^29.1.1",
     "ng-packagr": "^21.2.3",
     "typescript": "~5.9.2",
     "vitest": "^4.1.7"
