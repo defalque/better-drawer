@@ -64,6 +64,7 @@ function swipeAxisAndSign(position: BetterDrawerDirection): {
   providers: [{ provide: BETTER_DRAWER_ROOT, useExisting: BetterDrawerRoot }],
 })
 export class BetterDrawerRoot implements BetterDrawerRootContext {
+  private readonly doc = inject(DOCUMENT);
   private readonly hostRef = inject(ElementRef<HTMLElement>);
 
   private readonly parentDrawerRoot = inject(BETTER_DRAWER_ROOT, {
@@ -106,6 +107,56 @@ export class BetterDrawerRoot implements BetterDrawerRootContext {
   readonly resolvedPanelId = computed(() => this.panelId() ?? this.autoPanelId);
   /** Resolved controls id when no `controlsId` is provided. */
   readonly resolvedControlsId = computed(() => this.controlsId() ?? this.resolvedPanelId());
+  private focusReturnTarget: HTMLElement | null = null;
+  private restoreFocusOnClose = false;
+
+  constructor() {
+    effect(() => {
+      const isOpen = this.open();
+      if (isOpen) {
+        untracked(() => {
+          if (this.focusReturnTarget) {
+            return;
+          }
+          const active = this.doc.activeElement;
+          if (active instanceof HTMLElement) {
+            this.focusReturnTarget = active;
+          }
+        });
+        return;
+      }
+      untracked(() => this.restoreFocus());
+    });
+  }
+
+  registerFocusReturnTarget(element: HTMLElement): void {
+    this.focusReturnTarget = element;
+  }
+
+  requestFocusRestoreOnClose(): void {
+    this.restoreFocusOnClose = true;
+  }
+
+  private restoreFocus(): void {
+    const shouldRestore = this.restoreFocusOnClose;
+    this.restoreFocusOnClose = false;
+    const toFocus = this.focusReturnTarget;
+    this.focusReturnTarget = null;
+    if (!shouldRestore || !toFocus?.isConnected) {
+      return;
+    }
+    queueMicrotask(() => {
+      toFocus.setAttribute('data-focus-visible', '');
+      toFocus.focus({ preventScroll: true, focusVisible: true } as FocusOptions);
+      toFocus.addEventListener(
+        'blur',
+        () => {
+          toFocus.removeAttribute('data-focus-visible');
+        },
+        { once: true },
+      );
+    });
+  }
 
   /** Checks if there is an open drawer with a higher nesting level. */
   descendantOpenDrawerWithHigherNesting(): boolean {
@@ -213,6 +264,7 @@ export class BetterDrawerOverlay {
       return;
     }
     event.preventDefault();
+    root?.requestFocusRestoreOnClose();
     this.close();
   }
 }
@@ -311,6 +363,10 @@ export class BetterDrawerTrigger {
       event.preventDefault();
     }
     if (this.drawerRoot) {
+      const opening = !this.drawerRoot.open();
+      if (opening) {
+        this.drawerRoot.registerFocusReturnTarget(this.host.nativeElement);
+      }
       this.drawerRoot.open.update((v) => !v);
       return;
     }
@@ -487,6 +543,7 @@ export class BetterDrawerContent {
       return;
     }
     event.preventDefault();
+    root?.requestFocusRestoreOnClose();
     this.close();
   }
 

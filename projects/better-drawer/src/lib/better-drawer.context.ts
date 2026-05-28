@@ -41,6 +41,10 @@ export interface BetterDrawerRootContext {
    * drawer is active).
    */
   descendantOpenDrawerWithHigherNesting(): boolean;
+  /** Records the element that should receive focus when the drawer closes. */
+  registerFocusReturnTarget(element: HTMLElement): void;
+  /** Request visible focus restore when the drawer closes (Escape dismiss only). */
+  requestFocusRestoreOnClose(): void;
 }
 
 /** Provided by `[bdDrawerRoot]` as `useExisting`; omit when wiring pieces standalone. */

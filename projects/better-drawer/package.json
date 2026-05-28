@@ -1,6 +1,6 @@
 {
   "name": "better-drawer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple and customizable drawer library for Angular v21+.",
   "keywords": [
     "angular",
