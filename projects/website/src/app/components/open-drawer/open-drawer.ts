@@ -24,7 +24,7 @@ import {
       <button
         type="button"
         bdDrawerTrigger
-        class="bg-black dark:bg-zinc-100 text-white dark:text-black px-6 py-2 rounded-lg font-semibold ring-1 ring-black/15 dark:ring-zinc-900/15 shadow-lg dark:shadow-black/50 inset-shadow-sm inset-shadow-white/50 dark:inset-shadow-black/40 cursor-pointer active:scale-95 transition-transform duration-200 focus"
+        class="bg-black dark:bg-zinc-100 text-white dark:text-black px-6 py-2 rounded-lg font-semibold ring-1 ring-black/15 dark:ring-zinc-900/15 shadow-lg dark:shadow-black/50 inset-shadow-sm inset-shadow-white/50 dark:inset-shadow-black/40 cursor-pointer active:scale-95 transition-transform duration-200 focus-ring"
       >
         Open Drawer
       </button>
