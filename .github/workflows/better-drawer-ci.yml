@@ -1,6 +1,3 @@
-# Runs better-drawer unit tests and library build on Angular 21 (library supports 21+ only).
-# Website-only deps (e.g. @lucide/angular) may not match all peer ranges; installs use --legacy-peer-deps.
-
 name: better-drawer CI
 
 on:
@@ -8,8 +5,15 @@ on:
     branches: [main, master]
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,25 +24,28 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Align workspace to Angular 21
-        run: |
-          npm install --legacy-peer-deps \
-            @angular/common@21 \
-            @angular/compiler@21 \
-            @angular/core@21 \
-            @angular/forms@21 \
-            @angular/platform-browser@21 \
-            @angular/platform-server@21 \
-            @angular/router@21 \
-            @angular/ssr@21 \
-            @angular/build@21 \
-            @angular/cli@21 \
-            @angular/compiler-cli@21 \
-            ng-packagr@21 \
-            typescript@~5.9.0
+      - name: Install
+        run: npm ci
 
-      - name: Build library (ng-packagr)
-        run: npx ng build better-drawer
+      - name: Build library
+        run: npm run build:lib
 
       - name: Unit tests (better-drawer)
         run: npm run test:better-drawer
+
+      - name: Build demo
+        run: npx ng build demo
+
+      - name: Build website
+        run: npx ng build website
+
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/dependency-review-action@v4
+        with:
+          comment-summary-in-pr: neve
+          fail-on-severity: critical
+          fail-on-scopes: runtime

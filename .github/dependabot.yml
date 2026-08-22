@@ -4,23 +4,67 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    open-pull-requests-limit: 5
+      day: monday
+    open-pull-requests-limit: 3
     rebase-strategy: auto
     allow:
       - dependency-type: direct
+    commit-message:
+      prefix: chore
+      include: scope
+    cooldown:
+      default-days: 3
+      semver-major-days: 14
     ignore:
-      # Angular 21 requires TypeScript ~5.9.x; CI also pins typescript@~5.9.0.
       - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
+      - dependency-name: '@angular*'
+        update-types:
+          - version-update:semver-major
+      - dependency-name: ng-packagr
+        update-types:
+          - version-update:semver-major
+      - dependency-name: vitest
         update-types:
           - version-update:semver-major
     groups:
       angular:
+        applies-to: version-updates
         patterns:
-          - '@angular/*'
-          - 'ng-packagr'
+          - '@angular*'
+          - ng-packagr
+        update-types:
+          - minor
+          - patch
+      npm-minor-and-patch:
+        applies-to: version-updates
+        exclude-patterns:
+          - '@angular*'
+          - ng-packagr
+        update-types:
+          - minor
+          - patch
+      npm-security:
+        applies-to: security-updates
+        patterns:
+          - '*'
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+      day: monday
     rebase-strategy: auto
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns:
+          - '*'
+      github-actions-security:
+        applies-to: security-updates
+        patterns:
+          - '*'
