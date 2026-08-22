@@ -49,6 +49,9 @@ updates:
         applies-to: security-updates
         patterns:
           - '*'
+        exclude-patterns:
+          - '@angular*'
+          - ng-packagr
 
   - package-ecosystem: github-actions
     directory: /

@@ -46,6 +46,6 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/dependency-review-action@v4
         with:
-          comment-summary-in-pr: neve
+          comment-summary-in-pr: never
           fail-on-severity: critical
           fail-on-scopes: runtime
