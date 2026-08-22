@@ -21,8 +21,8 @@
     "url": "https://github.com/defalque/better-toast/issues"
   },
   "peerDependencies": {
-    "@angular/common": "^21.0.0",
-    "@angular/core": "^21.0.0"
+    "@angular/common": ">=21.0.0 <23.0.0",
+    "@angular/core": ">=21.0.0 <23.0.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"
